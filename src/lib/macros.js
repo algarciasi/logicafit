@@ -20,6 +20,20 @@ export const MEALS = [
   { id: 'cena', label: 'Cena', icon: '🌙', pct: 0.2 },
 ]
 
+export const ACTIVITY_LABELS = {
+  sedentario: 'Sedentario (trabajo de oficina, sin ejercicio)',
+  ligero: 'Ligero (1-3 días/semana)',
+  moderado: 'Moderado (3-5 días/semana)',
+  intenso: 'Intenso (6-7 días/semana)',
+  muy_intenso: 'Muy intenso (2x al día, físico)',
+}
+
+export const GOAL_LABELS = {
+  perder: 'Perder grasa',
+  mantener: 'Mantener',
+  ganar: 'Ganar músculo',
+}
+
 // Mifflin-St Jeor
 export function calcMacros({ sex, age, weight, height, activity, goal }) {
   const bmr =

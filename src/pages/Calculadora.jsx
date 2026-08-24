@@ -3,6 +3,7 @@ import PersonalDataForm from '../components/calculator/PersonalDataForm'
 import MacroSummary from '../components/calculator/MacroSummary'
 import MealSection from '../components/calculator/MealSection'
 import { calcMacros, mealTarget, MEALS } from '../lib/macros'
+import { generateMacroPdf } from '../lib/generatePdf'
 
 const DEFAULT_DATA = {
   sex: 'mujer',
@@ -13,9 +14,17 @@ const DEFAULT_DATA = {
   goal: 'mantener',
 }
 
+const emptyMealItems = () =>
+  MEALS.reduce((acc, meal) => {
+    acc[meal.id] = []
+    return acc
+  }, {})
+
 export default function Calculadora() {
   const [formData, setFormData] = useState(DEFAULT_DATA)
   const [target, setTarget] = useState(null)
+  const [mealItems, setMealItems] = useState(emptyMealItems)
+  const [generating, setGenerating] = useState(false)
 
   const handleSubmit = () => {
     const result = calcMacros({
@@ -27,6 +36,40 @@ export default function Calculadora() {
       goal: formData.goal,
     })
     setTarget(result)
+    setMealItems(emptyMealItems())
+  }
+
+  const addFood = (mealId, food) => {
+    setMealItems((prev) => ({
+      ...prev,
+      [mealId]: [...prev[mealId], { ...food, grams: 100, key: `${food.id}-${Date.now()}` }],
+    }))
+  }
+
+  const updateGrams = (mealId, key, grams) => {
+    const g = Math.max(0, Number(grams) || 0)
+    setMealItems((prev) => ({
+      ...prev,
+      [mealId]: prev[mealId].map((it) => (it.key === key ? { ...it, grams: g } : it)),
+    }))
+  }
+
+  const removeItem = (mealId, key) => {
+    setMealItems((prev) => ({
+      ...prev,
+      [mealId]: prev[mealId].filter((it) => it.key !== key),
+    }))
+  }
+
+  const totalItemsAdded = Object.values(mealItems).reduce((sum, arr) => sum + arr.length, 0)
+
+  const handleDownload = async () => {
+    setGenerating(true)
+    try {
+      await generateMacroPdf({ formData, target, mealItems })
+    } finally {
+      setGenerating(false)
+    }
   }
 
   return (
@@ -61,9 +104,33 @@ export default function Calculadora() {
 
           <div className="mt-6 space-y-4">
             {MEALS.map((meal) => (
-              <MealSection key={meal.id} meal={meal} target={mealTarget(target, meal.pct)} />
+              <MealSection
+                key={meal.id}
+                meal={meal}
+                target={mealTarget(target, meal.pct)}
+                items={mealItems[meal.id]}
+                onAdd={addFood}
+                onUpdateGrams={updateGrams}
+                onRemove={removeItem}
+              />
             ))}
           </div>
+
+          <div className="sticky bottom-4 mt-8 flex justify-center">
+            <button
+              type="button"
+              onClick={handleDownload}
+              disabled={totalItemsAdded === 0 || generating}
+              className="inline-flex items-center gap-2 rounded-full bg-navy px-8 py-4 text-sm font-semibold text-white shadow-xl shadow-navy/20 transition hover:bg-navy-light disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {generating ? 'Generando…' : '📄 Descargar mi plan en PDF'}
+            </button>
+          </div>
+          {totalItemsAdded === 0 && (
+            <p className="mt-2 text-center text-xs text-text-secondary">
+              Añade al menos un alimento a alguna comida para poder descargarlo.
+            </p>
+          )}
         </div>
       )}
     </div>

@@ -1,33 +1,10 @@
-import { useState } from 'react'
 import FoodSearch from './FoodSearch'
+import { scaleFood } from '../../lib/generatePdf'
 
-function scale(food, grams) {
-  const factor = grams / 100
-  return {
-    kcal: food.calorias * factor,
-    protein: food.proteinas * factor,
-    carbs: food.carbos * factor,
-    fat: food.grasas * factor,
-  }
-}
-
-export default function MealSection({ meal, target }) {
-  const [items, setItems] = useState([])
-
-  const addFood = (food) => {
-    setItems((prev) => [...prev, { ...food, grams: 100, key: `${food.id}-${Date.now()}` }])
-  }
-
-  const updateGrams = (key, grams) => {
-    const g = Math.max(0, Number(grams) || 0)
-    setItems((prev) => prev.map((it) => (it.key === key ? { ...it, grams: g } : it)))
-  }
-
-  const removeItem = (key) => setItems((prev) => prev.filter((it) => it.key !== key))
-
+export default function MealSection({ meal, target, items, onAdd, onUpdateGrams, onRemove }) {
   const totals = items.reduce(
     (acc, it) => {
-      const s = scale(it, it.grams)
+      const s = scaleFood(it, it.grams)
       acc.kcal += s.kcal
       acc.protein += s.protein
       acc.carbs += s.carbs
@@ -60,7 +37,7 @@ export default function MealSection({ meal, target }) {
       </div>
 
       <div className="mt-4">
-        <FoodSearch onAdd={addFood} />
+        <FoodSearch onAdd={(food) => onAdd(meal.id, food)} />
       </div>
 
       {items.length > 0 && (
@@ -75,16 +52,16 @@ export default function MealSection({ meal, target }) {
                 type="number"
                 min="0"
                 value={it.grams}
-                onChange={(e) => updateGrams(it.key, e.target.value)}
+                onChange={(e) => onUpdateGrams(meal.id, it.key, e.target.value)}
                 className="w-16 rounded-lg border border-slate-200 px-2 py-1 text-right text-xs"
               />
               <span className="text-[11px] text-text-secondary">g</span>
               <span className="w-14 shrink-0 text-right text-[11px] font-semibold text-orange-dark">
-                {Math.round(scale(it, it.grams).kcal)} kcal
+                {Math.round(scaleFood(it, it.grams).kcal)} kcal
               </span>
               <button
                 type="button"
-                onClick={() => removeItem(it.key)}
+                onClick={() => onRemove(meal.id, it.key)}
                 className="ml-1 text-text-secondary transition hover:text-red-500"
                 aria-label="Quitar alimento"
               >
