@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import WhatsappPreview from './WhatsappPreview'
+import WeeklyPlanCard from './WeeklyPlanCard'
 
 export default function Hero() {
   return (
@@ -51,7 +51,7 @@ export default function Hero() {
 
         <div className="relative">
           <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-orange-light/40 blur-2xl" />
-          <WhatsappPreview />
+          <WeeklyPlanCard />
         </div>
       </div>
     </section>
