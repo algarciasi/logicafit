@@ -1,12 +1,19 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Hero from './components/Hero'
+import Home from './pages/Home'
+import Planes from './pages/Planes'
 
 function App() {
   return (
-    <div className="min-h-screen bg-white">
-      <Navbar />
-      <Hero />
-    </div>
+    <BrowserRouter>
+      <div className="min-h-screen bg-white">
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/planes" element={<Planes />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   )
 }
 

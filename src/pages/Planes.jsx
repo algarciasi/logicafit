@@ -4,46 +4,46 @@ import Faq from '../components/Faq'
 
 const PLANS = [
   {
-    icon: '馃弮',
+    icon: '🏃',
     name: 'Despegue',
     tagline: 'Empieza solo, con buenas bases',
     price: 20,
     features: [
       'Rutinas estructuradas por objetivo y nivel',
-      'Pautas de alimentaci贸n adaptables a tu d铆a a d铆a',
-      'Videoteca completa de ejercicios con t茅cnica',
+      'Pautas de alimentación adaptables a tu día a día',
+      'Videoteca completa de ejercicios con técnica',
       'Calculadora de macros premium',
       'Acceso inmediato, sin entrevista',
     ],
   },
   {
-    icon: '馃幆',
-    name: 'M茅todo L贸gica',
+    icon: '🎯',
+    name: 'Método Lógica',
     tagline: 'Mi sistema completo, hecho para ti',
     price: 35,
     featured: true,
-    badge: 'M谩s popular',
+    badge: 'Más popular',
     features: [
-      'Rutina y nutrici贸n 100% personalizadas a tu vida y objetivo',
-      'Adaptado a fuerza, running, recomposici贸n o combinaci贸n',
-      'Entrevista inicial 1:1 para dise帽ar tu plan',
+      'Rutina y nutrición 100% personalizadas a tu vida y objetivo',
+      'Adaptado a fuerza, running, recomposición o combinación',
+      'Entrevista inicial 1:1 para diseñar tu plan',
       'Ajustes mensuales de cargas y macros',
       'Soporte prioritario por WhatsApp',
-      'Recetario L贸gica Fit incluido',
+      'Recetario Lógica Fit incluido',
     ],
   },
   {
-    icon: '猸?,
+    icon: '⭐',
     name: 'Inner Circle',
     tagline: 'A mi lado, cada semana',
     price: 60,
     badge: 'Acceso reducido',
     features: [
-      'Todo lo del M茅todo L贸gica',
+      'Todo lo del Método Lógica',
       'Videollamada semanal 1:1',
-      'An谩lisis de salud y progreso continuo',
+      'Análisis de salud y progreso continuo',
       'Ajustes ilimitados 24/7',
-      'Correcci贸n t茅cnica por v铆deo',
+      'Corrección técnica por vídeo',
       'Plazas estrictamente limitadas',
     ],
   },
@@ -55,7 +55,7 @@ export default function Planes() {
       <section className="mx-auto max-w-3xl px-6 pb-10 pt-16 text-center">
         <p className="text-xs font-semibold uppercase tracking-wide text-orange-dark">Planes</p>
         <h1 className="mt-2 font-display text-4xl font-extrabold text-navy">
-          Elige c贸mo empezar
+          Elige cómo empezar
         </h1>
         <p className="mt-3 text-text-secondary">
           Sin permanencia. Cancela cuando quieras. Si no encajamos, no encajamos.
@@ -75,15 +75,16 @@ export default function Planes() {
       <section className="mx-auto max-w-3xl px-6 py-10">
         <div className="flex flex-col items-center gap-3 rounded-2xl border border-slate-100 bg-surface-soft px-8 py-8 text-center">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-orange">
-            馃洝锔?          </span>
+            🛡️
+          </span>
           <p className="text-xs font-semibold uppercase tracking-wide text-orange-dark">
-            Garant铆a de satisfacci贸n
+            Garantía de satisfacción
           </p>
           <h3 className="font-display text-xl font-bold text-navy">
-            14 d铆as o te devuelvo el dinero
+            14 días o te devuelvo el dinero
           </h3>
           <p className="max-w-md text-sm text-text-secondary">
-            Pru茅balo dos semanas. Si no est谩s convencido, me lo dices y te
+            Pruébalo dos semanas. Si no estás convencido, me lo dices y te
             devuelvo cada euro. Sin preguntas, sin trampas, sin formularios
             largos.
           </p>
@@ -95,11 +96,11 @@ export default function Planes() {
       <section id="contacto" className="mx-auto max-w-3xl px-6 pb-20 text-center">
         <div className="rounded-2xl bg-navy px-8 py-12">
           <h2 className="font-display text-2xl font-extrabold text-white sm:text-3xl">
-            驴A煤n tienes dudas?
+            ¿Aún tienes dudas?
           </h2>
           <p className="mx-auto mt-3 max-w-md text-sm text-slate-300">
-            Cu茅ntame tu situaci贸n por WhatsApp y te digo sin compromiso qu茅
-            plan te encaja mejor 鈥?o si ninguno te encaja, tambi茅n.
+            Cuéntame tu situación por WhatsApp y te digo sin compromiso qué
+            plan te encaja mejor — o si ninguno te encaja, también.
           </p>
           <a
             href="https://wa.me/"
