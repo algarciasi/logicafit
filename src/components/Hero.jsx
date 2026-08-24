@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 const PLAN_DAYS = [
   { day: 'Lun', label: 'Fuerza · 40 min', done: true },
   { day: 'Mar', label: 'Vida real', muted: true },
@@ -29,12 +31,12 @@ export default function Hero() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <a
-              href="#planes"
+            <Link
+              to="/planes"
               className="rounded-full bg-orange px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-orange/25 transition hover:bg-orange-dark"
             >
               Ver planes
-            </a>
+            </Link>
             <a
               href="#metodo"
               className="rounded-full px-7 py-3.5 text-sm font-semibold text-navy ring-1 ring-slate-200 transition hover:bg-surface-soft"
