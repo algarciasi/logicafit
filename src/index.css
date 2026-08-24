@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  /* Marca — Lógica Fit: "Ciencia y Confianza" */
+  --color-navy: #1e293b;
+  --color-navy-light: #334155;
+  --color-orange: #f97316;
+  --color-orange-dark: #ea580c;
+  --color-orange-light: #fed7aa;
+  --color-surface: #ffffff;
+  --color-surface-soft: #f8f9fa;
+  --color-text-secondary: #64748b;
+  --color-whatsapp: #25d366;
+
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-surface text-navy font-body antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-orange);
+    outline-offset: 2px;
+  }
+}
