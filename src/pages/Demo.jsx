@@ -24,7 +24,7 @@ export default function Demo() {
   }[active]
 
   return (
-    <div className="bg-surface-soft py-16">
+    <div className="bg-surface-soft pb-28 pt-16">
       <div className="mx-auto max-w-2xl px-6 text-center">
         <p className="text-xs font-semibold uppercase tracking-wide text-orange-dark">
           Demo interactiva
@@ -59,16 +59,18 @@ export default function Demo() {
         </BrowserFrame>
       </div>
 
-      <div className="mx-auto mt-10 max-w-md px-6 text-center">
-        <p className="text-sm text-text-secondary">
-          Esto es exactamente lo que tendrías tú, con tu plan real.
-        </p>
-        <Link
-          to="/planes"
-          className="mt-4 inline-flex items-center gap-2 rounded-full bg-orange px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-orange/25 transition hover:bg-orange-dark"
-        >
-          Quiero mi plan →
-        </Link>
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-slate-200 bg-white/95 px-6 py-4 backdrop-blur">
+        <div className="mx-auto flex max-w-md flex-col items-center gap-2 text-center sm:max-w-2xl sm:flex-row sm:justify-between sm:text-left">
+          <p className="font-display text-sm font-bold text-navy">
+            ¿Te gusta cómo se ve? Empieza hoy →
+          </p>
+          <Link
+            to="/planes"
+            className="w-full shrink-0 rounded-full bg-orange px-7 py-3 text-center text-sm font-semibold text-white shadow-lg shadow-orange/25 transition hover:bg-orange-dark sm:w-auto"
+          >
+            Quiero mi plan
+          </Link>
+        </div>
       </div>
     </div>
   )

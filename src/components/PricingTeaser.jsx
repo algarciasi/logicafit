@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import FounderSpots from './FounderSpots'
+import PricingCard from './PricingCard'
+import { PLANS, getPricing } from '../lib/plans'
 
 export default function PricingTeaser() {
   return (
@@ -19,12 +21,21 @@ export default function PricingTeaser() {
         <div className="mt-8 rounded-2xl bg-white p-2">
           <FounderSpots taken={6} />
         </div>
+      </div>
 
+      <div className="mx-auto mt-10 grid max-w-6xl gap-6 px-6 md:grid-cols-3 md:items-stretch">
+        {PLANS.map((plan) => {
+          const { price, billingNote } = getPricing(plan.basePrice, 'monthly')
+          return <PricingCard key={plan.name} {...plan} price={price} billingNote={billingNote} />
+        })}
+      </div>
+
+      <div className="mt-8 text-center">
         <Link
           to="/planes"
-          className="mt-8 inline-flex items-center gap-2 rounded-full bg-orange px-8 py-3.5 text-sm font-semibold text-white shadow-lg shadow-orange/25 transition hover:bg-orange-dark"
+          className="text-sm font-semibold text-orange hover:underline"
         >
-          Ver los 3 planes →
+          Ver facturación trimestral con descuento →
         </Link>
       </div>
     </section>

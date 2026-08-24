@@ -33,8 +33,19 @@ export default function About() {
         </p>
 
         <div className="mt-8 flex flex-col items-center gap-6 text-center sm:flex-row sm:items-start sm:text-left">
-          <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-navy text-3xl text-white">
-            🎓
+          <div className="h-28 w-28 shrink-0 overflow-hidden rounded-full bg-navy ring-4 ring-orange/20">
+            <img
+              src="/brand/coach.jpg"
+              alt="Alberto García, entrenador de Lógica Fit"
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none'
+                e.currentTarget.nextElementSibling.style.display = 'flex'
+              }}
+            />
+            <div className="hidden h-full w-full items-center justify-center text-3xl text-white">
+              🎓
+            </div>
           </div>
           <div>
             <h2 className="font-display text-2xl font-extrabold text-navy sm:text-3xl">
