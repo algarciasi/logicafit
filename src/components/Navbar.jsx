@@ -12,7 +12,7 @@ export default function Navbar() {
           <a href="/#metodo" className="transition hover:text-navy">Método</a>
           <Link to="/planes" className="transition hover:text-navy">Planes</Link>
           <a href="/#casos" className="transition hover:text-navy">Casos reales</a>
-          <a href="/#calculadora" className="transition hover:text-navy">Calculadora</a>
+          <Link to="/calculadora" className="transition hover:text-navy">Calculadora</Link>
         </nav>
 
         <Link

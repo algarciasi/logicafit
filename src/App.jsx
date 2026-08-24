@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import Home from './pages/Home'
 import Planes from './pages/Planes'
 import Demo from './pages/Demo'
+import Calculadora from './pages/Calculadora'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/planes" element={<Planes />} />
           <Route path="/demo" element={<Demo />} />
+          <Route path="/calculadora" element={<Calculadora />} />
         </Routes>
       </div>
     </BrowserRouter>

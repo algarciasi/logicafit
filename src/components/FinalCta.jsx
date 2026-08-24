@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export default function FinalCta() {
   return (
     <section className="bg-white py-20">
@@ -32,12 +34,12 @@ export default function FinalCta() {
             Calcula tus calorías y macros exactos con mi calculadora premium.
             Sin registro, sin email, sin trampas.
           </p>
-          <a
-            href="/calculadora"
+          <Link
+            to="/calculadora"
             className="mt-2 inline-flex items-center gap-2 rounded-full bg-orange px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange-dark"
           >
             Ir a la calculadora gratuita →
-          </a>
+          </Link>
         </div>
       </div>
     </section>
