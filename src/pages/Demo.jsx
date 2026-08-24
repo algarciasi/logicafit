@@ -2,11 +2,13 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import BrowserFrame from '../components/demo/BrowserFrame'
 import InicioTab from '../components/demo/tabs/InicioTab'
+import EntrenoTab from '../components/demo/tabs/EntrenoTab'
 import ProgresoTab from '../components/demo/tabs/ProgresoTab'
 import DietaTab from '../components/demo/tabs/DietaTab'
 
 const TABS = [
   { id: 'inicio', label: 'Inicio', icon: '🏠' },
+  { id: 'entreno', label: 'Entreno', icon: '🏋️' },
   { id: 'progreso', label: 'Progreso', icon: '📈' },
   { id: 'dieta', label: 'Dieta', icon: '🍽️' },
 ]
@@ -16,6 +18,7 @@ export default function Demo() {
 
   const content = {
     inicio: <InicioTab />,
+    entreno: <EntrenoTab />,
     progreso: <ProgresoTab />,
     dieta: <DietaTab />,
   }[active]
@@ -36,18 +39,19 @@ export default function Demo() {
 
       <div className="mx-auto mt-10 max-w-md px-6">
         <BrowserFrame>
-          <div className="mb-4 flex gap-2 rounded-full bg-surface-soft p-1">
+          <div className="mb-4 flex gap-1 rounded-full bg-surface-soft p-1">
             {TABS.map((t) => (
               <button
                 key={t.id}
                 onClick={() => setActive(t.id)}
-                className={`flex-1 rounded-full py-2 text-xs font-semibold transition ${
+                className={`flex-1 rounded-full px-1 py-2 text-[11px] font-semibold transition sm:text-xs ${
                   active === t.id
                     ? 'bg-white text-navy shadow-sm'
                     : 'text-text-secondary hover:text-navy'
                 }`}
               >
-                {t.icon} {t.label}
+                <span className="block sm:inline">{t.icon}</span>
+                <span className="hidden sm:inline"> {t.label}</span>
               </button>
             ))}
           </div>
