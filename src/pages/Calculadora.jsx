@@ -2,6 +2,7 @@ import { useState } from 'react'
 import PersonalDataForm from '../components/calculator/PersonalDataForm'
 import MacroSummary from '../components/calculator/MacroSummary'
 import MealSection from '../components/calculator/MealSection'
+import DailyTotals from '../components/calculator/DailyTotals'
 import { calcMacros, mealTarget, MEALS } from '../lib/macros'
 import { generateMacroPdf } from '../lib/generatePdf'
 
@@ -114,6 +115,10 @@ export default function Calculadora() {
                 onRemove={removeItem}
               />
             ))}
+          </div>
+
+          <div className="mt-6">
+            <DailyTotals target={target} mealItems={mealItems} />
           </div>
 
           <div className="sticky bottom-4 mt-8 flex justify-center">
