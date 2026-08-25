@@ -3,8 +3,10 @@ import { useParams, Link } from 'react-router-dom'
 import { getClientById } from '../../lib/clients'
 import { listClientDiet, addDietEntry, deleteDietEntry } from '../../lib/diets'
 import { listWeightHistory } from '../../lib/notes'
+import { listClientRoutine } from '../../lib/routines'
 import WeightChart from '../../components/dashboard/WeightChart'
 import FoodSearch from '../../components/calculator/FoodSearch'
+import AdminRoutineEditor from '../../components/admin/AdminRoutineEditor'
 import { MEALS } from '../../lib/macros'
 
 const FIELD = 'w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-navy focus:border-orange focus:outline-none focus:ring-1 focus:ring-orange'
@@ -14,6 +16,7 @@ export default function AdminClientDetail() {
   const [client, setClient] = useState(null)
   const [dietEntries, setDietEntries] = useState([])
   const [weightHistory, setWeightHistory] = useState([])
+  const [routineEntries, setRoutineEntries] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -24,15 +27,22 @@ export default function AdminClientDetail() {
 
   const loadAll = async () => {
     setLoading(true)
-    const [{ client, error: clientError }, { entries }, { entries: weights }] = await Promise.all([
+    const [
+      { client, error: clientError },
+      { entries },
+      { entries: weights },
+      { entries: routine },
+    ] = await Promise.all([
       getClientById(id),
       listClientDiet(id),
       listWeightHistory(id),
+      listClientRoutine(id),
     ])
     setClient(client)
     setError(clientError)
     setDietEntries(entries)
     setWeightHistory(weights)
+    setRoutineEntries(routine)
     setLoading(false)
   }
 
@@ -186,10 +196,11 @@ export default function AdminClientDetail() {
         </div>
       </div>
 
-      <div className="mt-10 rounded-2xl border border-dashed border-slate-200 p-5 text-sm text-text-secondary">
-        La asignación de rutinas/entrenamiento está pendiente de confirmar el
-        esquema de las tablas `rutinas` / `ejercicios` para no escribir en
-        columnas que no existen.
+      <div className="mt-10">
+        <h2 className="font-display text-lg font-bold text-navy">Asignar rutina</h2>
+        <div className="mt-4">
+          <AdminRoutineEditor clientId={id} entries={routineEntries} onChange={loadAll} />
+        </div>
       </div>
     </div>
   )
