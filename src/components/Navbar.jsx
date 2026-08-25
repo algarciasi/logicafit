@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { ADMIN_EMAIL } from '../lib/adminConfig'
 
 export default function Navbar() {
   const { user } = useAuth()
+  const isAdmin = user && ADMIN_EMAIL && user.email === ADMIN_EMAIL
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/90 backdrop-blur">
@@ -20,6 +22,14 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
+          {isAdmin && (
+            <Link
+              to="/admin/clientes"
+              className="hidden text-sm font-semibold text-navy transition hover:text-orange-dark sm:block"
+            >
+              Admin
+            </Link>
+          )}
           <Link
             to={user ? '/dashboard' : '/login'}
             className="hidden text-sm font-semibold text-navy transition hover:text-orange-dark sm:block"
