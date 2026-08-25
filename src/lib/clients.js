@@ -1,10 +1,11 @@
 import { supabase } from './supabaseClient'
 
 export async function getClientByEmail(email) {
+  const normalized = (email || '').trim()
   const { data, error } = await supabase
     .from('clients')
     .select('*')
-    .eq('email', email)
+    .ilike('email', normalized)
     .maybeSingle()
   return { client: data, error }
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useClientProfile } from '../hooks/useClientProfile'
 import InicioTab from '../components/dashboard/tabs/InicioTab'
 import EntrenoTab from '../components/dashboard/tabs/EntrenoTab'
 import ProgresoTab from '../components/dashboard/tabs/ProgresoTab'
@@ -15,6 +16,7 @@ const TABS = [
 
 export default function Dashboard() {
   const { user, signOut } = useAuth()
+  const { client, loading: clientLoading, error: clientError } = useClientProfile()
   const navigate = useNavigate()
   const [active, setActive] = useState('inicio')
 
@@ -24,10 +26,10 @@ export default function Dashboard() {
   }
 
   const content = {
-    inicio: <InicioTab userEmail={user?.email} />,
-    entreno: <EntrenoTab />,
-    progreso: <ProgresoTab />,
-    dieta: <DietaTab />,
+    inicio: <InicioTab client={client} />,
+    entreno: <EntrenoTab client={client} />,
+    progreso: <ProgresoTab client={client} />,
+    dieta: <DietaTab client={client} />,
   }[active]
 
   return (
@@ -47,6 +49,13 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {!clientLoading && (
+        <div className="mx-auto max-w-md px-6 pt-3 text-center text-[11px] text-text-secondary">
+          Sesión: {user?.email} {client ? `→ vinculado a "${client.full_name}" (${client.email})` : '→ sin cliente vinculado'}
+          {clientError && <span className="text-red-500"> · error: {clientError.message}</span>}
+        </div>
+      )}
+
       <div className="mx-auto max-w-md px-6 py-10">
         <div className="mb-4 flex gap-1 rounded-full bg-white p-1 shadow-sm">
           {TABS.map((t) => (
@@ -65,7 +74,13 @@ export default function Dashboard() {
           ))}
         </div>
 
-        <div className="rounded-2xl border border-slate-100 bg-white p-6">{content}</div>
+        <div className="rounded-2xl border border-slate-100 bg-white p-6">
+          {clientLoading ? (
+            <p className="text-sm text-text-secondary">Cargando…</p>
+          ) : (
+            content
+          )}
+        </div>
       </div>
     </div>
   )

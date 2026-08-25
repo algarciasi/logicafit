@@ -6,14 +6,16 @@ import EmptyState from '../EmptyState'
 export default function EntrenoTab({ client }) {
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     if (!client?.id) {
       setLoading(false)
       return
     }
-    listClientRoutine(client.id).then(({ entries }) => {
+    listClientRoutine(client.id).then(({ entries, error }) => {
       setEntries(entries)
+      setError(error)
       setLoading(false)
     })
   }, [client?.id])
@@ -24,6 +26,14 @@ export default function EntrenoTab({ client }) {
 
   if (loading) {
     return <p className="text-sm text-text-secondary">Cargando…</p>
+  }
+
+  if (error) {
+    return (
+      <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
+        Error al cargar tu rutina: {error.message}
+      </p>
+    )
   }
 
   if (entries.length === 0) {
