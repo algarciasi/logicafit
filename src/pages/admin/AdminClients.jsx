@@ -2,6 +2,23 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listClients } from '../../lib/clients'
 
+function ClientCard({ c }) {
+  return (
+    <Link
+      to={`/admin/clientes/${c.id}`}
+      className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-5 transition hover:border-orange-light hover:shadow-md"
+    >
+      <div>
+        <p className="font-display font-bold text-navy">{c.full_name || c.email}</p>
+        <p className="text-xs text-text-secondary">
+          {c.email} {c.objetivo_entrenamiento ? `· ${c.objetivo_entrenamiento}` : ''}
+        </p>
+      </div>
+      <span className="text-orange">→</span>
+    </Link>
+  )
+}
+
 export default function AdminClients() {
   const [clients, setClients] = useState([])
   const [loading, setLoading] = useState(true)
@@ -14,6 +31,9 @@ export default function AdminClients() {
       setLoading(false)
     })
   }, [])
+
+  const activos = clients.filter((c) => (c.status || 'activo') === 'activo')
+  const noActivos = clients.filter((c) => (c.status || 'activo') !== 'activo')
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
@@ -34,24 +54,35 @@ export default function AdminClients() {
         </p>
       )}
 
-      <ul className="mt-6 space-y-3">
-        {clients.map((c) => (
-          <li key={c.id}>
-            <Link
-              to={`/admin/clientes/${c.id}`}
-              className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-5 transition hover:border-orange-light hover:shadow-md"
-            >
-              <div>
-                <p className="font-display font-bold text-navy">{c.full_name || c.email}</p>
-                <p className="text-xs text-text-secondary">
-                  {c.email} {c.objetivo_entrenamiento ? `· ${c.objetivo_entrenamiento}` : ''}
-                </p>
-              </div>
-              <span className="text-orange">→</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {!loading && activos.length > 0 && (
+        <div className="mt-6">
+          <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+            Activos ({activos.length})
+          </p>
+          <ul className="mt-3 space-y-3">
+            {activos.map((c) => (
+              <li key={c.id}>
+                <ClientCard c={c} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {!loading && noActivos.length > 0 && (
+        <div className="mt-10">
+          <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+            No activos ({noActivos.length})
+          </p>
+          <ul className="mt-3 space-y-3 opacity-70">
+            {noActivos.map((c) => (
+              <li key={c.id}>
+                <ClientCard c={c} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   )
 }

@@ -7,6 +7,7 @@ import { listClientRoutine } from '../../lib/routines'
 import WeightChart from '../../components/dashboard/WeightChart'
 import FoodSearch from '../../components/calculator/FoodSearch'
 import AdminRoutineEditor from '../../components/admin/AdminRoutineEditor'
+import ClientPlanEditor from '../../components/admin/ClientPlanEditor'
 import { MEALS } from '../../lib/macros'
 
 const FIELD = 'w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-navy focus:border-orange focus:outline-none focus:ring-1 focus:ring-orange'
@@ -118,6 +119,10 @@ export default function AdminClientDetail() {
 
       <div className="mt-8">
         <WeightChart points={weightHistory} />
+      </div>
+
+      <div className="mt-8">
+        <ClientPlanEditor client={client} onSaved={loadAll} />
       </div>
 
       <div className="mt-10">
