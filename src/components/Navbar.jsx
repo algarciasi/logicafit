@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 export default function Navbar() {
+  const { user } = useAuth()
+
   return (
     <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
@@ -16,12 +19,20 @@ export default function Navbar() {
           <Link to="/calculadora" className="transition hover:text-navy">Calculadora</Link>
         </nav>
 
-        <Link
-          to="/planes"
-          className="rounded-full bg-orange px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-orange/30 transition hover:bg-orange-dark"
-        >
-          Ver planes
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            to={user ? '/dashboard' : '/login'}
+            className="hidden text-sm font-semibold text-navy transition hover:text-orange-dark sm:block"
+          >
+            {user ? 'Mi área' : 'Acceder'}
+          </Link>
+          <Link
+            to="/planes"
+            className="rounded-full bg-orange px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-orange/30 transition hover:bg-orange-dark"
+          >
+            Ver planes
+          </Link>
+        </div>
       </div>
     </header>
   )
