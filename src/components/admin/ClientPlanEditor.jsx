@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { updateClientPlanInfo, updateClientStatus } from '../../lib/clients'
+import { updateClientPlanInfo, updateClientStatus, OBJETIVOS } from '../../lib/clients'
 
 const FIELD = 'w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-navy focus:border-orange focus:outline-none focus:ring-1 focus:ring-orange'
 const LABEL = 'mb-1.5 block text-xs font-semibold text-navy-light'
@@ -8,6 +8,7 @@ export default function ClientPlanEditor({ client, onSaved }) {
   const [tipoPlan, setTipoPlan] = useState(client.tipo_plan || '')
   const [planVigenteHasta, setPlanVigenteHasta] = useState(client.plan_vigente_hasta || '')
   const [proximaRevision, setProximaRevision] = useState(client.proxima_revision || '')
+  const [objetivo, setObjetivo] = useState(client.objetivo_entrenamiento || '')
   const [status, setStatus] = useState(client.status || 'activo')
   const [saving, setSaving] = useState(false)
 
@@ -17,6 +18,7 @@ export default function ClientPlanEditor({ client, onSaved }) {
       tipoPlan,
       planVigenteHasta,
       proximaRevision,
+      objetivoEntrenamiento: objetivo,
     })
     if (!error && status !== (client.status || 'activo')) {
       await updateClientStatus(client.id, status)
@@ -46,7 +48,18 @@ export default function ClientPlanEditor({ client, onSaved }) {
         </select>
       </div>
 
-      <div className="mt-3 grid gap-3 sm:grid-cols-3">
+      <div className="mt-3 grid gap-3 sm:grid-cols-4">
+        <div>
+          <label className={LABEL}>Objetivo</label>
+          <select value={objetivo} onChange={(e) => setObjetivo(e.target.value)} className={FIELD}>
+            <option value="">Sin definir</option>
+            {OBJETIVOS.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        </div>
         <div>
           <label className={LABEL}>Tipo de plan</label>
           <input

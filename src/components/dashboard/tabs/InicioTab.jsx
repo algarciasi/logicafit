@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { listClientRoutine } from '../../../lib/routines'
 import { listClientDiet } from '../../../lib/diets'
 import { generateRoutinePdf, generateDietPdf } from '../../../lib/clientPdfs'
+import { objetivoLabel } from '../../../lib/clients'
 import EmptyState from '../EmptyState'
 
 function formatDate(dateStr) {
@@ -39,7 +40,7 @@ export default function InicioTab({ client }) {
     )
   }
 
-  const hasPlanInfo = client.tipo_plan || client.plan_vigente_hasta || client.proxima_revision
+  const hasPlanInfo = client.tipo_plan || client.plan_vigente_hasta || client.proxima_revision || client.objetivo_entrenamiento
   const hasAnything = hasPlanInfo || routineEntries.length > 0 || dietEntries.length > 0
 
   const handleDownload = async (type) => {
@@ -72,8 +73,13 @@ export default function InicioTab({ client }) {
 
       {!loading && hasPlanInfo && (
         <div className="mt-4 rounded-2xl border border-slate-100 bg-surface-soft p-4">
-          {client.tipo_plan && (
+          {client.objetivo_entrenamiento && (
             <p className="text-sm text-navy">
+              <span className="font-semibold">Objetivo:</span> {objetivoLabel(client.objetivo_entrenamiento)}
+            </p>
+          )}
+          {client.tipo_plan && (
+            <p className="mt-1 text-sm text-navy">
               <span className="font-semibold">Plan:</span> {client.tipo_plan}
             </p>
           )}

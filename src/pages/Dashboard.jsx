@@ -1,36 +1,40 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import { useClientProfile } from '../hooks/useClientProfile'
-import InicioTab from '../components/dashboard/tabs/InicioTab'
-import EntrenoTab from '../components/dashboard/tabs/EntrenoTab'
-import ProgresoTab from '../components/dashboard/tabs/ProgresoTab'
-import DietaTab from '../components/dashboard/tabs/DietaTab'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useClientProfile } from "../hooks/useClientProfile";
+import InicioTab from "../components/dashboard/tabs/InicioTab";
+import EntrenoTab from "../components/dashboard/tabs/EntrenoTab";
+import ProgresoTab from "../components/dashboard/tabs/ProgresoTab";
+import DietaTab from "../components/dashboard/tabs/DietaTab";
 
 const TABS = [
-  { id: 'inicio', label: 'Inicio', icon: '🏠' },
-  { id: 'entreno', label: 'Entreno', icon: '🏋️' },
-  { id: 'progreso', label: 'Progreso', icon: '📈' },
-  { id: 'dieta', label: 'Dieta', icon: '🍽️' },
-]
+  { id: "inicio", label: "Inicio", icon: "🏠" },
+  { id: "entreno", label: "Entreno", icon: "🏋️" },
+  { id: "progreso", label: "Progreso", icon: "📈" },
+  { id: "dieta", label: "Dieta", icon: "🍽️" },
+];
 
 export default function Dashboard() {
-  const { user, signOut } = useAuth()
-  const { client, loading: clientLoading, error: clientError } = useClientProfile()
-  const navigate = useNavigate()
-  const [active, setActive] = useState('inicio')
+  const { user, signOut } = useAuth();
+  const {
+    client,
+    loading: clientLoading,
+    error: clientError,
+  } = useClientProfile();
+  const navigate = useNavigate();
+  const [active, setActive] = useState("inicio");
 
   const handleSignOut = async () => {
-    await signOut()
-    navigate('/')
-  }
+    await signOut();
+    navigate("/");
+  };
 
   const content = {
     inicio: <InicioTab client={client} />,
     entreno: <EntrenoTab client={client} />,
     progreso: <ProgresoTab client={client} />,
     dieta: <DietaTab client={client} />,
-  }[active]
+  }[active];
 
   return (
     <div className="min-h-[80vh] bg-surface-soft">
@@ -51,8 +55,13 @@ export default function Dashboard() {
 
       {!clientLoading && (
         <div className="mx-auto max-w-md px-6 pt-3 text-center text-[11px] text-text-secondary">
-          Sesión: {user?.email} {client ? `→ vinculado a "${client.full_name}" (${client.email})` : '→ sin cliente vinculado'}
-          {clientError && <span className="text-red-500"> · error: {clientError.message}</span>}
+          Usuario: {user?.email}
+          {clientError && (
+            <span className="text-red-500">
+              {" "}
+              · error: {clientError.message}
+            </span>
+          )}
         </div>
       )}
 
@@ -64,8 +73,8 @@ export default function Dashboard() {
               onClick={() => setActive(t.id)}
               className={`flex-1 rounded-full px-1 py-2 text-[11px] font-semibold transition sm:text-xs ${
                 active === t.id
-                  ? 'bg-navy text-white'
-                  : 'text-text-secondary hover:text-navy'
+                  ? "bg-navy text-white"
+                  : "text-text-secondary hover:text-navy"
               }`}
             >
               <span className="block sm:inline">{t.icon}</span>
@@ -83,5 +92,5 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
-  )
+  );
 }

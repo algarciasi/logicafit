@@ -1,21 +1,50 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { listClients } from '../../lib/clients'
+import { listClients, updateClientStatus } from '../../lib/clients'
 
-function ClientCard({ c }) {
+const STATUS_OPTIONS = [
+  { value: 'activo', label: 'Activo' },
+  { value: 'pausado', label: 'Pausado' },
+  { value: 'de_baja', label: 'De baja' },
+]
+
+function ClientCard({ c, onStatusChange }) {
+  const [updating, setUpdating] = useState(false)
+
+  const handleChange = async (e) => {
+    const newStatus = e.target.value
+    setUpdating(true)
+    await onStatusChange(c.id, newStatus)
+    setUpdating(false)
+  }
+
   return (
-    <Link
-      to={`/admin/clientes/${c.id}`}
-      className="flex items-center justify-between rounded-2xl border border-slate-100 bg-white p-5 transition hover:border-orange-light hover:shadow-md"
-    >
-      <div>
-        <p className="font-display font-bold text-navy">{c.full_name || c.email}</p>
-        <p className="text-xs text-text-secondary">
+    <div className="flex items-center justify-between gap-3 rounded-2xl border border-slate-100 bg-white p-5 transition hover:border-orange-light hover:shadow-md">
+      <Link to={`/admin/clientes/${c.id}`} className="min-w-0 flex-1">
+        <p className="truncate font-display font-bold text-navy">{c.full_name || c.email}</p>
+        <p className="truncate text-xs text-text-secondary">
           {c.email} {c.objetivo_entrenamiento ? `· ${c.objetivo_entrenamiento}` : ''}
         </p>
-      </div>
-      <span className="text-orange">→</span>
-    </Link>
+      </Link>
+
+      <select
+        value={c.status || 'activo'}
+        onChange={handleChange}
+        onClick={(e) => e.stopPropagation()}
+        disabled={updating}
+        className={`shrink-0 rounded-full border-0 px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50 ${
+          (c.status || 'activo') === 'activo'
+            ? 'bg-orange/10 text-orange-dark'
+            : 'bg-slate-100 text-text-secondary'
+        }`}
+      >
+        {STATUS_OPTIONS.map((s) => (
+          <option key={s.value} value={s.value}>
+            {s.label}
+          </option>
+        ))}
+      </select>
+    </div>
   )
 }
 
@@ -31,6 +60,17 @@ export default function AdminClients() {
       setLoading(false)
     })
   }, [])
+
+  const handleStatusChange = async (clientId, newStatus) => {
+    const { error } = await updateClientStatus(clientId, newStatus)
+    if (error) {
+      alert('Error al actualizar el estado: ' + error.message)
+      return
+    }
+    setClients((prev) =>
+      prev.map((c) => (c.id === clientId ? { ...c, status: newStatus } : c))
+    )
+  }
 
   const activos = clients.filter((c) => (c.status || 'activo') === 'activo')
   const noActivos = clients.filter((c) => (c.status || 'activo') !== 'activo')
@@ -62,7 +102,7 @@ export default function AdminClients() {
           <ul className="mt-3 space-y-3">
             {activos.map((c) => (
               <li key={c.id}>
-                <ClientCard c={c} />
+                <ClientCard c={c} onStatusChange={handleStatusChange} />
               </li>
             ))}
           </ul>
@@ -77,7 +117,7 @@ export default function AdminClients() {
           <ul className="mt-3 space-y-3 opacity-70">
             {noActivos.map((c) => (
               <li key={c.id}>
-                <ClientCard c={c} />
+                <ClientCard c={c} onStatusChange={handleStatusChange} />
               </li>
             ))}
           </ul>
