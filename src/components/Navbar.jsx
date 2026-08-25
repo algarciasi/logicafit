@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { ADMIN_EMAIL } from '../lib/adminConfig'
+import { isAdminEmail } from '../lib/adminConfig'
 
 export default function Navbar() {
   const { user } = useAuth()
-  const isAdmin = user && ADMIN_EMAIL && user.email === ADMIN_EMAIL
+  const isAdmin = isAdminEmail(user?.email)
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/90 backdrop-blur">
