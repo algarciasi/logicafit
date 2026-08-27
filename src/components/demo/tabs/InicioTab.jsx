@@ -1,59 +1,68 @@
+import { useState } from 'react'
+import { generateRoutinePdf, generateDietPdf } from '../../../lib/clientPdfs'
+import { objetivoLabel } from '../../../lib/clients'
+import { demoClient, demoRoutineEntries, demoDietEntries } from '../demoData'
+
+function formatDate(dateStr) {
+  return new Date(dateStr).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
 export default function InicioTab() {
+  const [downloading, setDownloading] = useState(null)
+
+  const handleDownload = async (type) => {
+    setDownloading(type)
+    try {
+      if (type === 'rutina') await generateRoutinePdf(demoClient, demoRoutineEntries)
+      if (type === 'dieta') await generateDietPdf(demoClient, demoDietEntries)
+    } finally {
+      setDownloading(null)
+    }
+  }
+
   return (
     <div>
-      <p className="font-display text-lg font-bold text-navy">Hola, Marina 👋</p>
+      <p className="font-display text-lg font-bold text-navy">
+        Hola {demoClient.full_name.split(' ')[0]} 👋
+      </p>
 
-      <div className="mt-4 rounded-2xl bg-gradient-to-br from-navy to-navy-light p-5 text-white">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-orange-light">
-              Próximo entreno
-            </p>
-            <p className="mt-1 font-display text-base font-bold">
-              Sesión 3 — Pierna · Glúteo
-            </p>
-          </div>
-          <span className="text-2xl">→</span>
-        </div>
-        <div className="mt-4">
-          <div className="flex items-center justify-between text-[11px] text-slate-300">
-            <span>Progreso del microciclo</span>
-            <span>2/4</span>
-          </div>
-          <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-white/20">
-            <div className="h-full w-1/2 rounded-full bg-orange" />
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <div className="rounded-2xl border border-slate-100 p-4">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-text-secondary">
-            Peso registrado
-          </p>
-          <p className="mt-1 font-display text-xl font-extrabold text-navy">62.5 kg</p>
-          <p className="text-[11px] text-orange-dark">Último: 10 may</p>
-        </div>
-        <div className="rounded-2xl border border-slate-100 p-4">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-text-secondary">
-            Última revisión
-          </p>
-          <p className="mt-1 font-display text-sm font-bold text-navy">Informe M2</p>
-          <p className="text-[11px] text-text-secondary">3 may</p>
-        </div>
-      </div>
-
-      <div className="mt-3 rounded-2xl border border-slate-100 p-4">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-text-secondary">
-          Macros de hoy
+      <div className="mt-4 rounded-2xl border border-slate-100 bg-surface-soft p-4">
+        <p className="text-sm text-navy">
+          <span className="font-semibold">Objetivo:</span> {objetivoLabel(demoClient.objetivo_entrenamiento)}
         </p>
-        <p className="mt-1 font-display text-xl font-extrabold text-navy">2.200 kcal</p>
-        <div className="mt-3 flex gap-2 text-center text-[11px] font-semibold">
-          <div className="flex-1 rounded-xl bg-orange/10 py-2 text-orange-dark">130g<br/>Prot</div>
-          <div className="flex-1 rounded-xl bg-amber-100 py-2 text-amber-700">240g<br/>Carbs</div>
-          <div className="flex-1 rounded-xl bg-indigo-100 py-2 text-indigo-700">65g<br/>Grasas</div>
-        </div>
+        <p className="mt-1 text-sm text-navy">
+          <span className="font-semibold">Plan:</span> {demoClient.tipo_plan}
+        </p>
+        <p className="mt-1 text-sm text-navy">
+          <span className="font-semibold">Vigente hasta:</span> {formatDate(demoClient.plan_vigente_hasta)}
+        </p>
+        <p className="mt-1 text-sm text-navy">
+          <span className="font-semibold">Próxima revisión:</span> {formatDate(demoClient.proxima_revision)}
+        </p>
       </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => handleDownload('rutina')}
+          disabled={downloading === 'rutina'}
+          className="rounded-full bg-navy px-4 py-2 text-xs font-semibold text-white transition hover:bg-navy-light disabled:opacity-60"
+        >
+          {downloading === 'rutina' ? 'Generando…' : '📄 Descargar mi rutina'}
+        </button>
+        <button
+          type="button"
+          onClick={() => handleDownload('dieta')}
+          disabled={downloading === 'dieta'}
+          className="rounded-full bg-orange px-4 py-2 text-xs font-semibold text-white transition hover:bg-orange-dark disabled:opacity-60"
+        >
+          {downloading === 'dieta' ? 'Generando…' : '📄 Descargar mi dieta'}
+        </button>
+      </div>
+
+      <p className="mt-3 text-[11px] text-text-secondary">
+        Estos PDFs son de ejemplo (datos de Marina) — pero se generan de verdad, igual que en tu cuenta real.
+      </p>
     </div>
   )
 }

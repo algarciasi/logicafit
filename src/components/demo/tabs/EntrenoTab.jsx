@@ -1,74 +1,61 @@
-const EXERCISES = [
-  {
-    icon: '🏋️',
-    name: 'Sentadilla con barra',
-    scheme: 'Top set 1×5 @85-88% + back-off 2×8 @70%',
-    tip: 'Profundidad cómoda, rodillas en línea con el pie.',
-  },
-  {
-    icon: '🧱',
-    name: 'Press banca mancuernas',
-    scheme: '3×10 · última serie dropset -30%',
-    tip: 'Escápulas retraídas, recorrido completo.',
-  },
-  {
-    icon: '💥',
-    name: 'Peso muerto rumano',
-    scheme: 'Top set 1×6 + 2×8 tempo 3-1-1',
-    tip: 'Barra cerca del cuerpo, cadera atrás.',
-  },
-  {
-    icon: '🔗',
-    name: 'Remo polea + Face pulls',
-    scheme: 'Superserie 3×12 / 3×15',
-    tip: 'Escápulas atrás y abajo, sin encoger hombros.',
-  },
-  {
-    icon: '🔥',
-    name: 'Press militar de pie',
-    scheme: '1×5 @RPE8 + back-off 2×10 @60-65%',
-    tip: 'Core firme, sin arquear lumbar.',
-  },
-  {
-    icon: '💪',
-    name: 'Curl Z + Fondos banco',
-    scheme: 'Superserie 3×12 / 3×15',
-    tip: 'Cierre metabólico, bombeo final.',
-  },
-  {
-    icon: '🧠',
-    name: 'Plancha + arrastre lateral',
-    scheme: '3×10 por lado',
-    tip: 'Cadera estable, respiración controlada.',
-  },
-]
+import { useState } from 'react'
+import { DIAS_SEMANA } from '../../../lib/routines'
+import { demoRoutineEntries } from '../demoData'
+
+function DemoExerciseItem({ entry }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="rounded-xl bg-surface-soft p-3">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center justify-between text-left"
+      >
+        <div>
+          <p className="text-sm font-semibold text-navy">{entry.ejercicios.nombre}</p>
+          <p className="text-[11px] text-text-secondary">
+            {entry.series_objetivo}×{entry.reps_objetivo} objetivo
+            {entry.notas_entrenador ? ` · "${entry.notas_entrenador}"` : ''}
+          </p>
+        </div>
+        <span className="text-orange">{open ? '−' : '+'}</span>
+      </button>
+
+      {open && (
+        <div className="mt-3 border-t border-slate-200 pt-3">
+          <p className="text-[10px] font-semibold uppercase tracking-wide text-text-secondary">
+            Así verías tu historial real
+          </p>
+          <p className="mt-1 text-xs text-navy-light">
+            En tu cuenta, aquí aparecen tus últimas series (peso × reps, con fecha) y un
+            formulario para apuntar la serie de hoy.
+          </p>
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function EntrenoTab() {
-  return (
-    <div>
-      <div className="flex items-center justify-between">
-        <p className="font-display text-lg font-bold text-navy">Sesión 3 — Pierna · Glúteo</p>
-        <span className="rounded-full bg-orange/10 px-2.5 py-1 text-[11px] font-semibold text-orange-dark">
-          7 ejercicios
-        </span>
-      </div>
+  const entriesByDay = DIAS_SEMANA.map((dia) => ({
+    dia,
+    items: demoRoutineEntries.filter((e) => e.dia_semana === dia.value),
+  })).filter((d) => d.items.length > 0)
 
-      <ul className="mt-4 space-y-2">
-        {EXERCISES.map((ex, i) => (
-          <li key={ex.name} className="flex gap-3 rounded-2xl border border-slate-100 p-3">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-soft text-sm">
-              {ex.icon}
-            </span>
-            <div className="min-w-0">
-              <p className="font-display text-sm font-bold text-navy">
-                {i + 1}. {ex.name}
-              </p>
-              <p className="text-[11px] text-orange-dark">{ex.scheme}</p>
-              <p className="mt-0.5 text-[11px] text-text-secondary">{ex.tip}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
+  return (
+    <div className="space-y-4">
+      <p className="text-xs text-text-secondary">Toca un ejercicio para ver cómo funciona.</p>
+      {entriesByDay.map(({ dia, items }) => (
+        <div key={dia.value}>
+          <p className="font-display text-sm font-bold text-navy">{dia.label}</p>
+          <div className="mt-2 space-y-2">
+            {items.map((it) => (
+              <DemoExerciseItem key={it.id} entry={it} />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
