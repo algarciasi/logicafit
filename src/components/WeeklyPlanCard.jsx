@@ -1,28 +1,56 @@
-const PLAN_DAYS = [
-  { day: 'Lun', label: 'Fuerza · 40 min', done: true },
-  { day: 'Mar', label: 'Vida real', muted: true },
-  { day: 'Mié', label: 'Running · 5K', done: true },
-  { day: 'Jue', label: 'Vida real', muted: true },
-  { day: 'Vie', label: 'Fuerza · 35 min', done: true },
-  { day: 'Sáb', label: 'Libre / cena', muted: true },
-  { day: 'Dom', label: 'Movilidad · 15 min' },
-]
+const PLANS_BY_TYPE = {
+  musculacion: [
+    { day: 'Lun', label: 'Pierna · 45 min', done: true },
+    { day: 'Mar', label: 'Vida real', muted: true },
+    { day: 'Mié', label: 'Empuje · 40 min', done: true },
+    { day: 'Jue', label: 'Vida real', muted: true },
+    { day: 'Vie', label: 'Tirón · 40 min', done: true },
+    { day: 'Sáb', label: 'Libre / cena', muted: true },
+    { day: 'Dom', label: 'Movilidad · 15 min' },
+  ],
+  running: [
+    { day: 'Lun', label: 'Rodaje suave · 30 min', done: true },
+    { day: 'Mar', label: 'Vida real', muted: true },
+    { day: 'Mié', label: 'Series · 40 min', done: true },
+    { day: 'Jue', label: 'Vida real', muted: true },
+    { day: 'Vie', label: 'Rodaje + técnica · 35 min', done: true },
+    { day: 'Sáb', label: 'Tirada larga · 50 min', done: true },
+    { day: 'Dom', label: 'Descanso activo' },
+  ],
+  hibrido: [
+    { day: 'Lun', label: 'Fuerza · 40 min', done: true },
+    { day: 'Mar', label: 'Vida real', muted: true },
+    { day: 'Mié', label: 'Running · 5K', done: true },
+    { day: 'Jue', label: 'Vida real', muted: true },
+    { day: 'Vie', label: 'Fuerza · 35 min', done: true },
+    { day: 'Sáb', label: 'Libre / cena', muted: true },
+    { day: 'Dom', label: 'Movilidad · 15 min' },
+  ],
+}
 
-export default function WeeklyPlanCard() {
+const TYPE_LABELS = {
+  musculacion: 'Musculación',
+  running: 'Running',
+  hibrido: 'Híbrido',
+}
+
+export default function WeeklyPlanCard({ type = 'hibrido' }) {
+  const planDays = PLANS_BY_TYPE[type] || PLANS_BY_TYPE.hibrido
+
   return (
     <div className="rounded-2xl border border-slate-100 bg-white p-6 shadow-xl shadow-slate-200/60">
       <div className="flex items-center justify-between">
         <p className="font-display text-sm font-bold text-navy">Tu semana, tal cual es</p>
         <span className="rounded-full bg-surface-soft px-2.5 py-1 text-[11px] font-semibold text-text-secondary">
-          Semana 6
+          Ejemplo · {TYPE_LABELS[type]}
         </span>
       </div>
 
       <ul className="mt-5 space-y-2">
-        {PLAN_DAYS.map(({ day, label, done, muted }) => (
+        {planDays.map(({ day, label, done, muted }) => (
           <li
             key={day}
-            className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm ${
+            className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm transition ${
               muted ? 'bg-transparent' : 'bg-surface-soft'
             }`}
           >

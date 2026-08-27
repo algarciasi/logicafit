@@ -1,7 +1,11 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import WeeklyPlanCard from './WeeklyPlanCard'
+import TrainingTypeToggle from './TrainingTypeToggle'
 
 export default function Hero() {
+  const [trainingType, setTrainingType] = useState('hibrido')
+
   return (
     <section className="relative overflow-hidden bg-white">
       <div className="mx-auto grid max-w-6xl gap-16 px-6 py-20 md:grid-cols-2 md:items-center md:py-28">
@@ -51,7 +55,12 @@ export default function Hero() {
 
         <div className="relative">
           <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-orange-light/40 blur-2xl" />
-          <WeeklyPlanCard />
+
+          <div className="mb-3 flex justify-center md:justify-start">
+            <TrainingTypeToggle type={trainingType} onChange={setTrainingType} />
+          </div>
+
+          <WeeklyPlanCard type={trainingType} />
         </div>
       </div>
     </section>
