@@ -52,14 +52,27 @@ export default function About() {
               Entrenador personal de alto rendimiento
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-text-secondary">
-              Soy Alberto García, titulado oficial en Entrenamiento personal de
-              alto rendimiento, Máster en nutrición deportiva y suplementación,
-              especializado en musculación y recomposición corporal. También
-              titulado en entrenamiento running y trail running. A veces
-              corro carreras para mantenerme en forma.
-              Sé exactamente lo que es entrenar con cabeza y
-              compatibilizarlo con la vida social que todos tenemos. 
-              Esto es lo que aplico en cada plan personalizado que diseño.
+              Tras muchos, muchos años entrenando por mi cuenta, trabajando
+              con distintos entrenadores de calidad y realizando rutinas y
+              dietas "sin cualificación", decidí formarme de verdad en un
+              centro de reputación como Apta Vital Sport.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+              Soy Alberto García, titulado oficial en Entrenamiento Personal
+              de Alto Rendimiento, Máster en Nutrición Deportiva y
+              Suplementación, y especializado en musculación, recomposición
+              corporal y pérdida de grasa.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+              Además, complemento mi experiencia con otro de mis grandes
+              hobbies: el running. También estoy titulado en entrenamiento de
+              running y trail running.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-text-secondary">
+              Sé exactamente lo que significa entrenar con cabeza, ser
+              constante y compatibilizar el deporte con la vida social que
+              todos tenemos y queremos mantener. Esto es lo que aplico en
+              cada plan personalizado que diseño.
             </p>
 
             <div className="mt-5 flex flex-wrap justify-center gap-2 sm:justify-start">
