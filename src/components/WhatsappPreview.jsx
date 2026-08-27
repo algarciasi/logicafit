@@ -23,7 +23,7 @@ export default function WhatsappPreview() {
         <div>
           <p className="font-display text-sm font-bold text-white">Alberto · Lógica Fit</p>
           <p className="flex items-center gap-1 text-[11px] text-slate-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-whatsapp" /> Responde en el día
+            <span className="h-1.5 w-1.5 rounded-full bg-whatsapp" /> En línea
           </p>
         </div>
       </div>
