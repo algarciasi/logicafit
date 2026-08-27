@@ -19,7 +19,7 @@ export const PLANS = [
     name: 'Método Lógica',
     tagline: 'Mi sistema completo, hecho para ti',
     audience: 'Para quien quiere resultados serios con seguimiento real cada mes.',
-    basePrice: 60,
+    basePrice: 50,
     featured: true,
     badge: 'Más popular',
     ctaLabel: 'Quiero mi plan a medida',
@@ -37,7 +37,7 @@ export const PLANS = [
     name: 'Lógica 360',
     tagline: 'A mi lado, cada semana',
     audience: 'Para quien quiere la máxima cercanía y ajustes constantes.',
-    basePrice: 60,
+    basePrice: 90,
     badge: 'Acceso reducido',
     ctaLabel: 'Solicitar plaza VIP',
     features: [

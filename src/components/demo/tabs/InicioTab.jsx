@@ -61,7 +61,7 @@ export default function InicioTab() {
       </div>
 
       <p className="mt-3 text-[11px] text-text-secondary">
-        Estos PDFs son de ejemplo (datos de Marina) — pero se generan de verdad, igual que en tu cuenta real.
+        Estos PDFs son de ejemplo (datos de Alberto) — pero se generan de verdad, igual que en tu cuenta real.
       </p>
     </div>
   )

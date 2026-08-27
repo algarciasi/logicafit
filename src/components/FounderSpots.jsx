@@ -21,9 +21,11 @@ export default function FounderSpots({ taken = 0 }) {
         />
       </div>
       <p className="mt-3 text-xs text-text-secondary">
-        Soy nuevo dando el servicio online y quiero dedicar tiempo real a los
-        primeros clientes. Por eso limito las plazas de lanzamiento a este
-        precio — cuando se cubran, el precio sube para los siguientes.
+        Voy a ser sincero: acabo de arrancar la parte online y no quiero
+        meter a 50 personas a la vez y hacerlo mal. Prefiero ir poco a poco
+        con los primeros y dedicarles el tiempo que merecen. Por eso el
+        precio de ahora es de lanzamiento — cuando se cubran estas plazas,
+        subo el precio para los que lleguen después.
       </p>
     </div>
   )
