@@ -2,7 +2,7 @@ const ITEMS = [
   {
     icon: '💬',
     title: 'Soporte real por WhatsApp',
-    body: 'Resuelve tus dudas al momento. Te contesto yo, no un bot ni un asistente.',
+    body: 'Resuelve tus dudas al momento. Te contesto yo, detrás de Lógica Fit no hay nadie más.',
   },
   {
     icon: '🏋️',
@@ -27,14 +27,14 @@ export default function HowItWorks() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-semibold uppercase tracking-wide text-orange-dark">
-            Así trabajamos
+            Así trabajo
           </p>
           <h2 className="mt-2 font-display text-3xl font-extrabold text-navy sm:text-4xl">
             Un plan que se adapta a ti, no al revés
           </h2>
           <p className="mt-4 text-text-secondary">
-            Nada de rutinas descargadas de internet. Te acompaño de verdad,
-            semana a semana.
+            Te acompaño de verdad, semana a semana.
+            No hay nadie mas detrás de Lógica Fit
           </p>
         </div>
 

@@ -49,17 +49,17 @@ export default function About() {
           </div>
           <div>
             <h2 className="font-display text-2xl font-extrabold text-navy sm:text-3xl">
-              Entrenador titulado. Corro por salud, no por medallas.
+              Entrenador personal de alto rendimiento
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-text-secondary">
               Soy Alberto García, titulado oficial en Entrenamiento personal de
-              alto rendimiento, con formación en nutrición deportiva,
+              alto rendimiento, Máster en nutrición deportiva y suplementación,
               especializado en musculación y recomposición corporal. También
               titulado en entrenamiento running y trail running. A veces
-              corro carreras — no para ganar medallas, sino para mantenerme
-              sano — y así sé exactamente lo que es entrenar con cabeza y
-              compatibilizarlo con una vida normal. Eso es lo que aplico en
-              cada plan que diseño.
+              corro carreras para mantenerme en forma.
+              Sé exactamente lo que es entrenar con cabeza y
+              compatibilizarlo con la vida social que todos tenemos. 
+              Esto es lo que aplico en cada plan personalizado que diseño.
             </p>
 
             <div className="mt-5 flex flex-wrap justify-center gap-2 sm:justify-start">

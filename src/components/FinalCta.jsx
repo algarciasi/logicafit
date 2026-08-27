@@ -16,7 +16,7 @@ export default function FinalCta() {
             plan te encaja mejor.
           </p>
           <a
-            href="https://wa.me/"
+            href="https://wa.me/34678951544"
             className="mt-2 inline-flex items-center gap-2 rounded-full bg-whatsapp px-6 py-3 text-sm font-semibold text-white transition hover:brightness-95"
           >
             Hablar por WhatsApp

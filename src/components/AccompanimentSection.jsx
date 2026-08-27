@@ -13,12 +13,14 @@ export default function AccompanimentSection() {
             Acompañamiento real
           </p>
           <h2 className="mt-2 font-display text-3xl font-extrabold text-navy sm:text-4xl">
-            Así es el acompañamiento de verdad
+            Así es el día a día con mis clientes
           </h2>
           <p className="mt-4 max-w-md text-text-secondary">
             No te mando un plan cerrado y desaparezco. Cuando la vida se
-            complica, el plan se adapta contigo — no al revés. Así es hablar
-            conmigo un día cualquiera.
+            complica, el plan se adapta contigo y no al revés. Si necesitas 
+            cambiar algún alimento por viajes, trabajo, ocio, etc... 
+            lo adaptamos sin problema.
+            Así es hablar conmigo un día cualquiera.
           </p>
         </div>
       </div>

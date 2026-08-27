@@ -1,8 +1,8 @@
 const POINTS = [
   {
     icon: '🎓',
-    title: 'Formación real, no de curso exprés',
-    body: 'Titulado oficial en entrenamiento de alto rendimiento y nutrición deportiva. No superviso desde una plantilla genérica.',
+    title: 'Formación real por APTA VITAL SPORT',
+    body: 'Titulado oficial en entrenamiento de alto rendimiento, Máster en nutrición deportiva. No creo planes genéricos.',
   },
   {
     icon: '🛡️',
@@ -24,7 +24,7 @@ export default function TrustSection() {
           Antes de que decidas
         </p>
         <h2 className="mt-2 font-display text-3xl font-extrabold text-navy sm:text-4xl">
-          Aún no tengo casos que enseñarte
+          Aún no tengo casos online que enseñarte
         </h2>
         <p className="mt-4 text-text-secondary">
           Prefiero decírtelo claro a inventarte historias. Esto es lo que sí
