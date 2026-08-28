@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import { listClientRoutine, DIAS_SEMANA } from '../../../lib/routines'
+import { listRoutineHistory } from '../../../lib/history'
 import ExerciseLogItem from '../ExerciseLogItem'
+import HistoryPanel from '../HistoryPanel'
 import EmptyState from '../EmptyState'
 
 export default function EntrenoTab({ client }) {
   const [entries, setEntries] = useState([])
+  const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -13,11 +16,14 @@ export default function EntrenoTab({ client }) {
       setLoading(false)
       return
     }
-    listClientRoutine(client.id).then(({ entries, error }) => {
-      setEntries(entries)
-      setError(error)
-      setLoading(false)
-    })
+    Promise.all([listClientRoutine(client.id), listRoutineHistory(client.id)]).then(
+      ([{ entries, error }, { entries: hist }]) => {
+        setEntries(entries)
+        setError(error)
+        setHistory(hist)
+        setLoading(false)
+      }
+    )
   }, [client?.id])
 
   if (!client) {
@@ -38,11 +44,14 @@ export default function EntrenoTab({ client }) {
 
   if (entries.length === 0) {
     return (
-      <EmptyState
-        icon="🏋️"
-        title="Todavía no hay una rutina cargada"
-        body="Aquí aparecerán tus ejercicios, series y repeticiones en cuanto te asigne tu plan."
-      />
+      <div className="space-y-4">
+        <EmptyState
+          icon="🏋️"
+          title="Todavía no hay una rutina cargada"
+          body="Aquí aparecerán tus ejercicios, series y repeticiones en cuanto te asigne tu plan."
+        />
+        <HistoryPanel title="Rutinas anteriores" entries={history} nameKey="nombre_rutina" />
+      </div>
     )
   }
 
@@ -68,6 +77,8 @@ export default function EntrenoTab({ client }) {
           </div>
         </div>
       ))}
+
+      <HistoryPanel title="Rutinas anteriores" entries={history} nameKey="nombre_rutina" />
     </div>
   )
 }

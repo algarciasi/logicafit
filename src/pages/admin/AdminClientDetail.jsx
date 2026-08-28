@@ -4,10 +4,13 @@ import { getClientById } from '../../lib/clients'
 import { listClientDiet, addDietEntry, deleteDietEntry } from '../../lib/diets'
 import { listWeightHistory } from '../../lib/notes'
 import { listClientRoutine } from '../../lib/routines'
+import { listRoutineHistory, listDietHistory } from '../../lib/history'
 import WeightChart from '../../components/dashboard/WeightChart'
 import FoodSearch from '../../components/calculator/FoodSearch'
 import AdminRoutineEditor from '../../components/admin/AdminRoutineEditor'
 import ClientPlanEditor from '../../components/admin/ClientPlanEditor'
+import RoutineHistoryPanel from '../../components/admin/RoutineHistoryPanel'
+import DietHistoryPanel from '../../components/admin/DietHistoryPanel'
 import { MEALS } from '../../lib/macros'
 
 const FIELD = 'w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-navy focus:border-orange focus:outline-none focus:ring-1 focus:ring-orange'
@@ -18,6 +21,8 @@ export default function AdminClientDetail() {
   const [dietEntries, setDietEntries] = useState([])
   const [weightHistory, setWeightHistory] = useState([])
   const [routineEntries, setRoutineEntries] = useState([])
+  const [routineHistory, setRoutineHistory] = useState([])
+  const [dietHistory, setDietHistory] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -33,17 +38,23 @@ export default function AdminClientDetail() {
       { entries },
       { entries: weights },
       { entries: routine },
+      { entries: routineHist },
+      { entries: dietHist },
     ] = await Promise.all([
       getClientById(id),
       listClientDiet(id),
       listWeightHistory(id),
       listClientRoutine(id),
+      listRoutineHistory(id),
+      listDietHistory(id),
     ])
     setClient(client)
     setError(clientError)
     setDietEntries(entries)
     setWeightHistory(weights)
     setRoutineEntries(routine)
+    setRoutineHistory(routineHist)
+    setDietHistory(dietHist)
     setLoading(false)
   }
 
@@ -199,6 +210,13 @@ export default function AdminClientDetail() {
             </div>
           ))}
         </div>
+
+        <DietHistoryPanel
+          clientId={id}
+          dietEntries={dietEntries}
+          history={dietHistory}
+          onChange={loadAll}
+        />
       </div>
 
       <div className="mt-10">
@@ -206,6 +224,13 @@ export default function AdminClientDetail() {
         <div className="mt-4">
           <AdminRoutineEditor clientId={id} entries={routineEntries} onChange={loadAll} />
         </div>
+
+        <RoutineHistoryPanel
+          clientId={id}
+          routineEntries={routineEntries}
+          history={routineHistory}
+          onChange={loadAll}
+        />
       </div>
     </div>
   )

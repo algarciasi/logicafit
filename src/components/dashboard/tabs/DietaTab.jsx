@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import { listClientDiet } from '../../../lib/diets'
+import { listDietHistory } from '../../../lib/history'
 import { MEALS } from '../../../lib/macros'
+import HistoryPanel from '../HistoryPanel'
 import EmptyState from '../EmptyState'
 
 export default function DietaTab({ client }) {
   const [entries, setEntries] = useState([])
+  const [history, setHistory] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -13,11 +16,14 @@ export default function DietaTab({ client }) {
       setLoading(false)
       return
     }
-    listClientDiet(client.id).then(({ entries, error }) => {
-      setEntries(entries)
-      setError(error)
-      setLoading(false)
-    })
+    Promise.all([listClientDiet(client.id), listDietHistory(client.id)]).then(
+      ([{ entries, error }, { entries: hist }]) => {
+        setEntries(entries)
+        setError(error)
+        setHistory(hist)
+        setLoading(false)
+      }
+    )
   }, [client?.id])
 
   if (!client) {
@@ -44,11 +50,14 @@ export default function DietaTab({ client }) {
 
   if (entries.length === 0) {
     return (
-      <EmptyState
-        icon="🍽️"
-        title="Todavía no tienes un plan de nutrición"
-        body="Tu menú, macros y lista de la compra aparecerán aquí en cuanto lo prepare."
-      />
+      <div className="space-y-4">
+        <EmptyState
+          icon="🍽️"
+          title="Todavía no tienes un plan de nutrición"
+          body="Tu menú, macros y lista de la compra aparecerán aquí en cuanto lo prepare."
+        />
+        <HistoryPanel title="Dietas anteriores" entries={history} nameKey="nombre_dieta" />
+      </div>
     )
   }
 
@@ -89,6 +98,10 @@ export default function DietaTab({ client }) {
             </div>
           )
         })}
+      </div>
+
+      <div className="mt-4">
+        <HistoryPanel title="Dietas anteriores" entries={history} nameKey="nombre_dieta" />
       </div>
     </div>
   )
