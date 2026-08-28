@@ -31,6 +31,16 @@ export async function addDietEntry({ clientId, foodId, momentoDia, diaSemana, op
 }
 
 export async function deleteDietEntry(id) {
-  const { error } = await supabase.from('diets').delete().eq('id', id)
-  return { error }
+  const { data, error } = await supabase.from('diets').delete().eq('id', id).select()
+
+  if (error) return { error }
+  if (!data || data.length === 0) {
+    return {
+      error: {
+        message:
+          'No se ha borrado ninguna fila (0 filas afectadas). Revisa los permisos/RLS de la tabla diets en Supabase.',
+      },
+    }
+  }
+  return { error: null }
 }

@@ -43,6 +43,16 @@ export async function addRoutineEntry({ clientId, diaSemana, ejercicioId, orden,
 }
 
 export async function deleteRoutineEntry(id) {
-  const { error } = await supabase.from('rutinas').delete().eq('id', id)
-  return { error }
+  const { data, error } = await supabase.from('rutinas').delete().eq('id', id).select()
+
+  if (error) return { error }
+  if (!data || data.length === 0) {
+    return {
+      error: {
+        message:
+          'No se ha borrado ninguna fila (0 filas afectadas). Revisa los permisos/RLS de la tabla rutinas en Supabase.',
+      },
+    }
+  }
+  return { error: null }
 }

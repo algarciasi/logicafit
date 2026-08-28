@@ -19,8 +19,22 @@ export async function addRoutineHistory(clientId, nombreRutina, contenido) {
 }
 
 export async function deleteRoutineHistory(id) {
-  const { error } = await supabase.from('historial_rutinas').delete().eq('id', id)
-  return { error }
+  const { data, error } = await supabase
+    .from('historial_rutinas')
+    .delete()
+    .eq('id', id)
+    .select()
+
+  if (error) return { error }
+  if (!data || data.length === 0) {
+    return {
+      error: {
+        message:
+          'No se ha borrado ninguna fila (0 filas afectadas). Revisa los permisos/RLS de la tabla historial_rutinas en Supabase.',
+      },
+    }
+  }
+  return { error: null }
 }
 
 export async function listDietHistory(clientId) {
@@ -42,6 +56,20 @@ export async function addDietHistory(clientId, nombreDieta, contenido) {
 }
 
 export async function deleteDietHistory(id) {
-  const { error } = await supabase.from('historial_calculadora').delete().eq('id', id)
-  return { error }
+  const { data, error } = await supabase
+    .from('historial_calculadora')
+    .delete()
+    .eq('id', id)
+    .select()
+
+  if (error) return { error }
+  if (!data || data.length === 0) {
+    return {
+      error: {
+        message:
+          'No se ha borrado ninguna fila (0 filas afectadas). Revisa los permisos/RLS de la tabla historial_calculadora en Supabase.',
+      },
+    }
+  }
+  return { error: null }
 }
