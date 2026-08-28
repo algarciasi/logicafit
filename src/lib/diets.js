@@ -7,23 +7,25 @@ import { supabase } from './supabaseClient'
 export async function listClientDiet(clientId) {
   const { data, error } = await supabase
     .from('diets')
-    .select('id, momento_dia, cantidad_g, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas)')
+    .select('id, momento_dia, dia_semana, opcion, cantidad_g, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas)')
     .eq('client_id', clientId)
     .order('momento_dia', { ascending: true })
   return { entries: data || [], error }
 }
 
-export async function addDietEntry({ clientId, foodId, momentoDia, cantidadG, notas }) {
+export async function addDietEntry({ clientId, foodId, momentoDia, diaSemana, opcion, cantidadG, notas }) {
   const { data, error } = await supabase
     .from('diets')
     .insert({
       client_id: clientId,
       food_id: foodId,
       momento_dia: momentoDia,
+      dia_semana: diaSemana ?? null,
+      opcion: opcion ?? 1,
       cantidad_g: cantidadG,
       notas: notas || null,
     })
-    .select('id, momento_dia, cantidad_g, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas)')
+    .select('id, momento_dia, dia_semana, opcion, cantidad_g, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas)')
     .single()
   return { entry: data, error }
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { listClientDiet } from '../../../lib/diets'
 import { listDietHistory } from '../../../lib/history'
 import { MEALS } from '../../../lib/macros'
+import { diaLabel } from '../../../lib/routines'
 import HistoryPanel from '../HistoryPanel'
 import EmptyState from '../EmptyState'
 
@@ -89,6 +90,10 @@ export default function DietaTab({ client }) {
                     <li key={it.id} className="flex justify-between text-xs text-navy-light">
                       <span>
                         {it.foods?.nombre} ({it.cantidad_g}g)
+                        <span className="ml-1.5 text-[10px] text-text-secondary">
+                          ({it.dia_semana ? diaLabel(it.dia_semana) : 'todos los días'}
+                          {it.opcion && it.opcion > 1 ? ` · Opción ${it.opcion}` : ''})
+                        </span>
                       </span>
                       <span className="text-orange-dark">{kcal} kcal</span>
                     </li>
