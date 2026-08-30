@@ -17,7 +17,7 @@ const ITEMS = [
   {
     icon: '📈',
     title: 'Seguimiento constante',
-    body: 'Reviso tu progreso y ajusto el plan cada semana, no cada 3 meses.',
+    body: 'Reviso tu progreso y ajusto el plan cada semana. Si usas Strava, tus entrenamientos se sincronizan solos.',
   },
 ]
 

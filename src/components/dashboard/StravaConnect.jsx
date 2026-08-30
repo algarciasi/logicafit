@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getStravaAuthorizeUrl, syncStravaActivities } from '../../lib/strava'
+import { getStravaAuthorizeUrl, syncStravaActivities, disconnectStrava } from '../../lib/strava'
 import { listStravaActivities } from '../../lib/stravaActivities'
 
 function formatDuration(seconds) {
@@ -16,6 +16,7 @@ export default function StravaConnect({ client }) {
   const [activities, setActivities] = useState([])
   const [loading, setLoading] = useState(true)
   const [syncing, setSyncing] = useState(false)
+  const [disconnecting, setDisconnecting] = useState(false)
   const [error, setError] = useState(null)
 
   const load = async () => {
@@ -46,6 +47,21 @@ export default function StravaConnect({ client }) {
     load()
   }
 
+  const handleDisconnect = async () => {
+    if (!window.confirm('¿Seguro que quieres desconectar Strava? Dejarán de sincronizarse tus entrenamientos.')) {
+      return
+    }
+    setDisconnecting(true)
+    const { data, error } = await disconnectStrava(client.id)
+    setDisconnecting(false)
+    if (error || data?.error) {
+      alert('Error al desconectar: ' + (error?.message || JSON.stringify(data?.error)))
+      return
+    }
+    // Recargamos para que el panel refleje el nuevo estado (ya no conectado)
+    window.location.reload()
+  }
+
   if (!client?.strava_connected) {
     return (
       <div className="rounded-2xl border border-dashed border-orange-light bg-orange/5 p-4 text-center">
@@ -66,18 +82,28 @@ export default function StravaConnect({ client }) {
 
   return (
     <div className="rounded-2xl border border-slate-100 p-4">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <p className="text-[11px] font-semibold uppercase tracking-wide text-text-secondary">
           Actividad de Strava
         </p>
-        <button
-          type="button"
-          onClick={handleSync}
-          disabled={syncing}
-          className="rounded-full bg-[#FC4C02] px-3 py-1.5 text-[11px] font-semibold text-white transition hover:brightness-95 disabled:opacity-60"
-        >
-          {syncing ? 'Sincronizando…' : '🔄 Sincronizar ahora'}
-        </button>
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={handleSync}
+            disabled={syncing}
+            className="rounded-full bg-[#FC4C02] px-3 py-1.5 text-[11px] font-semibold text-white transition hover:brightness-95 disabled:opacity-60"
+          >
+            {syncing ? 'Sincronizando…' : '🔄 Sincronizar'}
+          </button>
+          <button
+            type="button"
+            onClick={handleDisconnect}
+            disabled={disconnecting}
+            className="text-[11px] font-medium text-text-secondary underline-offset-2 transition hover:text-red-500 hover:underline disabled:opacity-60"
+          >
+            {disconnecting ? '…' : 'Desconectar'}
+          </button>
+        </div>
       </div>
 
       {loading && <p className="mt-3 text-xs text-text-secondary">Cargando…</p>}
@@ -110,6 +136,11 @@ export default function StravaConnect({ client }) {
                 </div>
                 <p className="mt-0.5 text-[11px] text-text-secondary">
                   {a.tipo} · {formatDistance(a.distancia_m)} · {formatDuration(a.duracion_s)}
+                  {a.calorias ? (
+                    <span className="text-orange-dark"> · {Math.round(a.calorias)} kcal</span>
+                  ) : (
+                    ''
+                  )}
                   <span className="ml-1 text-orange-dark">↗</span>
                 </p>
               </a>

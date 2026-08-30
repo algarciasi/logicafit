@@ -98,3 +98,9 @@ export const demoProgressEntries = [
   { created_at: '2026-07-15', peso: 62.7, cintura: 73.5, pecho: 97.5 },
   { created_at: '2026-08-01', peso: 62.5, cintura: 73, pecho: 98 },
 ]
+
+export const demoStravaActivities = [
+  { id: 1, nombre: 'Rodaje matutino', tipo: 'Run', distancia_m: 6200, duracion_s: 1860, fecha: '2026-08-04' },
+  { id: 2, nombre: 'Fuerza · Tren superior', tipo: 'WeightTraining', distancia_m: 0, duracion_s: 3120, fecha: '2026-08-02' },
+  { id: 3, nombre: 'Serie de cuestas', tipo: 'Run', distancia_m: 4800, duracion_s: 1740, fecha: '2026-07-30' },
+]
