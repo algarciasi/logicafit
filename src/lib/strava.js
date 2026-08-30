@@ -14,16 +14,42 @@ export function getStravaAuthorizeUrl() {
   return `https://www.strava.com/oauth/authorize?${params.toString()}`
 }
 
+// Supabase solo da un mensaje genérico ("non-2xx status code") en `error.message`.
+// El motivo real que devuelve nuestra función va en el cuerpo de la respuesta,
+// accesible vía `error.context` (un objeto Response).
+async function extractErrorMessage(error) {
+  if (!error) return null
+  try {
+    if (error.context && typeof error.context.json === 'function') {
+      const body = await error.context.json()
+      if (body?.error) {
+        return typeof body.error === 'string' ? body.error : JSON.stringify(body.error)
+      }
+    }
+  } catch {
+    // si no se puede parsear, seguimos con el mensaje genérico
+  }
+  return error.message
+}
+
 export async function exchangeStravaCode(code, clientId) {
   const { data, error } = await supabase.functions.invoke('strava-exchange', {
     body: { code, client_id: clientId },
   })
-  return { data, error }
+  if (error) {
+    const message = await extractErrorMessage(error)
+    return { data, error: { message } }
+  }
+  return { data, error: null }
 }
 
 export async function syncStravaActivities(clientId) {
   const { data, error } = await supabase.functions.invoke('strava-sync', {
     body: { client_id: clientId },
   })
-  return { data, error }
+  if (error) {
+    const message = await extractErrorMessage(error)
+    return { data, error: { message } }
+  }
+  return { data, error: null }
 }

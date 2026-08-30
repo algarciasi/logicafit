@@ -95,16 +95,24 @@ export default function StravaConnect({ client }) {
       {!loading && activities.length > 0 && (
         <ul className="mt-3 space-y-2">
           {activities.map((a) => (
-            <li key={a.id} className="rounded-xl bg-surface-soft p-3">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-semibold text-navy">{a.nombre}</p>
-                <span className="text-[10px] text-text-secondary">
-                  {new Date(a.fecha).toLocaleDateString('es-ES')}
-                </span>
-              </div>
-              <p className="mt-0.5 text-[11px] text-text-secondary">
-                {a.tipo} · {formatDistance(a.distancia_m)} · {formatDuration(a.duracion_s)}
-              </p>
+            <li key={a.id}>
+              <a
+                href={`https://www.strava.com/activities/${a.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-xl bg-surface-soft p-3 transition hover:bg-slate-200"
+              >
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-semibold text-navy">{a.nombre}</p>
+                  <span className="text-[10px] text-text-secondary">
+                    {new Date(a.fecha).toLocaleDateString('es-ES')}
+                  </span>
+                </div>
+                <p className="mt-0.5 text-[11px] text-text-secondary">
+                  {a.tipo} · {formatDistance(a.distancia_m)} · {formatDuration(a.duracion_s)}
+                  <span className="ml-1 text-orange-dark">↗</span>
+                </p>
+              </a>
             </li>
           ))}
         </ul>
