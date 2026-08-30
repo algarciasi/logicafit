@@ -12,6 +12,7 @@ import CalculadoraRunning from './pages/CalculadoraRunning'
 import Blog from './pages/Blog'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
+import StravaCallback from './pages/StravaCallback'
 import AdminClients from './pages/admin/AdminClients'
 import AdminClientDetail from './pages/admin/AdminClientDetail'
 
@@ -35,6 +36,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/strava/callback"
+              element={
+                <ProtectedRoute>
+                  <StravaCallback />
                 </ProtectedRoute>
               }
             />

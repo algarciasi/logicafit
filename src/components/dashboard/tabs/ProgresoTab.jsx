@@ -3,6 +3,7 @@ import { listProgressHistory } from '../../../lib/notes'
 import ProgressForm from '../ProgressForm'
 import MeasurementsChart from '../MeasurementsChart'
 import PhotoGallery from '../PhotoGallery'
+import StravaConnect from '../StravaConnect'
 import EmptyState from '../EmptyState'
 
 export default function ProgresoTab({ client }) {
@@ -57,6 +58,8 @@ export default function ProgresoTab({ client }) {
           body="Usa el botón de arriba para registrar tus primeras medidas."
         />
       )}
+
+      <StravaConnect client={client} />
     </div>
   )
 }
