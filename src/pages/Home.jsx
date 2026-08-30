@@ -1,6 +1,7 @@
 import Hero from '../components/Hero'
 import HowItWorks from '../components/HowItWorks'
 import DemoPreview from '../components/DemoPreview'
+import StravaShowcase from '../components/StravaShowcase'
 import About from '../components/About'
 import RunningGuideGift from '../components/RunningGuideGift'
 import AccompanimentSection from '../components/AccompanimentSection'
@@ -14,6 +15,7 @@ export default function Home() {
       <Hero />
       <HowItWorks />
       <DemoPreview />
+      <StravaShowcase />
       <About />
       <RunningGuideGift />
       <AccompanimentSection />

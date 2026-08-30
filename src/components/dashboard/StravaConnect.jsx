@@ -65,7 +65,7 @@ export default function StravaConnect({ client }) {
   if (!client?.strava_connected) {
     return (
       <div className="rounded-2xl border border-dashed border-orange-light bg-orange/5 p-4 text-center">
-        <p className="text-2xl">🏃</p>
+        <img src="/brand/strava.png" alt="Strava" className="mx-auto h-8 w-8" />
         <p className="mt-2 font-display text-sm font-bold text-navy">Conecta tu Strava</p>
         <p className="mt-1 text-xs text-text-secondary">
           Sincroniza tus entrenamientos automáticamente para llevar un seguimiento completo.
@@ -83,7 +83,8 @@ export default function StravaConnect({ client }) {
   return (
     <div className="rounded-2xl border border-slate-100 p-4">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-text-secondary">
+        <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-text-secondary">
+          <img src="/brand/strava.png" alt="Strava" className="h-4 w-4" />
           Actividad de Strava
         </p>
         <div className="flex shrink-0 items-center gap-2">

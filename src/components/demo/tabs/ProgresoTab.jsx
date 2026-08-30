@@ -26,7 +26,8 @@ export default function ProgresoTab() {
 
       <div className="rounded-2xl border border-slate-100 p-4">
         <div className="flex items-center justify-between">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-text-secondary">
+          <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-text-secondary">
+            <img src="/brand/strava.png" alt="Strava" className="h-4 w-4" />
             Actividad de Strava
           </p>
           <span className="rounded-full bg-[#FC4C02]/10 px-2 py-0.5 text-[10px] font-semibold text-[#FC4C02]">

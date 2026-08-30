@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import BrowserFrame from '../components/demo/BrowserFrame'
 import InicioTab from '../components/demo/tabs/InicioTab'
 import EntrenoTab from '../components/demo/tabs/EntrenoTab'
@@ -13,8 +13,14 @@ const TABS = [
   { id: 'dieta', label: 'Dieta', icon: '🍽️' },
 ]
 
+const TAB_IDS = TABS.map((t) => t.id)
+
 export default function Demo() {
-  const [active, setActive] = useState('inicio')
+  const [searchParams] = useSearchParams()
+  const requestedTab = searchParams.get('tab')
+  const [active, setActive] = useState(
+    TAB_IDS.includes(requestedTab) ? requestedTab : 'inicio'
+  )
 
   const content = {
     inicio: <InicioTab />,
