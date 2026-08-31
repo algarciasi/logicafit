@@ -7,6 +7,7 @@ import ProtectedAdminRoute from './components/ProtectedAdminRoute'
 import Home from './pages/Home'
 import Planes from './pages/Planes'
 import Demo from './pages/Demo'
+import Calculadoras from './pages/Calculadoras'
 import Calculadora from './pages/Calculadora'
 import CalculadoraRunning from './pages/CalculadoraRunning'
 import Blog from './pages/Blog'
@@ -27,6 +28,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/planes" element={<Planes />} />
             <Route path="/demo" element={<Demo />} />
+            <Route path="/calculadoras" element={<Calculadoras />} />
             <Route path="/calculadora" element={<Calculadora />} />
             <Route path="/calculadora-running" element={<CalculadoraRunning />} />
             <Route path="/blog" element={<Blog />} />

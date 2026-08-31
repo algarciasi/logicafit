@@ -7,8 +7,9 @@ const NAV_LINKS = [
   { href: '/#metodo', label: 'Método', type: 'anchor' },
   { to: '/planes', label: 'Planes', type: 'link' },
   { href: '/#casos', label: 'Casos reales', type: 'anchor' },
+  { to: '/calculadoras', label: 'Calculadoras', type: 'link' },
   { to: '/blog', label: 'Blog', type: 'link' },
-  { to: '/calculadora', label: 'Calculadora', type: 'link' },
+  { to: '/quiensoy', label: 'Quien soy', type: 'link' },
 ]
 
 export default function Navbar() {
