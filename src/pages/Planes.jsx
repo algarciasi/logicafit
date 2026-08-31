@@ -66,7 +66,7 @@ export default function Planes() {
             plan te encaja mejor — o si ninguno te encaja, también.
           </p>
           <a
-            href="https://wa.me/"
+            href="https://wa.me/34678951544"
             className="mt-6 inline-flex items-center gap-2 rounded-full bg-whatsapp px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-whatsapp/25 transition hover:brightness-95"
           >
             Hablar por WhatsApp
