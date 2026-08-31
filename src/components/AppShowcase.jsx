@@ -84,11 +84,11 @@ function ScreenInicio() {
       <TabBar active={0} />
       <div className="px-3 pb-4">
         <p className="font-display text-[12px] font-bold text-navy">
-          Hola Pepe 👋
+          Hola Alberto 👋
         </p>
         <div className="mt-1.5 rounded-xl bg-surface-soft p-2.5 text-[8px] leading-relaxed text-navy-light">
           <p>
-            <strong>Objetivo:</strong> Pérdida de peso
+            <strong>Objetivo:</strong> Ganar masa muscular
           </p>
           <p>
             <strong>Plan:</strong> Método Lógica
