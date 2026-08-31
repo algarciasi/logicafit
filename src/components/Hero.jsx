@@ -5,40 +5,40 @@ export default function Hero() {
     <section className="relative overflow-hidden bg-white">
       <div className="mx-auto grid max-w-7xl min-h-[90vh] grid-cols-1 md:grid-cols-2">
 
-        <div className="flex flex-col justify-center px-8 py-20 md:px-14 lg:px-20">
+        <div className="flex flex-col justify-center px-6 py-16 sm:px-8 sm:py-20 md:px-14 lg:px-20">
 
           <p className="text-xs font-semibold uppercase tracking-widest text-orange">
             Entrenador personal online
           </p>
 
-          <h1 className="mt-5 font-display text-5xl font-extrabold leading-[1.05] text-navy lg:text-6xl">
+          <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.1] text-navy break-words sm:text-5xl lg:text-6xl">
             Entrenamiento
             <br />
             hecho para ti.
           </h1>
 
-          <p className="mt-6 max-w-md text-lg leading-relaxed text-text-secondary">
+          <p className="mt-6 max-w-md text-base leading-relaxed text-text-secondary sm:text-lg">
             Musculación y running adaptados a tu vida real, con seguimiento
             directo <strong className="font-semibold text-navy">conmigo</strong> y toda tu
             planificación en la app Lógica Fit.
           </p>
 
-          <div className="mt-10 flex flex-wrap gap-4">
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
             <Link
               to="/planes"
-              className="rounded-full bg-orange px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-orange/25 transition hover:bg-orange-dark"
+              className="w-full rounded-full bg-orange px-8 py-4 text-center text-sm font-semibold text-white shadow-lg shadow-orange/25 transition hover:bg-orange-dark sm:w-auto"
             >
               Ver planes
             </Link>
             <Link
               to="/demo"
-              className="rounded-full px-8 py-4 text-sm font-semibold text-navy ring-1 ring-slate-200 transition hover:bg-surface-soft"
+              className="w-full rounded-full px-8 py-4 text-center text-sm font-semibold text-navy ring-1 ring-slate-200 transition hover:bg-surface-soft sm:w-auto"
             >
               Ver la app
             </Link>
           </div>
 
-          <div className="mt-12 flex flex-nowrap gap-3 overflow-x-auto pb-2 sm:overflow-visible sm:pb-0">
+          <div className="mt-12 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap xl:flex-nowrap">
             
             <div className="flex flex-col justify-center rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-sm">
               <p className="text-xs text-text-secondary">Titulado por</p>
