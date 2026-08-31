@@ -23,20 +23,36 @@ export default function Hero() {
             planificación en la app Lógica Fit.
           </p>
 
-          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+          {/* === ZONA DE BOTONES MODIFICADA === */}
+          <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center">
             <Link
               to="/planes"
               className="w-full rounded-full bg-orange px-8 py-4 text-center text-sm font-semibold text-white shadow-lg shadow-orange/25 transition hover:bg-orange-dark sm:w-auto"
             >
               Ver planes
             </Link>
+            
             <Link
               to="/demo"
               className="w-full rounded-full px-8 py-4 text-center text-sm font-semibold text-navy ring-1 ring-slate-200 transition hover:bg-surface-soft sm:w-auto"
             >
               Ver la app
             </Link>
+
+            <a
+              href="https://play.google.com/store/apps/details?id=com.logicafit.app.ficticia"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 flex justify-center transition hover:opacity-80 sm:mt-0 sm:block"
+            >
+              <img
+                src="/brand/google-play.png"
+                alt="Disponible en Google Play"
+                className="h-[52px] w-auto"
+              />
+            </a>
           </div>
+          {/* ================================== */}
 
           <div className="mt-12 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap xl:flex-nowrap">
             
