@@ -11,6 +11,7 @@ import Calculadoras from './pages/Calculadoras'
 import Calculadora from './pages/Calculadora'
 import CalculadoraRunning from './pages/CalculadoraRunning'
 import Blog from './pages/Blog'
+import CasosReales from './pages/CasosReales'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import StravaCallback from './pages/StravaCallback'
@@ -32,6 +33,7 @@ function App() {
             <Route path="/calculadora" element={<Calculadora />} />
             <Route path="/calculadora-running" element={<CalculadoraRunning />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/casos-reales" element={<CasosReales />} />
             <Route path="/login" element={<Login />} />
             <Route
               path="/dashboard"
