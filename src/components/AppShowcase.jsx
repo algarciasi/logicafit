@@ -253,8 +253,13 @@ function ScreenProgreso() {
 export default function AppShowcase() {
   return (
     <section className="overflow-hidden bg-navy py-24">
-      <div className="mx-auto max-w-6xl px-6">
-        <div className="mx-auto max-w-2xl text-center">
+      {/* 
+        He quitado el px-6 de max-w-6xl para que en móvil el slider pueda
+        tocar el borde de la pantalla, queda mucho mejor.
+        He añadido px-6 al div de arriba para no perder el padding del texto.
+      */}
+      <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-2xl px-6 text-center">
           <p className="font-display text-3xl font-extrabold text-white sm:text-4xl">
             La app Lógica Fit
           </p>
@@ -267,25 +272,34 @@ export default function AppShowcase() {
           </p>
         </div>
 
-        <div className="mt-16 flex items-center justify-center gap-6">
-          <div>
+        {/* 
+          AQUÍ ESTÁ LA MAGIA DEL SCROLL:
+          - overflow-x-auto: Permite scroll horizontal
+          - snap-x snap-mandatory: Fuerza que los elementos hagan el efecto de enganche
+          - scrollbar-hide (opcional si la tuvieras configurada, aquí se la ocultamos con pb-8 para que no moleste)
+          - px-6: Para que el primer móvil tenga margen
+        */}
+        <div className="mt-16 flex items-center justify-start gap-6 overflow-x-auto px-6 pb-8 snap-x snap-mandatory sm:justify-center">
+          <div className="snap-center shrink-0">
             <PhoneFrame>
               <ScreenInicio />
             </PhoneFrame>
           </div>
-          <div>
+          <div className="snap-center shrink-0">
             <PhoneFrame>
               <ScreenEntreno />
             </PhoneFrame>
           </div>
-          <div>
+          <div className="snap-center shrink-0">
             <PhoneFrame>
               <ScreenProgreso />
             </PhoneFrame>
           </div>
+          {/* Pequeño div espaciador para que el último móvil no se quede pegado al final en el scroll */}
+          <div className="w-1 shrink-0 sm:hidden"></div>
         </div>
 
-        <div className="mt-20 text-center">
+        <div className="mt-12 text-center">
           <Link
             to="/demo"
             className="text-sm font-semibold text-slate-300 underline-offset-4 transition hover:text-white hover:underline"
