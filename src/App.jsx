@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
 import ScrollToTop from './components/ScrollToTop'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -20,6 +20,25 @@ import AdminClientDetail from './pages/admin/AdminClientDetail'
 import About from './components/About'
 import Aprende from './pages/Aprende'
 import Article from './pages/Article'
+import { isAdminEmail } from './lib/adminConfig'
+
+// Detecta si corre dentro de Capacitor (app nativa Android/iOS)
+const isNativeApp = () =>
+  typeof window !== 'undefined' && window.Capacitor !== undefined
+
+// Ruta raíz inteligente:
+// - App nativa: sin sesión → login | admin → admin | cliente → dashboard
+// - Web: Home pública de siempre
+function RootRoute() {
+  const { user, loading } = useAuth()
+  if (loading) return null
+  if (isNativeApp()) {
+    if (!user) return <Navigate to="/login" replace />
+    if (isAdminEmail(user.email)) return <Navigate to="/admin/clientes" replace />
+    return <Navigate to="/dashboard" replace />
+  }
+  return <Home />
+}
 
 function App() {
   return (
@@ -29,7 +48,7 @@ function App() {
         <div className="min-h-screen bg-white">
           <Navbar />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<RootRoute />} />
             <Route path="/planes" element={<Planes />} />
             <Route path="/demo" element={<Demo />} />
             <Route path="/calculadoras" element={<Calculadoras />} />
