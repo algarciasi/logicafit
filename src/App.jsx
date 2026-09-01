@@ -18,6 +18,8 @@ import StravaCallback from './pages/StravaCallback'
 import AdminClients from './pages/admin/AdminClients'
 import AdminClientDetail from './pages/admin/AdminClientDetail'
 import About from './components/About'
+import Aprende from './pages/Aprende'
+import Article from './pages/Article'
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
             <Route path="/casos-reales" element={<CasosReales />} />
             <Route path="/conoceme" element={<About />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/aprende" element={<Aprende />} />
+            <Route path="/aprende/:slug" element={<Article />} />
             <Route
               path="/dashboard"
               element={

@@ -9,7 +9,8 @@ const NAV_LINKS = [
   { to: '/casos-reales', label: 'Casos reales', type: 'link' },
   //{ href: '/#casos', label: 'Casos reales', type: 'anchor' },
   { to: '/calculadoras', label: 'Calculadoras', type: 'link' },
-  { to: '/blog', label: 'Blog', type: 'link' },
+  //{ to: '/blog', label: 'Blog', type: 'link' },
+  { to: '/aprende', label: 'Aprende', type: 'link' },
   { to: '/conoceme', label: 'Sobre mí', type: 'link' },
 ]
 
