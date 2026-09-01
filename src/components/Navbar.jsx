@@ -10,7 +10,7 @@ const NAV_LINKS = [
   //{ href: '/#casos', label: 'Casos reales', type: 'anchor' },
   { to: '/calculadoras', label: 'Calculadoras', type: 'link' },
   { to: '/blog', label: 'Blog', type: 'link' },
-  { to: '/quiensoy', label: 'Quien soy', type: 'link' },
+  { to: '/conoceme', label: 'Sobre mí', type: 'link' },
 ]
 
 export default function Navbar() {

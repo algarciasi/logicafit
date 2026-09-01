@@ -17,6 +17,7 @@ import Dashboard from './pages/Dashboard'
 import StravaCallback from './pages/StravaCallback'
 import AdminClients from './pages/admin/AdminClients'
 import AdminClientDetail from './pages/admin/AdminClientDetail'
+import About from './components/About'
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
             <Route path="/calculadora-running" element={<CalculadoraRunning />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/casos-reales" element={<CasosReales />} />
+            <Route path="/conoceme" element={<About />} />
             <Route path="/login" element={<Login />} />
             <Route
               path="/dashboard"
