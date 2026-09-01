@@ -149,10 +149,12 @@ export default function Planes() {
             plan te encaja mejor — o si ninguno te encaja, también.
           </p>
           <a
-            href="https://wa.me/34678951544"
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-whatsapp px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-whatsapp/25 transition hover:brightness-95"
+            href="https://wa.me/34678951544?text=Hola!%20Me%20gustar%C3%ADa%20contarte%20mi%20caso"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-whatsapp px-8 py-4 text-sm font-semibold text-white transition hover:brightness-95"
           >
-            Hablar por WhatsApp
+            Hablar con Alberto
           </a>
         </div>
       </section>

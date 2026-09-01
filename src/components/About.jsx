@@ -35,7 +35,7 @@ export default function Conoceme() {
             {/* FOTO 1: Foto actual entrenando/gimnasio */}
             <div className="aspect-[4/5] w-full overflow-hidden rounded-sm bg-slate-100">
               <img
-                src="/ruta-a-tu-foto-principal.jpg"
+                src="/brand/alberto-gym.jpg"
                 alt="Alberto, entrenador personal"
                 className="h-full w-full object-cover grayscale-[20%]"
               />
@@ -227,20 +227,14 @@ export default function Conoceme() {
           Porque un buen proceso no debería darte únicamente resultados. También debería darte criterio.
         </p>
 
-        <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Link
-            to="/planes"
-            className="w-full rounded-full bg-orange px-8 py-4 text-sm font-semibold text-white transition hover:bg-orange-dark sm:w-auto"
-          >
-            Ver cómo puedo ayudarte
-          </Link>
+        <div className="mt-12 flex justify-center">
           <a
-            href="https://wa.me/34678951544"
+            href="https://wa.me/34678951544?text=Hola!%20He%20le%C3%ADdo%20tu%20historia%20y%20me%20gustar%C3%ADa%20contarte%20mi%20caso"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full rounded-full border border-slate-200 bg-white px-8 py-4 text-sm font-semibold text-navy transition hover:bg-slate-50 sm:w-auto"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-whatsapp px-8 py-4 text-sm font-semibold text-white shadow-lg shadow-whatsapp/25 transition hover:brightness-95 sm:w-auto"
           >
-            Hablar conmigo
+            Hablar con Alberto
           </a>
         </div>
       </section>
