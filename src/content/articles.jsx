@@ -10,11 +10,11 @@ export const articles = [
     date: 'Sep 2026',
     featured: true,
     // PLACEHOLDER FOTO: Usa una foto real entrenando, formato apaisado.
-    image: '/brand/alberto1-gym.jpg', 
+    image: '/brand/alberto-gym3.jpg', 
     content: (
       <>
         <p className="lead text-xl leading-relaxed text-slate-600 mb-10">
-          Si te soy sincero, cuando llevaba dos o tres años entrenando creía que lo sabía todo. Sentía que había encontrado "la rutina perfecta". Hoy, más de dos décadas después, no siento que tenga todas las respuestas. Más bien ocurre lo contrario: he aprendido a distinguir lo que de verdad importa de lo que es simple ruido secundario.
+          Si soy sincero, cuando llevaba dos o tres años entrenando creía que lo sabía todo. Sentía que había encontrado "la rutina perfecta". Hoy, más de dos décadas después, no siento que tenga todas las respuestas. Más bien ocurre lo contrario: he aprendido a distinguir lo que de verdad importa de lo que es simple ruido secundario.
         </p>
 
         <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">1. Cambiar de rutina constantemente no es progresar</h2>
@@ -104,7 +104,7 @@ export const articles = [
         {/* PLACEHOLDER: Video real tuyo haciendo press */}
         <ExerciseVideo 
           videoUrl={null} 
-          poster="/brand/estudiando.jpg"
+          poster="/brand/estudiando1.jpg"
           caption="Control en la fase excéntrica y empuje vertical. Fíjate en la estabilidad de los hombros."
         />
 
