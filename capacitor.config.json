@@ -1,0 +1,19 @@
+{
+  "appId": "com.logicafit.app",
+  "appName": "Lógica Fit",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#1E293B",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#1E293B"
+    }
+  }
+}
