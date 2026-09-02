@@ -57,7 +57,7 @@ export default function CasosReales() {
           Menos ruido. Más progreso.
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-600">
-          No creo en transformaciones mágicas ni en soluciones rápidas. Entrenamiento, constancia y un plan que se adapte a tu vida.
+          No te voy a vender una transformación mágica en tres meses porque no creo en ello ni tampoco es sostenible. Entrenamiento, constancia y un plan que se adapte a tu dia a dia.
         </p>
       </section>
 
@@ -197,10 +197,10 @@ export default function CasosReales() {
       <section className="mx-auto mt-24 max-w-3xl px-6 pb-12 text-center">
         <div className="rounded-3xl bg-navy px-8 py-16 sm:px-12">
           <h2 className="font-display text-2xl font-extrabold text-white sm:text-3xl">
-            Cuéntame tu caso y vemos si encaja
+            Cuéntame tu caso
           </h2>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-slate-300">
-            Escríbeme por WhatsApp, cuéntame qué quieres conseguir y te digo cómo lo plantearía.
+            Escríbeme por WhatsApp, cuéntame qué quieres conseguir y te digo cómo lo podemos plantear.
           </p>
           <a
             href="https://wa.me/34678951544?text=Hola!%20He%20visto%20las%20opiniones%20y%20me%20gustar%C3%ADa%20contarte%20mi%20caso"
