@@ -34,7 +34,7 @@ export default function Aprende() {
           Entrenar bien no debería<br className="hidden sm:block"/> ser tan complicado.
         </h1>
         <p className="mt-6 max-w-2xl text-lg text-slate-600">
-          Entrenamiento, musculación, nutrición deportiva y running explicados de la forma en la que me hubiera gustado encontrarlos cuando empecé.
+          Entrenamiento, musculación, nutrición deportiva y running explicados conforme me hubiera gustado cuando empecé.
         </p>
 
         {/* NAVEGACIÓN CATEGORÍAS (Ahora sí funcionan) */}
