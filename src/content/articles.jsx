@@ -14,12 +14,12 @@ export const articles = [
     content: (
       <>
         <p className="lead text-xl leading-relaxed text-slate-600 mb-10">
-          Si soy sincero, cuando llevaba dos o tres años entrenando creía que lo sabía todo. Sentía que había encontrado "la rutina perfecta". Hoy, más de dos décadas después, no siento que tenga todas las respuestas. Más bien ocurre lo contrario: he aprendido a distinguir lo que de verdad importa de lo que es simple ruido secundario.
+          Si soy sincero, cuando llevaba un par de años entrenando creía que sabía entrenar, alimentarme y suplementarme. Creía que había encontrado "la rutina perfecta", "el suplemento perfecto", "la dieta perfecta". Hoy, más de veinte años después, no siento que tenga todas las respuestas e incluso hago ejercicios y dietas que no son 100% éticas pero me generan adherencia.
         </p>
 
         <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">1. Cambiar de rutina constantemente no es progresar</h2>
         <p className="mb-6">
-          Al principio es tentador. Entras a internet, ves un sistema nuevo que promete ser revolucionario, y cambias tu entrenamiento. Dos semanas después, pruebas otro. Durante mucho tiempo pensé que "sorprender al músculo" cambiando la rutina significaba mejores resultados.
+          Es tentador no te lo voy a negar. Ves en redes un sistema nuevo que promete ser la puta ostia que a los gurús les funciona (ellos/as se dedican a su cuerpo y su vida gira alrededor de ello, tu vida no), y cambias tu entrenamiento. Dos semanas después, pruebas otro. Durante mucho tiempo pensé que "sorprender al músculo" cambiando la rutina significaba mejores resultados, pero no es así.
         </p>
         <p className="mb-6">
           La realidad es que el músculo no se sorprende, se adapta a la tensión que le aplicas. Si cambias los ejercicios cada semana, es imposible saber si estás ganando fuerza real o simplemente mejorando neurológicamente en un movimiento nuevo. Tienes que darle tiempo a una programación para que funcione y, sobre todo, para poder medir si estás progresando de verdad.
@@ -35,21 +35,21 @@ export const articles = [
           He pasado por casi todas las estructuras que existen. He hecho rutinas divididas tradicionales (Weider), he entrenado con frecuencia dos, he probado Push/Pull/Legs y Torso/Pierna.
         </p>
         <p className="mb-6">
-          ¿La conclusión? Todas pueden funcionar. El contexto de cada persona determina cuál tiene sentido. Si solo puedes ir tres días, una Torso/Pierna igual no es lo ideal y te compensa una Full Body. Si vas cinco, la distribución cambia. Defender un único sistema como el "definitivo" demuestra poca visión.
+          ¿La conclusión? Todas funcionan. Depende de cada persona, depende de su genética, de su descanso, de su alimentación, determina cuál tiene sentido nop es sencillo. Defender un único sistema como el "definitivo" demuestra poca visión.
         </p>
 
         <CoachNote title="Lo que hago yo">
-          Actualmente prefiero mantener una selección relativamente estable de ejercicios. Cambiar una rutina cada pocas semanas me parece mucho menos importante que exprimir realmente la que ya tengo.
+          Prefiero mantener una selección relativamente estable de ejercicios. Cambiar una rutina cada pocas semanas me parece mucho menos importante que exprimir realmente la que ya tengo.
         </CoachNote>
 
         <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">4. La técnica importa, pero no necesitas hacer una tesis</h2>
         <p className="mb-6">
-          Debes tener un buen control, un recorrido completo y buscar la estabilidad. Eso es innegociable. Pero a veces veo a gente obsesionada con modificar milimétricamente la rotación de la muñeca o el grado de inclinación del codo, olvidándose de lo básico: mover peso con intención y acercarse al fallo.
+          Debes tener un buen control, un recorrido completo y buscar la estabilidad. Eso es innegociable. Pero a veces veo a gente obsesionada con modificar milimétricamente la rotación de la muñeca o el grado de inclinación del codo, olvidándose de lo básico: mover peso con intención y acercarse al fallo. 
         </p>
 
         <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">5. Comer bien no necesita ser complicado</h2>
         <p className="mb-6">
-          He contado macros al gramo y he comido por intuición. Al final, se trata de principios simples: asegúrate de comer suficiente proteína, mantén las calorías en el rango de tu objetivo (superávit o déficit), elige alimentos razonablemente nutritivos la mayor parte del tiempo y ten flexibilidad. Si no hay adherencia y te supone un estrés constante, la dieta fracasará. No necesitas dietas cerradas de pechuga y brócoli.
+          He contado macros al gramo y he comido por intuición. Al final, se trata de principios simples: asegúrate de comer suficiente proteína, mantén las calorías en el rango de tu objetivo (superávit o déficit), elige alimentos razonablemente nutritivos la mayor parte del tiempo y ten flexibilidad. Si no hay adherencia y te supone un estrés constante, la dieta no la seguirás y efecto rebote será mayor. No necesitas dietas cerradas de pechuga, arroz y brócoli (no te dedicas al fitness).
         </p>
 
         <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">6. El mejor plan es el que puedes mantener</h2>
@@ -59,15 +59,15 @@ export const articles = [
 
         <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">7. Descansar también forma parte del entrenamiento</h2>
         <p className="mb-6">
-          Crecemos cuando nos recuperamos, no mientras estamos levantando pesas. Entrenar siempre pensando que "más es mejor" solo te lleva a acumular fatiga residual que termina frenando tu progreso o causando molestias articulares.
+          Crecemos cuando descansamos, no mientras estamos levantando peso. Entrenar siempre pensando que "más es mejor" solo te lleva a acumular fatiga residual que termina frenando tu progreso o causando molestias articulares.
         </p>
 
         <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">8. Tener experiencia no significa no necesitar ayuda</h2>
         <p className="mb-6">
-          Llevo toda una vida entre hierros, me he formado profesionalmente para esto, y sin embargo, yo también tengo mi propio entrenador.
+          Llevo mas de 20 años entre hierros, me he formado profesionalmente para esto, y sin embargo, yo también tengo mi propio entrenador.
         </p>
         <p className="mb-6">
-          ¿Por qué? Porque la perspectiva externa es vital. Alguien objetivo que vea mis entrenamientos, que evite que modifique cosas continuamente cuando tengo un mal día, y que me obligue a rendir cuentas. Tener entrenador no significa no saber entrenar; significa entender el valor de la objetividad.
+          ¿Por qué? Porque la perspectiva externa es vital. Alguien objetivo que vea mis entrenamientos, que evite que modifique cosas continuamente cuando tengo un mal día, y que me obligue a rendir cuentas en las revisiones. Tener entrenador no significa no saber entrenar; significa entender el valor de la objetividad.
         </p>
 
         <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">9. He cambiado de opinión muchas veces</h2>
@@ -77,7 +77,7 @@ export const articles = [
 
         <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">10. Si tuviera que resumirlo</h2>
         <p className="mb-6">
-          Después de tantos años sigo entrenando por la misma razón por la que empecé: porque me gusta. Disfruto del proceso. La diferencia es que ahora necesito muchas menos cosas para saber si voy por buen camino.
+          Después de tantos años sigo entrenando por la misma razón por la que empecé: porque me gusta y me hace desconectar. La diferencia es que ahora necesito muchas menos cosas para saber si voy por buen camino.
         </p>
         <p className="mb-6">
           Al final, se trata exactamente de eso: menos ruido, más progreso.
@@ -113,7 +113,7 @@ export const articles = [
           <div>
             <span className="font-display font-bold text-orange text-lg">01</span>
             <h3 className="font-bold text-navy mt-1">Demasiada inclinación en el banco</h3>
-            <p className="text-slate-600 mt-2">Un banco a 45 grados o más suele desplazar demasiado el trabajo hacia el deltoides anterior. Una inclinación sutil (15 a 30 grados) suele ser el punto dulce para la mayoría.</p>
+            <p className="text-slate-600 mt-2">Un banco a 45 grados o más suele desplazar demasiado el trabajo hacia el deltoides anterior. Una inclinación sutil (15 a 30 grados) suele ser el punto ideal para la mayoría.</p>
           </div>
           <div>
             <span className="font-display font-bold text-orange text-lg">02</span>

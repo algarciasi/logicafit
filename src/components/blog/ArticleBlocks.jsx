@@ -85,7 +85,7 @@ export function ArticleFooter() {
       <div className="mt-16 rounded-sm bg-slate-50 p-8 text-center sm:p-12">
         <p className="font-display text-2xl font-bold text-navy">¿Necesitas algo adaptado a ti?</p>
         <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-slate-600">
-          Puedes encontrar cientos de rutinas en internet. El problema normalmente no es encontrar otra rutina, sino saber cuál encaja contigo y cómo ir ajustándola.
+          Puedes encontrar miles de rutinas y dietas tanto en reels de gurús como en IAs e internet. El problema normalmente no es encontrar otra rutina o dieta, sino saber cuál encaja contigo y cómo ir ajustándola.
         </p>
         <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
           <a
