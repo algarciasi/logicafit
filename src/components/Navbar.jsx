@@ -3,21 +3,30 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { isAdminEmail } from '../lib/adminConfig'
 
-const NAV_LINKS = [
+// Detecta si corre dentro de Capacitor (app nativa Android/iOS)
+const isNativeApp = () =>
+  typeof window !== 'undefined' && window.Capacitor !== undefined
+
+const NAV_LINKS_WEB = [
   { href: '/#metodo', label: 'Método', type: 'anchor' },
   { to: '/planes', label: 'Planes', type: 'link' },
   { to: '/casos-reales', label: 'Casos reales', type: 'link' },
-  //{ href: '/#casos', label: 'Casos reales', type: 'anchor' },
   { to: '/calculadoras', label: 'Calculadoras', type: 'link' },
-  //{ to: '/blog', label: 'Blog', type: 'link' },
   { to: '/aprende', label: 'Aprende', type: 'link' },
   { to: '/conoceme', label: 'Sobre mí', type: 'link' },
+]
+
+const NAV_LINKS_APP = [
+  { to: '/calculadoras', label: 'Calculadoras', type: 'link' },
+  { to: '/aprende', label: 'Aprende', type: 'link' },
 ]
 
 export default function Navbar() {
   const { user } = useAuth()
   const isAdmin = isAdminEmail(user?.email)
   const [open, setOpen] = useState(false)
+  const native = isNativeApp()
+  const NAV_LINKS = native ? NAV_LINKS_APP : NAV_LINKS_WEB
 
   const closeMenu = () => setOpen(false)
 
@@ -62,12 +71,15 @@ export default function Navbar() {
           >
             {user ? 'Mi área' : 'Acceder'}
           </Link>
-          <Link
-            to="/planes"
-            className="rounded-full bg-orange px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-orange/30 transition hover:bg-orange-dark"
-          >
-            Ver planes
-          </Link>
+          {/* Botón "Ver planes" solo en web */}
+          {!native && (
+            <Link
+              to="/planes"
+              className="rounded-full bg-orange px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-orange/30 transition hover:bg-orange-dark"
+            >
+              Ver planes
+            </Link>
+          )}
 
           <button
             type="button"
@@ -95,7 +107,7 @@ export default function Navbar() {
             {NAV_LINKS.map((item) => (
               <li key={item.label}>
                 {item.type === 'anchor' ? (
-                 <a 
+                  <a
                     href={item.href}
                     onClick={closeMenu}
                     className="block rounded-lg px-2 py-2.5 text-sm font-medium text-navy-light transition hover:bg-surface-soft"

@@ -15,10 +15,10 @@ export default function Conoceme() {
             </h1>
             <div className="mt-8 space-y-6 text-lg leading-relaxed text-slate-600">
               <p>
-                Antes de dedicarme a ayudar a otras personas, pasé muchos años intentando mejorar yo mismo. He probado rutinas, métodos y formas de alimentarme. He cometido errores y he aprendido muchísimo durante el proceso.
+                Antes de pensar en ayudar a otras personas, estuve muchos años intentando mejorar yo mismo. He probado miles rutinas y dietas. He cometido  muchos muchos errores y eso me ha hecho aprender durante todo este tiempo.
               </p>
               <p>
-                Con el tiempo, decidí convertir toda esa experiencia en formación y utilizarla para ayudar a otras personas a entrenar con criterio.
+                Despues de mucho tiempo y mucha experiencia acumulada, decidí invertir en formación y utilizarla para ayudar a otras personas a entrenar con criterio.
               </p>
             </div>
             <div className="mt-10">
@@ -51,13 +51,13 @@ export default function Conoceme() {
         </h2>
         <div className="mt-8 space-y-6 text-lg leading-relaxed text-slate-600">
           <p>
-            Empecé a entrenar hace más de dos décadas, cuando mi única preocupación era intentar mejorar físicamente. 
+            Empecé a entrenar hace más de veinte años, cuando mi única preocupación era tener un espacio para mi y no pensar en ciertos aspectos de la vida. 
           </p>
           <p>
-            Como casi todos, durante estos años he pasado por diferentes etapas. He cambiado rutinas, probado sistemas, aprendido sobre entrenamiento y alimentación y también he cometido bastantes errores.
+            Como casi todos, durante estos años he pasado por diferentes etapas. He cambiado rutinas, probado sistemas de entrenamiento, aprendido sobre entrenamiento y alimentación y también he cometido demasiados errores.
           </p>
           <p>
-            Precisamente esos errores forman parte de lo que hoy sé. No nací siendo entrenador, nací siendo alguien a quien le gustaba entrenar.
+            Estos errores forman parte de lo que hoy sé. No nací siendo entrenador, ni tampoco me gustaba el deporte pero una vez entre en una sala no pude dejar de volver a ir.
           </p>
         </div>
       </section>
@@ -76,7 +76,7 @@ export default function Conoceme() {
               Cuando eres tú quien lleva tu propia planificación es muy fácil perder perspectiva, cambiar cosas demasiado pronto o dejarte llevar por cómo te encuentras ese día. 
             </p>
             <p>
-              Una mirada externa te obliga a rendir cuentas, permite analizar las cosas con más objetividad y hace más difícil que abandones cuando vienen semanas malas. Por eso creo tanto en el seguimiento: porque yo también lo utilizo.
+              Tener un asesor que te acompañe te obliga a rendir cuentas en las revisiones, permite analizar las cosas con más objetividad y hace más difícil que abandones cuando vienen semanas malas. Por eso creo tanto en el seguimiento: porque yo también lo utilizo.
             </p>
           </div>
           
@@ -110,7 +110,7 @@ export default function Conoceme() {
               />
             </div>
             <figcaption className="mt-3 text-center text-sm italic text-slate-500 lg:text-left">
-              La experiencia en el gimnasio es vital, pero entender el porqué de las cosas marca la diferencia.
+              La experiencia en el gimnasio es vital, pero entender el porqué de las cosas es lo que marca la diferencia.
             </figcaption>
           </figure>
 
@@ -124,7 +124,7 @@ export default function Conoceme() {
                 Una cosa es aprender a entrenarte a ti mismo y otra muy diferente ayudar a otra persona. Por eso llegó un momento en el que decidí formarme de manera específica.
               </p>
               <p>
-                Quería entender mejor el porqué de las cosas y disponer de herramientas para adaptar un entrenamiento a otra persona, no simplemente recomendar lo que me había funcionado a mí.
+                Quería entender mejor el porqué de las cosas, la biomecánica de los ejercicios y disponer de herramientas para adaptar un entrenamiento a otra persona, no simplemente recomendar lo que me había funcionado a mí.
               </p>
             </div>
 
@@ -167,7 +167,7 @@ export default function Conoceme() {
           </h2>
           <div className="mt-8 space-y-6 text-lg leading-relaxed text-slate-300">
             <p>
-              Mi especialidad principal es el entrenamiento de fuerza, la composición corporal, la creación de hábitos y el acompañamiento.
+              Mi especialidad principal es el entrenamiento de fuerza, la composición corporal, la creación de hábitos y el acompañamiento diario.
             </p>
             <p>
               Tengo formación en nutrición deportiva, pero <strong className="font-semibold text-white">no soy Dietista-Nutricionista y no realizo nutrición clínica</strong>. 
@@ -191,25 +191,25 @@ export default function Conoceme() {
         <div className="mt-16 grid gap-12 sm:grid-cols-2">
           <div className="border-t-2 border-slate-900 pt-6">
             <p className="text-xl font-medium leading-relaxed text-navy">
-              Tu rutina tiene que encajar en tu vida, no al revés.
+              Tu rutina y tu dieta debe encajar en tu vida, no al revés.
             </p>
           </div>
           
           <div className="border-t-2 border-slate-900 pt-6">
             <p className="text-xl font-medium leading-relaxed text-navy">
-              No cambio ejercicios para mantenerte entretenido. Cambio lo que necesita cambiar.
+              No cambio ejercicios para que no te aburras. Cambio lo que hay que cambiar.
             </p>
           </div>
           
           <div className="border-t-2 border-slate-900 pt-6">
             <p className="text-xl font-medium leading-relaxed text-navy">
-              Prefiero que entiendas por qué hacemos algo a que simplemente obedezcas una hoja.
+              Prefiero que entiendas el por qué de las cosas a que te dediques a seguir el guión.
             </p>
           </div>
           
           <div className="border-t-2 border-slate-900 pt-6">
             <p className="text-xl font-medium leading-relaxed text-navy">
-              Y si algo no funciona, se ajusta. No se culpa al cliente.
+              Y si algo no funciona, se ajusta. Trabajamos tu y yo para mejorar.
             </p>
           </div>
         </div>
@@ -221,7 +221,7 @@ export default function Conoceme() {
           No quiero que dependas de mí para siempre.
         </h2>
         <p className="mx-auto mt-6 text-lg leading-relaxed text-slate-600">
-          Quiero ayudarte a progresar, pero también quiero que durante el proceso aprendas. Que entiendas cómo entrenar. Que sepas por qué hacemos determinados cambios. Que puedas distinguir lo importante de todo el ruido que existe alrededor del fitness.
+          Quiero ayudarte a mejorar, pero también quiero que durante el proceso aprendas. Que entiendas cómo entrenar y como comer. Que sepas por qué hacemos determinados cambios. Que puedas distinguir lo importante de todo el ruido que existe alrededor de las redes sociales y el fitness.
         </p>
         <p className="mx-auto mt-6 text-lg font-medium text-navy">
           Porque un buen proceso no debería darte únicamente resultados. También debería darte criterio.

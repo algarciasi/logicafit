@@ -26,9 +26,13 @@ import { isAdminEmail } from './lib/adminConfig'
 const isNativeApp = () =>
   typeof window !== 'undefined' && window.Capacitor !== undefined
 
-// Ruta raíz inteligente:
-// - App nativa: sin sesión → login | admin → admin | cliente → dashboard
-// - Web: Home pública de siempre
+// En app nativa, redirige rutas no disponibles al inicio
+function NativeOnly({ children }) {
+  if (isNativeApp()) return <Navigate to="/" replace />
+  return children
+}
+
+// Ruta raíz inteligente
 function RootRoute() {
   const { user, loading } = useAuth()
   if (loading) return null
@@ -49,17 +53,23 @@ function App() {
           <Navbar />
           <Routes>
             <Route path="/" element={<RootRoute />} />
-            <Route path="/planes" element={<Planes />} />
-            <Route path="/demo" element={<Demo />} />
-            <Route path="/calculadoras" element={<Calculadoras />} />
-            <Route path="/calculadora" element={<Calculadora />} />
+
+            {/* Solo disponibles en web */}
+            <Route path="/planes"       element={<NativeOnly><Planes /></NativeOnly>} />
+            <Route path="/demo"         element={<NativeOnly><Demo /></NativeOnly>} />
+            <Route path="/blog"         element={<NativeOnly><Blog /></NativeOnly>} />
+            <Route path="/casos-reales" element={<NativeOnly><CasosReales /></NativeOnly>} />
+            <Route path="/conoceme"     element={<NativeOnly><About /></NativeOnly>} />
+
+            {/* Disponibles en web y en app */}
+            <Route path="/calculadoras"        element={<Calculadoras />} />
+            <Route path="/calculadora"         element={<Calculadora />} />
             <Route path="/calculadora-running" element={<CalculadoraRunning />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/casos-reales" element={<CasosReales />} />
-            <Route path="/conoceme" element={<About />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/aprende" element={<Aprende />} />
-            <Route path="/aprende/:slug" element={<Article />} />
+            <Route path="/aprende"             element={<Aprende />} />
+            <Route path="/aprende/:slug"       element={<Article />} />
+            <Route path="/login"               element={<Login />} />
+
+            {/* Rutas protegidas */}
             <Route
               path="/dashboard"
               element={
