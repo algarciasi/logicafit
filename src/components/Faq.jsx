@@ -3,23 +3,23 @@ import { useState } from 'react'
 const FAQ_ITEMS = [
   {
     q: '¿Funciona de verdad un entrenador online?',
-    a: 'Sí. Hablamos por WhatsApp para resolver dudas al momento, te reviso los ejercicios por vídeo y ajusto tu plan cada semana. Tienes acompañamiento real, no solo un PDF que descargas una vez.',
+    a: 'Sí. Hablamos por WhatsApp para resolver dudas al momento, te reviso los ejercicios por vídeo y ajusto tu plan cada semana. Tienes acompañamiento real conmigo. No te voy a dar PDF y me voy a olvidar de ti.',
   },
   {
     q: 'Soy principiante total, ¿es para mí?',
-    a: 'Especialmente para ti. Adapto cada ejercicio a tu nivel real y te explico el porqué de cada cosa, sin dar por hecho que ya sabes entrenar.',
+    a: 'Especialmente es para ti. La biomecánica y la técnica es muy importante tanto para evitar lesiones como para mejorar fisicamente. Te enseñare a hacer los ejercicios sin riesgo y con criterio.',
   },
   {
     q: 'No tengo gimnasio, ¿puedo entrenar en casa?',
-    a: 'Sí. Diseño tu plan según lo que tengas: gimnasio completo, mancuernas en casa o solo tu peso corporal. Lo importante es que el plan esté bien hecho y lo sigas.',
+    a: 'Sí aunque no es lo óptimo. Adapto tu plan según las herramientas de las que dispongas. Lo importante es que el plan esté bien hecho y lo sigas.',
   },
   {
-    q: '¿Voy a tener que pasar hambre con la dieta?',
-    a: 'No. Trabajo con macros flexibles ajustados a tu vida real, no con listas de alimentos prohibidos. Si no puedes mantenerlo a largo plazo, no sirve de nada.',
+    q: '¿Voy a pasar hambre con la dieta?',
+    a: 'No. Se elabora dietas con macronutrientes flexibles ajustados a tu vida real, no hay alimentos prohibidos (solo cantidades prohibidas). Si no puedes mantenerlo a largo plazo, no sirve de nada.',
   },
   {
     q: '¿Y si no me convence?',
-    a: 'Tienes 14 días de garantía. Si no encajamos, te devuelvo cada euro, sin preguntas ni trámites largos.',
+    a: 'Tienes 14 días de garantía. Si no encajamos, te devuelvo cada euro, sin preguntas.',
   },
 ]
 

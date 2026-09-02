@@ -119,7 +119,7 @@ export default function Planes() {
             rel="noopener noreferrer"
             className="inline-block shrink-0 rounded-full border border-slate-300 bg-white px-6 py-2.5 text-center text-sm font-semibold text-navy transition-colors hover:bg-slate-100"
           >
-            Entrenar a mi ritmo
+            Entrenar a tu ritmo
           </a>
         </div>
 
