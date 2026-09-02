@@ -20,7 +20,7 @@ export default function Hero() {
           <p className="mt-6 max-w-md text-base leading-relaxed text-text-secondary sm:text-lg">
             Musculación y running adaptados a tu vida real, con seguimiento
             directo <strong className="font-semibold text-navy">conmigo</strong> y toda tu
-            planificación en la app Lógica Fit.
+            planificación en mi app Lógica Fit.
           </p>
 
           {/* === ZONA DE BOTONES MODIFICADA === */}
@@ -36,7 +36,7 @@ export default function Hero() {
               to="/demo"
               className="w-full rounded-full px-8 py-4 text-center text-sm font-semibold text-navy ring-1 ring-slate-200 transition hover:bg-surface-soft sm:w-auto"
             >
-              Ver la app
+              Ver mi app
             </Link>
 
             <a
@@ -72,7 +72,7 @@ export default function Hero() {
               rel="noopener noreferrer"
               className="flex flex-col justify-center rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-sm transition hover:border-green-200 hover:shadow-md"
             >
-              <p className="text-xs text-text-secondary">Soporte directo</p>
+              <p className="text-xs text-text-secondary">Soporte 1:1</p>
               <p className="mt-0.5 flex items-center gap-1.5 text-sm font-bold text-navy">
                 <span className="inline-block h-2 w-2 rounded-full bg-whatsapp" />
                 WhatsApp
@@ -80,7 +80,7 @@ export default function Hero() {
             </a>
             
             <div className="flex flex-col justify-center rounded-2xl border border-slate-100 bg-white px-4 py-3 shadow-sm">
-              <p className="text-xs text-text-secondary">Sincroniza con</p>
+              <p className="text-xs text-text-secondary">Sincronización</p>
               <p className="mt-0.5 flex items-center gap-1.5 text-sm font-bold text-navy">
                 <img src="/brand/strava.png" alt="Strava" className="h-4 w-4" />
                 Strava

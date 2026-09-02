@@ -10,8 +10,8 @@ export default function Manifesto() {
           <span className="text-orange">Hay un plan diseñado para ti.</span>
         </p>
         <p className="mx-auto mt-8 max-w-xl text-base leading-relaxed text-text-secondary">
-          Lógica Fit es entrenamiento personalizado de verdad — con una app
-          donde tienes todo organizado y un entrenador real que te acompaña
+          Lógica Fit es entrenamiento y nutrición personalizada de verdad — con mi app
+          donde tienes todo organizado y me tienes a mi que te acompaño
           cada semana.
         </p>
       </div>

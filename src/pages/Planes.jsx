@@ -28,7 +28,7 @@ export default function Planes() {
                 Entrenamiento personal online
               </h2>
               <p className="mt-2 text-slate-600">
-                Un plan pensado para ti, que vamos ajustando juntos según avances.
+                Un plan totalmente individualizado, que iremos ajustando juntos según tus necesidades.
               </p>
             </div>
             <div className="shrink-0 whitespace-nowrap text-left sm:text-right">
@@ -54,13 +54,13 @@ export default function Planes() {
               <svg className="h-5 w-5 text-orange shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              Ajustes según vayas progresando
+              Ajustes según necesidades
             </li>
             <li className="flex items-center gap-3">
               <svg className="h-5 w-5 text-orange shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              Revisión de tu técnica en vídeo
+              Revisión de técnica en vídeo
             </li>
             <li className="flex items-start gap-3">
               <svg className="h-5 w-5 text-orange shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -80,6 +80,12 @@ export default function Planes() {
               </svg>
               Acceso completo a Lógica Fit
             </li>
+            <li className="flex items-center gap-3 sm:col-span-2">
+              <svg className="h-5 w-5 text-orange shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Recetas fitness saludables
+            </li>
           </ul>
 
           <div className="mt-10 flex flex-col items-center">
@@ -89,7 +95,7 @@ export default function Planes() {
               rel="noopener noreferrer"
               className="inline-block w-full rounded-full bg-orange px-8 py-4 text-center text-sm font-semibold text-white transition-colors hover:bg-orange/90 sm:w-auto"
             >
-              Quiero empezar contigo
+              Quiero empezar
             </a>
             <p className="mt-4 text-xs text-slate-500">
               Trabajo con pocas personas a la vez para poder hacer un seguimiento de verdad.
@@ -127,7 +133,7 @@ export default function Planes() {
               14 días o te devuelvo el dinero
             </p>
             <p className="text-sm text-slate-500">
-              Si el método no te convence durante los primeros 14 días, te devuelvo el dinero.
+              Si mi forma de trabajar no te convence durante los primeros 14 días, te devuelvo el dinero.
             </p>
           </div>
         </div>
