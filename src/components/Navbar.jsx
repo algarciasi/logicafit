@@ -32,28 +32,27 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Bloquea el scroll del body cuando el menú móvil está abierto
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [open])
 
-  // Si el menú móvil está abierto, la barra superior "normal" queda oculta
-  // (el overlay lleva su propio logo + botón cerrar), así que su color
-  // solo depende de scroll/página, nunca de `open`.
+  // Móvil: SIEMPRE membrete navy sólido, altura fija h-16.
+  // Desktop (sm+): vuelve al comportamiento dinámico según scroll/página.
   const navBg = open
-    ? 'opacity-0 pointer-events-none' // se oculta del todo, el overlay la sustituye
-    : scrolled || !isHome
-      ? 'bg-surface/95 backdrop-blur-md shadow-sm border-b border-slate-100 py-2'
-      : 'bg-transparent py-5'
-  const textColor = scrolled || !isHome ? 'text-navy' : 'text-white'
+    ? 'opacity-0 pointer-events-none'
+    : `bg-navy h-16 sm:h-auto ${
+        scrolled || !isHome
+          ? 'sm:bg-surface/95 sm:backdrop-blur-md sm:shadow-sm sm:border-b sm:border-slate-100 sm:py-2'
+          : 'sm:bg-transparent sm:py-5'
+      }`
+  const textColor = `text-white ${scrolled || !isHome ? 'sm:text-navy' : 'sm:text-white'}`
   const linkColor = scrolled || !isHome ? 'text-text-secondary hover:text-navy' : 'text-slate-200 hover:text-white'
 
   return (
     <>
-      {/* Barra superior normal */}
       <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-200 ${navBg}`}>
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8">
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-8">
 
           <Link to="/" onClick={closeMenu} className="flex items-center gap-2 group">
             <img src="/brand/logo.png" alt="Lógica Fit" className="h-9 w-9 rounded-full object-cover transition-transform duration-500 group-hover:rotate-12" />
@@ -95,11 +94,11 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Botón Menú Móvil (abrir) */}
+          {/* Botón Menú Móvil (abrir) — siempre blanco sobre el membrete navy */}
           <button
             onClick={() => setOpen(true)}
             aria-label="Abrir menú"
-            className={`relative z-50 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors md:hidden ${scrolled || !isHome ? 'text-navy bg-surface-soft' : 'text-white bg-white/20'}`}
+            className="relative z-50 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors md:hidden"
           >
             <div className="relative w-5 h-4">
               <span className="absolute left-0 top-0 h-[2px] w-full bg-current"></span>
@@ -110,13 +109,9 @@ export default function Navbar() {
         </div>
       </header>
 
-      {/* Overlay de menú móvil: elemento TOTALMENTE independiente, */}
-      {/* solo existe en el DOM cuando open=true. Nada de opacity sobre */}
-      {/* contenido pesado -> nada de "doble exposición" con el Hero. */}
       {open && (
         <div className="fixed inset-0 z-[60] bg-navy md:hidden">
-          {/* Barra superior propia del overlay */}
-          <div className="flex items-center justify-between px-6 py-5">
+          <div className="flex h-16 items-center justify-between px-6">
             <Link to="/" onClick={closeMenu} className="flex items-center gap-2">
               <img src="/brand/logo.png" alt="Lógica Fit" className="h-9 w-9 rounded-full object-cover" />
               <span className="font-display text-xl font-extrabold tracking-tight text-white">
@@ -134,8 +129,7 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Contenido: lista editorial + CTA anclado abajo */}
-          <div className="flex h-[calc(100%-88px)] flex-col justify-between px-6 pb-8 overflow-y-auto">
+          <div className="flex h-[calc(100%-64px)] flex-col justify-between px-6 pb-8 overflow-y-auto">
             <nav className="flex flex-col">
               {NAV_LINKS_WEB.map((item, index) => {
                 const num = String(index + 1).padStart(2, '0')
