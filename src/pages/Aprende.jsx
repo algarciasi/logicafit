@@ -1,52 +1,103 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { articles } from '../content/articles'
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { articles } from "../content/articles";
 
 export default function Aprende() {
   // Estado para controlar qué categoría está activa
-  const [activeCategory, setActiveCategory] = useState('Todos')
+  const [activeCategory, setActiveCategory] = useState("Todos");
 
-  const categories = ['Todos', 'Musculación', 'Ejercicios', 'Nutrición', 'Running', 'Experiencia']
+  const categories = [
+    "Todos",
+    "Musculación",
+    "Ejercicios",
+    "Nutrición",
+    "Running",
+    "Experiencia",
+  ];
 
   // Lógica de filtrado
-  let featured = articles.find(a => a.featured)
-  
+  let featured = articles.find((a) => a.featured);
+
   // Si estamos en una categoría concreta y el destacado no es de esa categoría, lo ocultamos
-  if (activeCategory !== 'Todos' && featured && featured.category !== activeCategory) {
-    featured = null 
+  if (
+    activeCategory !== "Todos" &&
+    featured &&
+    featured.category !== activeCategory
+  ) {
+    featured = null;
   }
 
   // Filtramos la base de datos según el botón pulsado
-  const filteredArticles = activeCategory === 'Todos' 
-    ? articles 
-    : articles.filter(a => a.category === activeCategory)
+  const filteredArticles =
+    activeCategory === "Todos"
+      ? articles
+      : articles.filter((a) => a.category === activeCategory);
 
   // Separamos los publicados de los borradores
-  const rest = filteredArticles.filter(a => !a.featured && a.date !== 'Borrador')
-  const drafts = filteredArticles.filter(a => a.date === 'Borrador')
+  const rest = filteredArticles.filter(
+    (a) => !a.featured && a.date !== "Borrador",
+  );
+  const drafts = filteredArticles.filter((a) => a.date === "Borrador");
 
   return (
-    <div className="bg-white">
-      {/* HERO */}
-      <section className="mx-auto max-w-7xl px-6 py-16 sm:py-24">
-        <p className="text-xs font-semibold uppercase tracking-widest text-orange">Aprende</p>
-        <h1 className="mt-4 font-display text-4xl font-extrabold text-navy sm:text-5xl lg:text-6xl">
-          Entrenar bien no debería<br className="hidden sm:block"/> ser tan complicado.
-        </h1>
-        <p className="mt-6 max-w-2xl text-lg text-slate-600">
-          Entrenamiento, musculación, nutrición deportiva y running explicados conforme me hubiera gustado cuando empecé.
-        </p>
+    <div className="bg-surface overflow-hidden min-h-screen">
+      {/* 1. HERO (Imagen inmersiva con degradados, mismo lenguaje que Calculadoras) */}
+      <section className="relative w-full pt-16 pb-0 sm:pt-40 sm:pb-24 lg:pt-48 lg:pb-28 flex flex-col sm:justify-center">
+        {/* BLOQUE DE IMAGEN
+            Móvil: bloque normal de altura fija justo debajo del membrete navy, se ve entera.
+            Desktop (sm+): absolute inset-0 a pantalla completa, estilo Calculadoras. */}
+        <div className="relative h-[42vh] min-h-[280px] w-full sm:absolute sm:inset-0 sm:h-full sm:min-h-0">
+          <img
+            src="/brand/estudiando2.jpg"
+            alt="Alberto García estudiando, contenido de Lógica Fit"
+            className="h-full w-full object-cover object-[center_30%] opacity-100 sm:opacity-90 animate-fade-in"
+          />
 
-        {/* NAVEGACIÓN CATEGORÍAS (Ahora sí funcionan) */}
-        <div className="mt-12 flex overflow-x-auto border-b border-slate-100 pb-px">
+          {/* Degradado inferior móvil: funde la foto con el bloque navy de texto de debajo */}
+          <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/10 to-transparent sm:hidden" />
+
+          {/* Degradados desktop: base uniforme más oscura para que el texto
+              (más largo que en Calculadoras) tenga contraste garantizado en toda su altura */}
+          <div className="hidden sm:block absolute inset-0 bg-navy/70" />
+          <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/70 to-navy/30 w-full md:w-4/5" />
+          {/* Franja de transición al fondo blanco: altura FIJA y pequeña, no un
+              porcentaje de la sección, así nunca invade el texto por muy largo que sea */}
+          <div className="hidden sm:block absolute inset-x-0 bottom-0 h-32 lg:h-40 bg-gradient-to-t from-surface to-transparent" />
+        </div>
+
+        {/* BLOQUE DE TEXTO
+            Móvil: flujo normal debajo de la imagen, fondo navy sólido, sin superposición.
+            Desktop (sm+): overlay clásico sobre la foto, estilo Calculadoras. */}
+        <div className="relative z-10 w-full bg-navy px-6 py-10 sm:bg-transparent sm:py-0 lg:px-8">
+          <div className="mx-auto max-w-7xl w-full">
+            <div className="max-w-2xl">
+              <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-orange animate-fade-in-up">
+                Aprende
+              </p>
+              <h1 className="mt-4 font-display text-4xl sm:text-5xl font-extrabold text-white sm:text-6xl tracking-tight animate-fade-in-up delay-100 leading-[1.05]">
+                Entrenar bien no debería
+                <br className="hidden sm:block" /> ser tan complicado.
+              </h1>
+              <p className="mt-5 sm:mt-6 text-base sm:text-lg sm:text-xl text-slate-300 font-medium animate-fade-in-up delay-200 leading-relaxed max-w-lg">
+                Entrenamiento, musculación, nutrición deportiva y running
+                explicados conforme me hubiera gustado cuando empecé.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. NAVEGACIÓN CATEGORÍAS */}
+      <section className="relative z-20 mx-auto max-w-7xl px-6 lg:px-8 pt-10 sm:pt-12">
+        <div className="flex overflow-x-auto border-b border-slate-200 pb-px">
           {categories.map((cat) => (
-            <button 
+            <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
               className={`shrink-0 border-b-2 px-1 pb-3 mr-8 text-sm font-medium transition-colors ${
-                activeCategory === cat 
-                  ? 'border-navy text-navy' 
-                  : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-navy'
+                activeCategory === cat
+                  ? "border-navy text-navy"
+                  : "border-transparent text-slate-500 hover:border-slate-300 hover:text-navy"
               }`}
             >
               {cat}
@@ -55,16 +106,24 @@ export default function Aprende() {
         </div>
       </section>
 
-      {/* DESTACADO */}
+      {/* 3. DESTACADO */}
       {featured && (
-        <section className="mx-auto max-w-7xl px-6 pb-20">
-          <Link to={`/aprende/${featured.slug}`} className="group grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center">
-            <div className="aspect-[4/3] w-full overflow-hidden bg-slate-100 lg:aspect-auto lg:h-[400px]">
-              <img src={featured.image} alt={featured.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+        <section className="mx-auto max-w-7xl px-6 lg:px-8 pt-16 pb-20">
+          <Link
+            to={`/aprende/${featured.slug}`}
+            className="group grid grid-cols-1 gap-8 lg:grid-cols-2 lg:items-center"
+          >
+            <div className="aspect-[4/3] w-full overflow-hidden bg-slate-100 lg:aspect-auto lg:h-[400px] rounded-[2rem]">
+              <img
+                src={featured.image}
+                alt={featured.title}
+                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+              />
             </div>
             <div className="lg:pl-8">
               <p className="text-xs font-bold uppercase tracking-widest text-slate-500">
-                {featured.category} <span className="mx-2">·</span> {featured.readingTime}
+                {featured.category} <span className="mx-2">·</span>{" "}
+                {featured.readingTime}
               </p>
               <h2 className="mt-4 font-display text-3xl font-bold text-navy group-hover:text-orange sm:text-4xl">
                 {featured.title}
@@ -80,21 +139,31 @@ export default function Aprende() {
         </section>
       )}
 
-      {/* GRID RESTO DE ARTÍCULOS */}
-      <section className="mx-auto max-w-7xl px-6 pb-24 border-t border-slate-100 pt-16">
-        
+      {/* 4. GRID RESTO DE ARTÍCULOS */}
+      <section className="mx-auto max-w-7xl px-6 lg:px-8 pb-24 border-t border-slate-200 pt-16">
         {rest.length === 0 && drafts.length === 0 && (
-          <p className="text-slate-500 italic">No hay artículos en esta categoría todavía.</p>
+          <p className="text-slate-500 italic">
+            No hay artículos en esta categoría todavía.
+          </p>
         )}
 
         <div className="grid grid-cols-1 gap-y-16 sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-3 lg:gap-x-12">
-          {rest.map(article => (
-            <Link key={article.slug} to={`/aprende/${article.slug}`} className="group">
-              <div className="aspect-[4/3] w-full overflow-hidden bg-slate-100 mb-5">
-                <img src={article.image} alt={article.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+          {rest.map((article) => (
+            <Link
+              key={article.slug}
+              to={`/aprende/${article.slug}`}
+              className="group"
+            >
+              <div className="aspect-[4/3] w-full overflow-hidden bg-slate-100 mb-5 rounded-2xl">
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                />
               </div>
               <p className="mb-2 text-xs font-bold uppercase tracking-widest text-slate-500">
-                {article.category} <span className="mx-2">·</span> {article.readingTime}
+                {article.category} <span className="mx-2">·</span>{" "}
+                {article.readingTime}
               </p>
               <h3 className="font-display text-xl font-bold text-navy group-hover:text-orange">
                 {article.title}
@@ -104,19 +173,28 @@ export default function Aprende() {
               </p>
             </Link>
           ))}
-          
+
           {/* Borradores */}
-          {drafts.map(article => (
-            <div key={article.slug} className="cursor-not-allowed opacity-50 grayscale">
-               <div className="mb-5 flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-slate-200">
-                  <span className="text-xs font-bold uppercase text-slate-400">Próximamente</span>
-               </div>
-               <p className="mb-2 text-xs font-bold uppercase tracking-widest text-slate-500">{article.category}</p>
-               <h3 className="font-display text-xl font-bold text-navy">{article.title}</h3>
+          {drafts.map((article) => (
+            <div
+              key={article.slug}
+              className="cursor-not-allowed opacity-50 grayscale"
+            >
+              <div className="mb-5 flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-slate-200 rounded-2xl">
+                <span className="text-xs font-bold uppercase text-slate-400">
+                  Próximamente
+                </span>
+              </div>
+              <p className="mb-2 text-xs font-bold uppercase tracking-widest text-slate-500">
+                {article.category}
+              </p>
+              <h3 className="font-display text-xl font-bold text-navy">
+                {article.title}
+              </h3>
             </div>
           ))}
         </div>
       </section>
     </div>
-  )
+  );
 }
