@@ -8,7 +8,7 @@ export default function Hero() {
       <img
         src="/brand/alberto-gym.jpg"
         alt="Alberto García, entrenador personal Lógica Fit"
-        className="absolute inset-0 h-full w-full object-cover object-[center_38%] sm:object-[center_20%] opacity-80 animate-fade-in"
+        className="absolute inset-0 h-full w-full object-cover object-[50%_55%] sm:object-[center_20%] opacity-80 animate-fade-in"
       />
       
       {/* 2. Filtros de Degradado (Para que se lea el texto y quede premium) */}
