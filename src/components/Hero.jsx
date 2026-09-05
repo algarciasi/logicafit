@@ -8,15 +8,15 @@ export default function Hero() {
       <img
         src="/brand/alberto-gym.jpg"
         alt="Alberto García, entrenador personal Lógica Fit"
-        className="absolute inset-0 h-full w-full object-cover object-[center_15%] sm:object-[center_20%] opacity-80 animate-fade-in"
+        className="absolute inset-0 h-full w-full object-cover object-[center_38%] sm:object-[center_20%] opacity-80 animate-fade-in"
       />
       
       {/* 2. Filtros de Degradado (Para que se lea el texto y quede premium) */}
-      <div className="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/40 to-navy/20 sm:via-navy/30 sm:to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-navy/95 via-navy/40 to-navy/10 sm:via-navy/30 sm:to-transparent" />
       <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/40 to-transparent sm:w-2/3" />
 
       {/* 3. Contenedor Principal (Por encima de la foto) */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 pt-28 sm:pt-0">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-6 lg:px-8 pt-16 sm:pt-0">
         
         {/* TITULAR GIGANTE */}
         <h1 className="font-display text-4xl xs:text-5xl font-extrabold leading-[1.05] text-white tracking-tight sm:text-6xl lg:text-[5.5rem] animate-fade-in-up">
