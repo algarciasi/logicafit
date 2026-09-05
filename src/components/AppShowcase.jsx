@@ -6,55 +6,41 @@ const FEATURES = [
   "Progreso",
   "Cuaderno de series",
   "Seguimiento",
-  "Strava",
+  "Sincronización Strava",
 ];
 
 function PhoneFrame({ children }) {
   return (
-    // Se añade h-[440px] al contenedor principal
-    <div className="relative w-[210px] h-[440px] shrink-0 rounded-[2.8rem] bg-[#1a1a1a] p-[3px] shadow-2xl shadow-black/60 ring-1 ring-white/10">
-      {/* Se añade h-full, flex y flex-col para gestionar el contenido interno */}
-      <div className="flex h-full flex-col overflow-hidden rounded-[2.5rem] bg-white">
-        <div className="flex h-8 shrink-0 items-center justify-between bg-navy px-4">
-          <span className="text-[9px] font-semibold text-white">9:41</span>
-          <span className="text-[9px] text-white/70">●●●</span>
+    <div className="relative w-[220px] h-[460px] shrink-0 rounded-[3rem] bg-[#0f172a] p-[4px] shadow-2xl shadow-black/80 ring-1 ring-white/10">
+      <div className="flex h-full flex-col overflow-hidden rounded-[2.7rem] bg-surface">
+        <div className="flex h-10 shrink-0 items-center justify-between bg-surface px-5 border-b border-slate-100">
+          <span className="text-[10px] font-bold text-navy">9:41</span>
+          <div className="flex gap-1">
+             <div className="w-1 h-1 rounded-full bg-navy"></div>
+             <div className="w-1 h-1 rounded-full bg-navy"></div>
+             <div className="w-1 h-1 rounded-full bg-navy"></div>
+          </div>
         </div>
-
-        {/* Se envuelven los children en un div que ocupa el resto del espacio y permite scroll si el contenido se pasa */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden bg-surface pb-4">
           {children}
         </div>
       </div>
-
-      <div className="absolute -right-[2px] top-24 h-10 w-[3px] rounded-full bg-[#333]" />
-      <div className="absolute -left-[2px] top-20 h-6 w-[3px] rounded-full bg-[#333]" />
-      <div className="absolute -left-[2px] top-28 h-6 w-[3px] rounded-full bg-[#333]" />
+      {/* Botones laterales del iPhone */}
+      <div className="absolute -right-[2px] top-28 h-12 w-[3px] rounded-r-md bg-slate-800" />
+      <div className="absolute -left-[2px] top-24 h-8 w-[3px] rounded-l-md bg-slate-800" />
+      <div className="absolute -left-[2px] top-36 h-12 w-[3px] rounded-l-md bg-slate-800" />
     </div>
   );
 }
 
 function NavbarMini() {
   return (
-    <div className="flex items-center justify-between border-b border-slate-100 px-3 py-2">
-      <div className="flex items-center gap-1.5">
-        <img
-          src="/brand/logo.png"
-          alt=""
-          className="h-5 w-5 rounded-full object-cover"
-        />
-        <span className="font-display text-[11px] font-extrabold text-navy">
+    <div className="flex items-center justify-between px-4 py-3">
+      <div className="flex items-center gap-2">
+        <img src="/brand/logo.png" alt="" className="h-6 w-6 rounded-full object-cover shadow-sm" />
+        <span className="font-display text-[12px] font-extrabold text-navy tracking-tight">
           Lógica <span className="text-orange">Fit</span>
         </span>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <span className="rounded-full bg-orange px-2 py-0.5 text-[8px] font-semibold text-white">
-          Ver planes
-        </span>
-        <div className="flex flex-col gap-0.5">
-          <div className="h-[1.5px] w-3 rounded bg-navy" />
-          <div className="h-[1.5px] w-3 rounded bg-navy" />
-          <div className="h-[1.5px] w-3 rounded bg-navy" />
-        </div>
       </div>
     </div>
   );
@@ -62,12 +48,12 @@ function NavbarMini() {
 
 function TabBar({ active = 0 }) {
   return (
-    <div className="mx-2 my-2 flex gap-0.5 rounded-full bg-surface-soft p-0.5">
-      {["🏠", "🏋️", "📈", "🍽️"].map((t, i) => (
+    <div className="mx-3 mb-4 flex gap-1 rounded-2xl bg-surface-soft p-1 border border-slate-100">
+      {["Inicio", "Plan", "Datos", "Dieta"].map((t, i) => (
         <div
           key={i}
-          className={`flex flex-1 items-center justify-center rounded-full py-1.5 text-[10px] ${
-            active === i ? "bg-navy text-white" : "text-text-secondary"
+          className={`flex flex-1 items-center justify-center rounded-xl py-2 text-[9px] font-bold transition-colors ${
+            active === i ? "bg-navy text-white shadow-sm" : "text-text-secondary"
           }`}
         >
           {t}
@@ -82,40 +68,27 @@ function ScreenInicio() {
     <>
       <NavbarMini />
       <TabBar active={0} />
-      <div className="px-3 pb-4">
-        <p className="font-display text-[12px] font-bold text-navy">
+      <div className="px-4 space-y-3">
+        <p className="font-display text-[14px] font-extrabold text-navy">
           Hola Alberto 👋
         </p>
-        <div className="mt-1.5 rounded-xl bg-surface-soft p-2.5 text-[8px] leading-relaxed text-navy-light">
-          <p>
-            <strong>Objetivo:</strong> Ganar masa muscular
-          </p>
-          <p>
-            <strong>Plan:</strong> Método Lógica
-          </p>
-          <p className="text-orange">
-            <strong>Vigente hasta:</strong> 28 sep 2026
-          </p>
-          <p className="text-orange">
-            <strong>Próxima revisión:</strong> 14 sep 2026
-          </p>
+        <div className="rounded-2xl bg-surface-soft p-3.5 text-[9px] leading-relaxed text-navy border border-slate-100 shadow-sm">
+          <p className="mb-1"><span className="text-text-secondary font-medium">Objetivo:</span> <strong>Fuerza e Hipertrofia</strong></p>
+          <p className="mb-2"><span className="text-text-secondary font-medium">Fase:</span> <strong>Volumen controlado</strong></p>
+          <div className="h-px w-full bg-slate-200 my-2"></div>
+          <p className="text-orange font-bold">Revisión: Jueves, 14 Sep</p>
         </div>
-        <div className="mt-2 flex flex-col gap-1.5">
-          <div className="flex items-center justify-center rounded-full bg-navy py-1.5">
-            <span className="text-[8px] font-semibold text-white">
-              📄 Descargar mi rutina
-            </span>
+        <div className="flex gap-2">
+          <div className="flex-1 flex items-center justify-center rounded-xl bg-navy py-2.5 shadow-sm">
+            <span className="text-[9px] font-bold text-white">🏋️ Rutina</span>
           </div>
-          <div className="flex items-center justify-center rounded-full bg-orange py-1.5">
-            <span className="text-[8px] font-semibold text-white">
-              📄 Descargar mi dieta
-            </span>
+          <div className="flex-1 flex items-center justify-center rounded-xl bg-orange py-2.5 shadow-sm">
+            <span className="text-[9px] font-bold text-white">🥗 Dieta</span>
           </div>
         </div>
-        <div className="mt-3 space-y-1.5">
-          <div className="h-8 rounded-xl bg-surface-soft opacity-50" />
-          <div className="h-8 rounded-xl bg-surface-soft opacity-30" />
-          <div className="h-8 rounded-xl bg-surface-soft opacity-10" />
+        <div className="space-y-2 pt-2">
+          <div className="h-10 rounded-xl bg-slate-50 border border-slate-100" />
+          <div className="h-10 rounded-xl bg-slate-50 border border-slate-100" />
         </div>
       </div>
     </>
@@ -124,50 +97,28 @@ function ScreenInicio() {
 
 function ScreenEntreno() {
   const exercises = [
-    "PRESS BANCA",
-    "PRESS INCLINADO MANCUERNAS",
-    "APERTURAS CON MANCUERNAS",
+    { name: "PRESS BANCA", sets: "4 series · 8-10 reps" },
+    { name: "PRESS INCLINADO", sets: "3 series · 10-12 reps" },
+    { name: "APERTURAS", sets: "3 series · 12-15 reps" },
   ];
   return (
     <>
       <NavbarMini />
       <TabBar active={1} />
-      <div className="px-3 pb-4">
-        <p className="text-[8px] text-text-secondary">
-          Toca un ejercicio para ver tu historial.
-        </p>
-        <p className="mt-1.5 font-display text-[11px] font-bold text-navy">
-          Lunes
-        </p>
-        <div className="mt-1 space-y-1.5">
-          {exercises.map((ex) => (
-            <div
-              key={ex}
-              className="flex items-center justify-between rounded-xl bg-surface-soft px-2.5 py-2"
-            >
+      <div className="px-4">
+        <p className="font-display text-[12px] font-extrabold text-navy mb-2">Día 1: Empujes</p>
+        <div className="space-y-2">
+          {exercises.map((ex, i) => (
+            <div key={i} className="flex items-center justify-between rounded-xl bg-surface-soft border border-slate-100 px-3 py-2.5 shadow-sm">
               <div>
-                <p className="text-[9px] font-bold text-navy">{ex}</p>
-                <p className="text-[7px] text-text-secondary">3×10 objetivo</p>
+                <p className="text-[10px] font-bold text-navy">{ex.name}</p>
+                <p className="text-[8px] text-text-secondary mt-0.5">{ex.sets}</p>
               </div>
-              <span className="text-[14px] font-light leading-none text-orange">
+              <div className="h-6 w-6 rounded-full bg-white flex items-center justify-center shadow-sm border border-slate-100 text-orange font-bold text-[10px]">
                 +
-              </span>
+              </div>
             </div>
           ))}
-        </div>
-        <p className="mt-2 font-display text-[11px] font-bold text-navy">
-          Martes
-        </p>
-        <div className="mt-1 space-y-1.5">
-          <div className="flex items-center justify-between rounded-xl bg-surface-soft px-2.5 py-2">
-            <div>
-              <p className="text-[9px] font-bold text-navy">PRESS BANCA</p>
-              <p className="text-[7px] text-text-secondary">3×10 objetivo</p>
-            </div>
-            <span className="text-[14px] font-light leading-none text-orange">
-              +
-            </span>
-          </div>
         </div>
       </div>
     </>
@@ -180,68 +131,33 @@ function ScreenProgreso() {
     <>
       <NavbarMini />
       <TabBar active={2} />
-      <div className="px-3 pb-4">
-        <div className="rounded-xl border border-dashed border-orange/40 bg-orange/5 py-2 text-center">
-          <p className="text-[8px] font-semibold text-orange-dark">
-            + Registrar medidas
-          </p>
-        </div>
-        <div className="mt-2 rounded-xl border border-slate-100 p-2">
-          <div className="flex items-center justify-between">
-            <p className="text-[7px] font-semibold uppercase tracking-wide text-text-secondary">
-              Evolución
-            </p>
-            <span className="text-[7px] text-text-secondary">Peso ▾</span>
+      <div className="px-4 space-y-3">
+        <div className="rounded-xl border border-slate-200 p-3 shadow-sm relative overflow-hidden">
+          <p className="text-[8px] font-bold uppercase tracking-widest text-text-secondary mb-1">Peso Corporal</p>
+          <div className="flex items-baseline gap-2">
+            <p className="font-display text-[20px] font-extrabold text-navy">88.8<span className="text-[12px] font-medium text-text-secondary">kg</span></p>
+            <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[7px] font-bold text-emerald-700">-2.1 kg</span>
           </div>
-          <p className="mt-0.5 font-display text-[16px] font-bold text-navy">
-            88.8 <span className="text-[10px] font-normal">kg</span>
-          </p>
-          <span className="inline-block rounded-full bg-orange/10 px-1.5 py-0.5 text-[7px] font-semibold text-orange-dark">
-            +2.8 kg
-          </span>
-          <svg viewBox="0 0 192 64" className="mt-1 h-10 w-full">
-            <polyline
-              fill="none"
-              stroke="#f97316"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              points={points}
-            />
+          <svg viewBox="0 0 192 64" className="mt-3 h-12 w-full overflow-visible">
+            <polyline fill="none" stroke="#f97316" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" points={points} />
             {points.split(" ").map((p, i) => {
               const [x, y] = p.split(",");
-              return <circle key={i} cx={x} cy={y} r="2.5" fill="#f97316" />;
+              return <circle key={i} cx={x} cy={y} r="3" fill="#ffffff" stroke="#f97316" strokeWidth="2" />;
             })}
           </svg>
         </div>
-        <div className="mt-2 rounded-xl border border-slate-100 p-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              <img src="/brand/strava.png" alt="Strava" className="h-3 w-3" />
-              <p className="text-[7px] font-semibold uppercase tracking-wide text-text-secondary">
-                Actividad Strava
-              </p>
+
+        <div className="rounded-xl border border-slate-200 p-3 shadow-sm">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-1.5">
+              <img src="/brand/strava.png" alt="Strava" className="h-3.5 w-3.5" />
+              <p className="text-[8px] font-bold uppercase tracking-widest text-navy">Strava</p>
             </div>
-            <span className="rounded-full bg-[#FC4C02] px-1.5 py-0.5 text-[6px] font-semibold text-white">
-              🔄 Sincronizar
-            </span>
           </div>
-          <div className="mt-1.5 space-y-1">
-            <div className="rounded-lg bg-surface-soft p-1.5">
-              <p className="text-[8px] font-semibold text-navy">
-                Afternoon Run
-              </p>
-              <p className="text-[7px] text-text-secondary">
-                Run · 14.8 km · 1h 34min ↗
-              </p>
-            </div>
-            <div className="rounded-lg bg-surface-soft p-1.5">
-              <p className="text-[8px] font-semibold text-navy">
-                Entrenamiento fuerza
-              </p>
-              <p className="text-[7px] text-text-secondary">
-                WeightTraining · 55 min ↗
-              </p>
+          <div className="space-y-1.5">
+            <div className="rounded-lg bg-surface-soft p-2 border border-slate-100">
+              <p className="text-[9px] font-bold text-navy">Tirada Larga 🏃</p>
+              <p className="text-[8px] text-text-secondary mt-0.5">14.8 km · 5:15 min/km</p>
             </div>
           </div>
         </div>
@@ -252,61 +168,41 @@ function ScreenProgreso() {
 
 export default function AppShowcase() {
   return (
-    <section className="overflow-hidden bg-navy py-24">
-      {/* 
-        He quitado el px-6 de max-w-6xl para que en móvil el slider pueda
-        tocar el borde de la pantalla, queda mucho mejor.
-        He añadido px-6 al div de arriba para no perder el padding del texto.
-      */}
-      <div className="mx-auto max-w-6xl">
-        <div className="mx-auto max-w-2xl px-6 text-center">
-          <p className="font-display text-3xl font-extrabold text-white sm:text-4xl">
-            La app Lógica Fit
+    <section className="overflow-hidden bg-navy py-32 border-t-[12px] border-orange">
+      <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-3xl px-6 text-center">
+          <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange mb-4">
+            Tecnología Propia
           </p>
-          <p className="mt-4 text-base text-slate-300">
-            Tu plan, tu dieta, tu progreso y tus entrenamientos en un solo sitio
-            — siempre actualizado.
+          <h2 className="font-display text-4xl font-extrabold text-white sm:text-5xl lg:text-6xl tracking-tight">
+            Todo tu progreso.<br/>En tu bolsillo.
+          </h2>
+          <p className="mt-6 text-lg text-slate-300 font-medium">
+            Olvida los Excels confusos y los PDFs. Tu plan de entrenamiento, tu dieta, tu registro de cargas y tus carreras de Strava, centralizados en mi app.
           </p>
-          <p className="mt-4 text-sm font-medium tracking-wide text-orange">
-            {FEATURES.join(" · ")}
-          </p>
+          
+          <div className="mt-8 flex flex-wrap justify-center gap-2">
+            {FEATURES.map((feature, i) => (
+              <span key={i} className="px-3 py-1 bg-white/10 rounded-full text-xs font-semibold text-slate-200 border border-white/5">
+                {feature}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {/* 
-          AQUÍ ESTÁ LA MAGIA DEL SCROLL:
-          - overflow-x-auto: Permite scroll horizontal
-          - snap-x snap-mandatory: Fuerza que los elementos hagan el efecto de enganche
-          - scrollbar-hide (opcional si la tuvieras configurada, aquí se la ocultamos con pb-8 para que no moleste)
-          - px-6: Para que el primer móvil tenga margen
-        */}
-        <div className="mt-16 flex items-center justify-start gap-6 overflow-x-auto px-6 pb-8 snap-x snap-mandatory sm:justify-center">
-          <div className="snap-center shrink-0">
-            <PhoneFrame>
-              <ScreenInicio />
-            </PhoneFrame>
+        <div className="mt-20 flex items-center justify-start gap-8 overflow-x-auto px-6 pb-12 snap-x snap-mandatory sm:justify-center hide-scrollbar">
+          <div className="snap-center shrink-0 transition-transform duration-500 hover:-translate-y-4">
+            <PhoneFrame><ScreenInicio /></PhoneFrame>
           </div>
-          <div className="snap-center shrink-0">
-            <PhoneFrame>
-              <ScreenEntreno />
-            </PhoneFrame>
+          <div className="snap-center shrink-0 transition-transform duration-500 hover:-translate-y-4">
+            <PhoneFrame><ScreenEntreno /></PhoneFrame>
           </div>
-          <div className="snap-center shrink-0">
-            <PhoneFrame>
-              <ScreenProgreso />
-            </PhoneFrame>
+          <div className="snap-center shrink-0 transition-transform duration-500 hover:-translate-y-4">
+            <PhoneFrame><ScreenProgreso /></PhoneFrame>
           </div>
-          {/* Pequeño div espaciador para que el último móvil no se quede pegado al final en el scroll */}
-          <div className="w-1 shrink-0 sm:hidden"></div>
+          <div className="w-4 shrink-0 sm:hidden"></div>
         </div>
 
-        <div className="mt-12 text-center">
-          <Link
-            to="/demo"
-            className="text-sm font-semibold text-slate-300 underline-offset-4 transition hover:text-white hover:underline"
-          >
-            Ver demo interactiva de la app →
-          </Link>
-        </div>
       </div>
     </section>
   );

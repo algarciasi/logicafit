@@ -23,40 +23,54 @@ const FAQ_ITEMS = [
   },
 ]
 
-function FaqItem({ q, a }) {
+function FaqItem({ q, a, index }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className="border-b border-slate-100 py-5">
+    <div className="border-b border-slate-200 py-6">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between text-left"
+        className="group flex w-full items-center justify-between text-left focus:outline-none"
         aria-expanded={open}
       >
-        <span className="font-display font-semibold text-navy">{q}</span>
+        <span className="font-display text-lg font-bold text-navy transition-colors group-hover:text-orange">
+          {index + 1}. {q}
+        </span>
         <span
-          className={`ml-4 shrink-0 text-orange transition-transform ${open ? 'rotate-45' : ''}`}
+          className={`ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-surface-soft transition-transform duration-300 ${
+            open ? 'rotate-180 bg-orange/10 text-orange' : 'text-navy'
+          }`}
         >
-          +
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+          </svg>
         </span>
       </button>
-      {open && <p className="mt-3 text-sm leading-relaxed text-text-secondary">{a}</p>}
+      {/* Animación fluida de apertura */}
+      <div 
+        className={`grid transition-all duration-300 ease-in-out ${
+          open ? 'grid-rows-[1fr] opacity-100 mt-4' : 'grid-rows-[0fr] opacity-0'
+        }`}
+      >
+        <div className="overflow-hidden">
+          <p className="text-base leading-relaxed text-text-secondary pr-12">
+            {a}
+          </p>
+        </div>
+      </div>
     </div>
   )
 }
 
 export default function Faq() {
   return (
-    <section className="mx-auto max-w-3xl px-6 py-16">
-      <p className="text-center text-xs font-semibold uppercase tracking-wide text-orange-dark">
-        Preguntas frecuentes
-      </p>
-      <h2 className="mt-2 text-center font-display text-3xl font-extrabold text-navy">
-        Antes de que dudes, resuelvo
+    <section className="mx-auto max-w-4xl px-6 py-20">
+      <h2 className="font-display text-4xl font-extrabold tracking-tight text-navy sm:text-5xl lg:text-6xl max-w-2xl">
+        Te resuelvo las posibles dudas que puedas tener.
       </h2>
 
-      <div className="mt-8">
-        {FAQ_ITEMS.map((item) => (
-          <FaqItem key={item.q} {...item} />
+      <div className="mt-12 border-t border-slate-200">
+        {FAQ_ITEMS.map((item, index) => (
+          <FaqItem key={item.q} q={item.q} a={item.a} index={index} />
         ))}
       </div>
     </section>

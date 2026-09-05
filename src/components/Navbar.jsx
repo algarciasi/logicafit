@@ -1,11 +1,9 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { isAdminEmail } from '../lib/adminConfig'
 
-// Detecta si corre dentro de Capacitor (app nativa Android/iOS)
-const isNativeApp = () =>
-  typeof window !== 'undefined' && window.Capacitor !== undefined
+const isNativeApp = () => typeof window !== 'undefined' && window.Capacitor !== undefined
 
 const NAV_LINKS_WEB = [
   { href: '/#metodo', label: 'Método', type: 'anchor' },
@@ -16,140 +14,108 @@ const NAV_LINKS_WEB = [
   { to: '/conoceme', label: 'Sobre mí', type: 'link' },
 ]
 
-const NAV_LINKS_APP = [
-  { to: '/calculadoras', label: 'Calculadoras', type: 'link' },
-  { to: '/aprende', label: 'Aprende', type: 'link' },
-]
-
 export default function Navbar() {
   const { user } = useAuth()
   const isAdmin = isAdminEmail(user?.email)
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  
+  const location = useLocation()
+  const isHome = location.pathname === '/'
   const native = isNativeApp()
-  const NAV_LINKS = native ? NAV_LINKS_APP : NAV_LINKS_WEB
 
   const closeMenu = () => setOpen(false)
 
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  // Lógica de colores según scroll y página
+  const navBg = scrolled || !isHome ? 'bg-surface/95 backdrop-blur-md shadow-sm border-b border-slate-100 py-2' : 'bg-transparent py-5'
+  const textColor = scrolled || !isHome ? 'text-navy' : 'text-white'
+  const linkColor = scrolled || !isHome ? 'text-text-secondary hover:text-navy' : 'text-slate-200 hover:text-white'
+
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-100 bg-white/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link
-          to="/"
-          onClick={closeMenu}
-          className="flex items-center gap-2 font-display text-lg font-extrabold tracking-tight text-navy"
-        >
-          <img src="/brand/logo.png" alt="Lógica Fit" className="h-8 w-8 rounded-full object-cover" />
-          Lógica <span className="text-orange">Fit</span>
+    <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${navBg}`}>
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 lg:px-8">
+        
+        <Link to="/" onClick={closeMenu} className="flex items-center gap-2 group">
+          <img src="/brand/logo.png" alt="Lógica Fit" className="h-9 w-9 rounded-full object-cover transition-transform duration-500 group-hover:rotate-12" />
+          <span className={`font-display text-xl font-extrabold tracking-tight transition-colors ${textColor}`}>
+            Lógica <span className="text-orange">Fit</span>
+          </span>
         </Link>
 
-        <nav className="hidden items-center gap-8 text-sm font-medium text-text-secondary md:flex">
-          {NAV_LINKS.map((item) =>
-            item.type === 'anchor' ? (
-              <a key={item.label} href={item.href} className="transition hover:text-navy">
-                {item.label}
-              </a>
-            ) : (
-              <Link key={item.label} to={item.to} className="transition hover:text-navy">
-                {item.label}
-              </Link>
-            )
-          )}
+        <nav className="hidden md:flex items-center gap-8 text-[13px] font-bold uppercase tracking-wide">
+          {NAV_LINKS_WEB.map((item) => (
+            <div key={item.label} className="relative group">
+              {item.type === 'anchor' ? (
+                <a href={item.href} className={`transition-colors py-2 ${linkColor}`}>
+                  {item.label}
+                </a>
+              ) : (
+                <Link to={item.to} className={`transition-colors py-2 ${linkColor}`}>
+                  {item.label}
+                </Link>
+              )}
+              {/* Línea animada */}
+              <span className={`absolute -bottom-1 left-0 w-0 h-[2px] transition-all duration-300 group-hover:w-full ${scrolled || !isHome ? 'bg-navy' : 'bg-white'}`}></span>
+            </div>
+          ))}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-5">
           {isAdmin && (
-            <Link
-              to="/admin/clientes"
-              className="hidden text-sm font-semibold text-navy transition hover:text-orange-dark sm:block"
-            >
+            <Link to="/admin/clientes" className={`text-sm font-bold transition-colors ${textColor} hover:text-orange`}>
               Admin
             </Link>
           )}
-          <Link
-            to={user ? '/dashboard' : '/login'}
-            className="hidden text-sm font-semibold text-navy transition hover:text-orange-dark sm:block"
-          >
+          <Link to={user ? '/dashboard' : '/login'} className={`text-sm font-bold transition-colors ${textColor} hover:text-orange`}>
             {user ? 'Mi área' : 'Acceder'}
           </Link>
-          {/* Botón "Ver planes" solo en web */}
           {!native && (
-            <Link
-              to="/planes"
-              className="rounded-full bg-orange px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-orange/30 transition hover:bg-orange-dark"
-            >
+            <Link to="/planes" className="rounded-full bg-orange px-6 py-2.5 text-sm font-bold text-white shadow-lg transition-all hover:bg-orange-dark hover:scale-105">
               Ver planes
             </Link>
           )}
-
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
-            aria-expanded={open}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-navy transition hover:bg-surface-soft md:hidden"
-          >
-            {open ? (
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" d="M4 7h16M4 12h16M4 17h16" />
-              </svg>
-            )}
-          </button>
         </div>
+
+        {/* Botón Menú Móvil */}
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className={`relative z-50 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors md:hidden ${scrolled || !isHome || open ? 'text-navy bg-surface-soft' : 'text-white bg-white/20'}`}
+        >
+          <div className="relative w-5 h-4">
+            <span className={`absolute left-0 h-[2px] w-full bg-current transition-all duration-300 ${open ? 'top-2 rotate-45' : 'top-0'}`}></span>
+            <span className={`absolute left-0 top-2 h-[2px] w-full bg-current transition-all duration-300 ${open ? 'opacity-0' : 'opacity-100'}`}></span>
+            <span className={`absolute left-0 h-[2px] w-full bg-current transition-all duration-300 ${open ? 'top-2 -rotate-45' : 'top-4'}`}></span>
+          </div>
+        </button>
       </div>
 
-      {open && (
-        <nav className="border-t border-slate-100 bg-white px-6 py-4 md:hidden">
-          <ul className="flex flex-col gap-1">
-            {NAV_LINKS.map((item) => (
-              <li key={item.label}>
-                {item.type === 'anchor' ? (
-                  <a
-                    href={item.href}
-                    onClick={closeMenu}
-                    className="block rounded-lg px-2 py-2.5 text-sm font-medium text-navy-light transition hover:bg-surface-soft"
-                  >
-                    {item.label}
-                  </a>
-                ) : (
-                  <Link
-                    to={item.to}
-                    onClick={closeMenu}
-                    className="block rounded-lg px-2 py-2.5 text-sm font-medium text-navy-light transition hover:bg-surface-soft"
-                  >
-                    {item.label}
-                  </Link>
-                )}
-              </li>
-            ))}
-
-            <li className="mt-2 border-t border-slate-100 pt-2">
-              <Link
-                to={user ? '/dashboard' : '/login'}
-                onClick={closeMenu}
-                className="block rounded-lg px-2 py-2.5 text-sm font-semibold text-navy transition hover:bg-surface-soft"
-              >
-                {user ? 'Mi área' : 'Acceder'}
-              </Link>
-            </li>
-
-            {isAdmin && (
-              <li>
-                <Link
-                  to="/admin/clientes"
-                  onClick={closeMenu}
-                  className="block rounded-lg px-2 py-2.5 text-sm font-semibold text-navy transition hover:bg-surface-soft"
-                >
-                  Admin
+      {/* Menú Móvil Desplegable (Siempre claro) */}
+      <div className={`absolute top-full left-0 w-full bg-surface shadow-xl transition-all duration-300 origin-top overflow-hidden md:hidden ${open ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0'}`}>
+        <nav className="flex flex-col px-6 py-6 gap-2">
+          {NAV_LINKS_WEB.map((item) => (
+            <div key={item.label}>
+              {item.type === 'anchor' ? (
+                <a href={item.href} onClick={closeMenu} className="block rounded-xl px-4 py-3 text-base font-bold text-navy bg-surface-soft/50">
+                  {item.label}
+                </a>
+              ) : (
+                <Link to={item.to} onClick={closeMenu} className="block rounded-xl px-4 py-3 text-base font-bold text-navy bg-surface-soft/50">
+                  {item.label}
                 </Link>
-              </li>
-            )}
-          </ul>
+              )}
+            </div>
+          ))}
+          <Link to="/planes" onClick={closeMenu} className="mt-4 block rounded-xl bg-orange px-4 py-4 text-center text-base font-bold text-white">
+            Ver planes
+          </Link>
         </nav>
-      )}
+      </div>
     </header>
   )
 }
