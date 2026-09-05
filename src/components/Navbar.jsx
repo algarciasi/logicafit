@@ -14,6 +14,12 @@ const NAV_LINKS_WEB = [
   { to: '/conoceme', label: 'Sobre mí', type: 'link' },
 ]
 
+// Páginas cuyo hero es oscuro a pantalla completa (foto inmersiva o bg-navy sólido):
+// el navbar nace transparente en desktop y se vuelve sólido al hacer scroll.
+// Calculadora y CalculadoraRunning quedan fuera porque su hero es sobre fondo claro,
+// donde el texto blanco del navbar transparente sería ilegible.
+const HERO_PAGES = ['/', '/calculadoras', '/aprende', '/conoceme', '/planes', '/casos-reales', '/calculadora', '/calculadora-running']
+
 export default function Navbar() {
   const { user } = useAuth()
   const isAdmin = isAdminEmail(user?.email)
@@ -21,7 +27,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
 
   const location = useLocation()
-  const isHome = location.pathname === '/'
+  const isHeroPage = HERO_PAGES.includes(location.pathname)
   const native = isNativeApp()
 
   const closeMenu = () => setOpen(false)
@@ -38,16 +44,17 @@ export default function Navbar() {
   }, [open])
 
   // Móvil: SIEMPRE membrete navy sólido, altura fija h-16.
-  // Desktop (sm+): vuelve al comportamiento dinámico según scroll/página.
+  // Desktop (sm+): transparente sobre el hero mientras no hay scroll,
+  // solo en páginas con hero oscuro; sólido en el resto.
   const navBg = open
     ? 'opacity-0 pointer-events-none'
     : `bg-navy h-16 sm:h-auto ${
-        scrolled || !isHome
+        scrolled || !isHeroPage
           ? 'sm:bg-surface/95 sm:backdrop-blur-md sm:shadow-sm sm:border-b sm:border-slate-100 sm:py-2'
           : 'sm:bg-transparent sm:py-5'
       }`
-  const textColor = `text-white ${scrolled || !isHome ? 'sm:text-navy' : 'sm:text-white'}`
-  const linkColor = scrolled || !isHome ? 'text-text-secondary hover:text-navy' : 'text-slate-200 hover:text-white'
+  const textColor = `text-white ${scrolled || !isHeroPage ? 'sm:text-navy' : 'sm:text-white'}`
+  const linkColor = scrolled || !isHeroPage ? 'text-text-secondary hover:text-navy' : 'text-slate-200 hover:text-white'
 
   return (
     <>
@@ -73,7 +80,7 @@ export default function Navbar() {
                     {item.label}
                   </Link>
                 )}
-                <span className={`absolute -bottom-1 left-0 w-0 h-[2px] transition-all duration-300 group-hover:w-full ${scrolled || !isHome ? 'bg-navy' : 'bg-white'}`}></span>
+                <span className={`absolute -bottom-1 left-0 w-0 h-[2px] transition-all duration-300 group-hover:w-full ${scrolled || !isHeroPage ? 'bg-navy' : 'bg-white'}`}></span>
               </div>
             ))}
           </nav>
