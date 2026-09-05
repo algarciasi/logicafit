@@ -45,7 +45,7 @@ export default function Aprende() {
       <section className="relative w-full pt-16 pb-0 sm:pt-40 sm:pb-24 lg:pt-48 lg:pb-28 flex flex-col sm:justify-center">
         <div className="relative h-[42vh] min-h-[280px] w-full sm:absolute sm:inset-0 sm:h-full sm:min-h-0">
           <img
-            src="/brand/estudiando.jpg"
+            src="/brand/estudiando2.jpg"
             alt="Alberto García estudiando, contenido de Lógica Fit"
             className="h-full w-full object-cover object-[80%_35%] sm:object-[78%_22%] opacity-100 sm:opacity-95 animate-fade-in"
           />

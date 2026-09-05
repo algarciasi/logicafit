@@ -3,18 +3,17 @@ import { Link } from "react-router-dom";
 export default function Conoceme() {
   return (
     <div className="bg-white">
-      {/* SECCIÓN 1: HERO (Imagen inmersiva con degradados, mismo lenguaje que Calculadoras/Aprende) */}
+            {/* SECCIÓN 1: HERO (Imagen inmersiva con degradados, mismo lenguaje que Calculadoras/Aprende) */}
       <section className="relative w-full pt-16 pb-0 sm:pt-40 sm:pb-24 lg:pt-48 lg:pb-28 flex flex-col sm:justify-center">
         <div className="relative h-[42vh] min-h-[280px] w-full sm:absolute sm:inset-0 sm:h-full sm:min-h-0">
           <img
-            src="/brand/alberto-3.jpg"
+            src="/brand/alberto-4.jpg"
             alt="Alberto García, entrenador personal Lógica Fit"
-            className="h-full w-full object-cover object-[75%_30%] sm:object-[72%_20%] opacity-100 sm:opacity-95 animate-fade-in"
+            className="h-full w-full object-cover object-[75%_30%] sm:object-[72%_15%] opacity-100 sm:opacity-95 animate-fade-in"
           />
 
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/10 to-transparent sm:hidden" />
 
-          {/* Overlay más ligero y estrecho: se ve mucho más de foto limpia, sin lavado */}
           <div className="hidden sm:block absolute inset-0 bg-navy/30" />
           <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/50 to-transparent w-full md:w-1/2" />
           <div className="hidden sm:block absolute inset-x-0 bottom-0 h-32 lg:h-40 bg-gradient-to-t from-white to-transparent" />
@@ -22,7 +21,9 @@ export default function Conoceme() {
 
         <div className="relative z-10 w-full bg-navy px-6 py-10 sm:bg-transparent sm:py-0 lg:px-8">
           <div className="mx-auto max-w-7xl w-full">
-            <div className="max-w-2xl">
+            {/* margin-top explícito: baja el bloque de texto dentro del hero,
+                independiente de la altura de la sección o de la imagen */}
+            <div className="max-w-2xl sm:mt-48 lg:mt-64">
               <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-orange animate-fade-in-up">
                 Conóceme
               </p>
