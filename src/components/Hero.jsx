@@ -2,27 +2,31 @@ import { Link } from 'react-router-dom'
 
 export default function Hero() {
   return (
-    <section className="relative w-full overflow-hidden bg-navy flex flex-col pt-16 sm:h-screen sm:min-h-[750px] sm:justify-end sm:pb-16 sm:pt-0 lg:pb-20">
+    <section className="relative w-full bg-navy overflow-hidden pt-16 pb-10 sm:pt-40 sm:pb-24 lg:pt-48 lg:pb-28">
 
       {/* BLOQUE DE IMAGEN
-          Móvil: empieza justo debajo del membrete navy, se ve completa y sin oscurecer.
-          Desktop (sm+): vuelve a ser absolute inset-0 a pantalla completa. */}
+          Móvil: bloque normal de altura fija justo debajo del membrete navy, se ve entera.
+          Desktop (sm+): absolute inset-0 rellenando la altura que marca el contenido
+          (título + tarjetas + padding), no el viewport — igual que el resto de páginas. */}
       <div className="relative h-[48vh] min-h-[320px] w-full sm:absolute sm:inset-0 sm:h-full sm:min-h-0">
         <img
           src="/brand/alberto-gym.jpg"
           alt="Alberto García, entrenador personal Lógica Fit"
-          className="h-full w-full object-cover object-[50%_30%] sm:object-[center_20%] opacity-100 sm:opacity-80 animate-fade-in"
+          className="h-full w-full object-cover object-[75%_30%] sm:object-[68%_18%] opacity-100 sm:opacity-90 animate-fade-in"
         />
-        {/* Degradado inferior: en móvil funde la foto con el navy sólido de debajo */}
-        <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/5 to-transparent sm:from-navy/95 sm:via-navy/40 sm:to-navy/10" />
-        {/* Degradado lateral: solo tiene sentido en desktop, donde el texto va encima de la foto */}
-        <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/40 to-transparent sm:w-2/3" />
+
+        {/* Degradado inferior móvil: funde la foto con el bloque navy de texto de debajo */}
+        <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/10 to-transparent sm:hidden" />
+
+        {/* Degradados desktop: overlay ligero + degradado lateral, mismo lenguaje que Calculadoras/Aprende/Planes */}
+        <div className="hidden sm:block absolute inset-0 bg-navy/50" />
+        <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/55 to-transparent w-full md:w-3/5" />
       </div>
 
       {/* BLOQUE DE CONTENIDO
-          Móvil: flujo normal debajo de la imagen, fondo navy sólido, nada superpuesto.
-          Desktop (sm+): vuelve a ser absolute inset-0 flex justify-end, overlay clásico sobre la foto. */}
-      <div className="relative z-10 w-full bg-navy px-5 pt-8 pb-10 sm:bg-transparent sm:absolute sm:inset-0 sm:flex sm:flex-col sm:justify-end sm:px-6 sm:pb-16 sm:pt-0 lg:px-8 lg:pb-20">
+          Móvil: flujo normal debajo de la imagen, fondo navy sólido, sin superposición.
+          Desktop (sm+): overlay clásico sobre la foto, altura determinada por el propio contenido. */}
+      <div className="relative z-10 w-full bg-navy px-5 pt-8 pb-10 sm:bg-transparent sm:px-6 sm:pt-0 sm:pb-0 lg:px-8">
         <div className="mx-auto w-full max-w-7xl">
 
           {/* TITULAR GIGANTE */}
@@ -77,6 +81,7 @@ export default function Hero() {
               </div>
             </div>
 
+            {/* Tarjeta de Acento (Estilo cristal/turquesa) */}
             <div className="md:col-span-6 md:col-start-7 lg:col-span-4 lg:col-start-9 bg-[#0e7490]/90 backdrop-blur-md rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-2xl border border-cyan-400/20 animate-fade-in-up delay-400">
               <p className="text-sm text-cyan-50 font-medium leading-relaxed">
                 Con un Entrenador Personal Online tendrás todos los beneficios de un entrenador presencial, pero con la flexibilidad de poder hacerlo todo a distancia gracias a la App Lógica Fit.

@@ -43,31 +43,21 @@ export default function Aprende() {
     <div className="bg-surface overflow-hidden min-h-screen">
       {/* 1. HERO (Imagen inmersiva con degradados, mismo lenguaje que Calculadoras) */}
       <section className="relative w-full pt-16 pb-0 sm:pt-40 sm:pb-24 lg:pt-48 lg:pb-28 flex flex-col sm:justify-center">
-        {/* BLOQUE DE IMAGEN
-            Móvil: bloque normal de altura fija justo debajo del membrete navy, se ve entera.
-            Desktop (sm+): absolute inset-0 a pantalla completa, estilo Calculadoras. */}
         <div className="relative h-[42vh] min-h-[280px] w-full sm:absolute sm:inset-0 sm:h-full sm:min-h-0">
           <img
-            src="/brand/estudiando2.jpg"
+            src="/brand/estudiando.jpg"
             alt="Alberto García estudiando, contenido de Lógica Fit"
-            className="h-full w-full object-cover object-[center_30%] opacity-100 sm:opacity-90 animate-fade-in"
+            className="h-full w-full object-cover object-[80%_35%] sm:object-[78%_22%] opacity-100 sm:opacity-95 animate-fade-in"
           />
 
-          {/* Degradado inferior móvil: funde la foto con el bloque navy de texto de debajo */}
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/10 to-transparent sm:hidden" />
 
-          {/* Degradados desktop: base uniforme más oscura para que el texto
-              (más largo que en Calculadoras) tenga contraste garantizado en toda su altura */}
-          <div className="hidden sm:block absolute inset-0 bg-navy/70" />
-          <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/70 to-navy/30 w-full md:w-4/5" />
-          {/* Franja de transición al fondo blanco: altura FIJA y pequeña, no un
-              porcentaje de la sección, así nunca invade el texto por muy largo que sea */}
+          {/* Overlay más ligero y estrecho: se ve mucho más de foto limpia, sin lavado */}
+          <div className="hidden sm:block absolute inset-0 bg-navy/35" />
+          <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/55 to-transparent w-full md:w-1/2" />
           <div className="hidden sm:block absolute inset-x-0 bottom-0 h-32 lg:h-40 bg-gradient-to-t from-surface to-transparent" />
         </div>
 
-        {/* BLOQUE DE TEXTO
-            Móvil: flujo normal debajo de la imagen, fondo navy sólido, sin superposición.
-            Desktop (sm+): overlay clásico sobre la foto, estilo Calculadoras. */}
         <div className="relative z-10 w-full bg-navy px-6 py-10 sm:bg-transparent sm:py-0 lg:px-8">
           <div className="mx-auto max-w-7xl w-full">
             <div className="max-w-2xl">
