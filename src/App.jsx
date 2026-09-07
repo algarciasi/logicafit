@@ -21,6 +21,8 @@ import About from './components/About'
 import Aprende from './pages/Aprende'
 import Article from './pages/Article'
 import { isAdminEmail } from './lib/adminConfig'
+import PoliticaPrivacidad from "./pages/PoliticaPrivacidad";
+import EliminarCuenta from './pages/EliminarCuenta'
 
 // Detecta si corre dentro de Capacitor (app nativa Android/iOS)
 const isNativeApp = () =>
@@ -68,6 +70,8 @@ function App() {
             <Route path="/aprende"             element={<Aprende />} />
             <Route path="/aprende/:slug"       element={<Article />} />
             <Route path="/login"               element={<Login />} />
+            <Route path="/politica-privacidad" element={<PoliticaPrivacidad />} />
+            <Route path="/eliminar-cuenta"     element={<EliminarCuenta />} />
 
             {/* Rutas protegidas */}
             <Route

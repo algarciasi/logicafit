@@ -4,23 +4,23 @@ export default function Planes() {
   return (
     <div className="bg-surface overflow-hidden">
       
-      {/* 1. HERO DE PLANES (Imagen a toda pantalla fundiéndose con el fondo) */}
+      {/* 1. HERO DE PLANES (Imagen reposicionada a la derecha para dejar el texto limpio) */}
       <section className="relative w-full pt-40 pb-56 lg:pt-48 lg:pb-72">
-        {/* Imagen de fondo */}
+        {/* Imagen de fondo: object-[center_top] o ajustada para que tu figura encaje a la derecha */}
         <img
           src="/brand/alberto-2.jpg"
           alt="Alberto entrenando"
-          className="absolute inset-0 h-full w-full object-cover object-[center_25%] animate-fade-in"
+          className="absolute inset-0 h-full w-full object-cover object-[80%_20%] lg:object-[center_25%] opacity-85 animate-fade-in"
         />
         
-        {/* Degradados: Oscurecen la foto para leer el texto y funden el bajo con el color de la web */}
-        <div className="absolute inset-0 bg-navy/30" /> 
-        <div className="absolute inset-0 bg-gradient-to-r from-navy/90 via-navy/50 to-transparent w-full md:w-3/4" />
+        {/* Degradados profesionales: Bloque oscuro fuerte a la izquierda para el texto, y difuminado hacia abajo */}
+        <div className="absolute inset-0 bg-navy/40" /> 
+        <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-navy/30 lg:to-transparent w-full lg:w-2/3" />
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-surface via-surface/80 to-transparent" />
 
         {/* Texto del Hero */}
         <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="max-w-2xl">
+          <div className="max-w-xl">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange animate-fade-in-up">
               Entrenamiento Online
             </p>
@@ -28,13 +28,13 @@ export default function Planes() {
               Elige cómo quieres avanzar.
             </h1>
             <p className="mt-6 text-lg sm:text-xl text-slate-200 font-medium animate-fade-in-up delay-200">
-              Sin permanencia. Empieza hoy mismo y cancela cuando quieras.
+              Sin permanencia. Empieza hoy mismo y avanza con criterio profesional.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 2. TARJETAS DE PRECIOS (Flotando sobre la imagen gracias a -mt-32) */}
+      {/* 2. TARJETAS DE PLANES (Flotando sobre la imagen gracias a -mt-32) */}
       <section className="relative z-20 mx-auto max-w-7xl px-6 lg:px-8 -mt-32 lg:-mt-48 mb-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
@@ -51,15 +51,9 @@ export default function Planes() {
                 <h2 className="font-display text-3xl font-bold text-white">
                   Entrenamiento 1:1
                 </h2>
-                <p className="mt-3 text-slate-300 leading-relaxed font-medium max-w-sm">
-                  Plan individualizado, seguimiento semanal por WhatsApp y ajustes constantes para garantizar resultados.
+                <p className="mt-3 text-slate-300 leading-relaxed font-medium max-w-md">
+                  Plan individualizado, seguimiento semanal directo por WhatsApp y ajustes constantes para garantizar que consigues tu físico objetivo.
                 </p>
-              </div>
-              <div className="shrink-0 sm:text-right">
-                <div className="flex items-baseline gap-1 sm:justify-end">
-                  <span className="text-5xl font-extrabold text-white">50€</span>
-                  <span className="text-lg font-medium text-slate-400">/mes</span>
-                </div>
               </div>
             </div>
 
@@ -87,38 +81,34 @@ export default function Planes() {
 
             <div className="relative mt-12">
               <a 
-                href="https://wa.me/34678951544?text=Hola!%20He%20visto%20la%20web%20y%20quiero%20solicitar%20una%20plaza%20para%20el%20Entrenamiento%201:1"
+                href="https://wa.me/34678951544?text=Hola!%20He%20visto%20la%20web%20y%20quiero%20consultar%20precio%20y%20plazas%20para%20el%20Entrenamiento%201:1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-block w-full rounded-full bg-orange px-8 py-5 text-center text-base font-bold text-white transition-all hover:bg-orange-dark hover:scale-[1.02] shadow-[0_0_20px_rgba(234,88,12,0.3)]"
+                className="inline-flex items-center justify-center gap-3 w-full rounded-full bg-orange px-8 py-5 text-center text-base font-bold text-white transition-all hover:bg-orange-dark hover:scale-[1.02] shadow-[0_0_20px_rgba(234,88,12,0.3)]"
               >
-                Solicitar mi plaza
+                Consultar plazas por WhatsApp
               </a>
             </div>
           </div>
 
           {/* TARJETA BÁSICA (A tu ritmo) - Estilo cristal/blanco (5 columnas) */}
-          <div className="lg:col-span-5 flex flex-col h-full rounded-[2.5rem] bg-white/80 backdrop-blur-xl p-8 sm:p-10 shadow-xl shadow-slate-200/50 border border-white animate-fade-in-up delay-400">
+          <div className="lg:col-span-5 flex flex-col h-full rounded-[2.5rem] bg-white/90 backdrop-blur-xl p-8 sm:p-10 shadow-xl shadow-slate-200/50 border border-white animate-fade-in-up delay-400">
             <div>
               <h3 className="font-display text-2xl font-bold text-navy">
                 A tu ritmo
               </h3>
               <p className="mt-3 text-base text-text-secondary leading-relaxed font-medium">
-                Todo lo que necesitas para entrenar por tu cuenta, con la planificación estructurada en la app Lógica Fit, pero sin seguimiento individual por WhatsApp.
+                Todo lo que necesitas para entrenar por tu cuenta, con la planificación estructurada en la app Lógica Fit, pero sin seguimiento individual directo.
               </p>
-              <div className="mt-6 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold text-navy">20€</span>
-                <span className="text-base font-medium text-text-secondary">/mes</span>
-              </div>
             </div>
             
             <div className="mt-8 pt-8 border-t border-slate-100 flex-1">
               <div className="space-y-4 text-sm text-slate-600">
-                <div className="flex items-start gap-3 opacity-60">
+                <div className="flex items-start gap-3 opacity-70">
                   <span className="text-lg">❌</span>
                   <span>Sin revisiones semanales</span>
                 </div>
-                <div className="flex items-start gap-3 opacity-60">
+                <div className="flex items-start gap-3 opacity-70">
                   <span className="text-lg">❌</span>
                   <span>Sin contacto diario por WhatsApp</span>
                 </div>
@@ -126,12 +116,12 @@ export default function Planes() {
             </div>
 
             <a 
-              href="https://wa.me/34678951544?text=Hola!%20Me%20gustaria%20empezar%20a%20entrenar%20a%20Mi%20Ritmo"
+              href="https://wa.me/34678951544?text=Hola!%20Me%20interesa%20el%20plan%20A%20tu%20ritmo,%20quiero%20saber%20más"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-10 inline-block w-full rounded-full bg-surface-soft ring-1 ring-slate-200 px-8 py-5 text-center text-sm font-bold text-navy transition-all hover:bg-slate-50 hover:ring-slate-300"
+              className="mt-10 inline-flex items-center justify-center gap-2 w-full rounded-full bg-surface-soft ring-1 ring-slate-200 px-8 py-5 text-center text-sm font-bold text-navy transition-all hover:bg-slate-50 hover:ring-slate-300"
             >
-              Entrenar a mi ritmo
+              Preguntar por plan autónomo
             </a>
           </div>
 
@@ -155,7 +145,7 @@ export default function Planes() {
         </div>
       </section>
 
-      {/* 3. FAQ (Importado de nuestro nuevo componente) */}
+      {/* 3. FAQ */}
       <Faq />
 
       {/* 4. CONTACTO / CTA FINAL */}
