@@ -4,42 +4,53 @@ export default function Planes() {
   return (
     <div className="bg-surface overflow-hidden">
       
-      {/* 1. HERO DE PLANES (Optimizado para que la imagen respire en móvil y desktop) */}
-      <section className="relative w-full pt-36 pb-48 lg:pt-48 lg:pb-72">
-        {/* Imagen de fondo */}
+      {/* 1. HERO DE PLANES: En móvil estructurado en bloque limpio (foto arriba, texto abajo sin solaparse), y en desktop con imagen de fondo inmersiva */}
+      <section className="relative w-full pt-32 pb-20 lg:pt-48 lg:pb-72 bg-navy">
+        
+        {/* Imagen de fondo exclusiva para pantallas grandes (Desktop) */}
         <img
           src="/brand/alberto-2.jpg"
           alt="Alberto entrenando"
-          className="absolute inset-0 h-full w-full object-cover object-[70%_20%] lg:object-[center_25%] opacity-70 animate-fade-in"
+          className="hidden lg:block absolute inset-0 h-full w-full object-cover object-[center_25%] opacity-75 animate-fade-in"
         />
         
-        {/* Degradados adaptativos: En móvil usamos un degradado vertical superior/inferior para que la foto se vea de fondo y el texto resalte con una pastilla sutil, y en desktop el lateral clásico */}
-        <div className="absolute inset-0 bg-navy/50 lg:bg-navy/30" /> 
-        <div className="absolute inset-0 bg-gradient-to-t from-surface via-navy/60 to-navy/80 lg:bg-gradient-to-r lg:from-navy/95 lg:via-navy/60 lg:to-transparent" />
+        {/* Degradados solo para desktop */}
+        <div className="hidden lg:block absolute inset-0 bg-navy/40" /> 
+        <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-transparent w-3/5" />
+        <div className="hidden lg:block absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-surface via-surface/80 to-transparent" />
 
-        {/* Texto del Hero */}
+        {/* Contenido del Hero */}
         <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="max-w-xl">
+          
+          {/* Imagen destacada limpia visible SOLO en móvil para que se vea tu físico sin letras encima */}
+          <div className="block lg:hidden mb-10 overflow-hidden rounded-[2rem] shadow-xl border border-slate-700/50 max-h-[380px]">
+            <img 
+              src="/brand/alberto-2.jpg" 
+              alt="Alberto entrenando" 
+              className="w-full h-full object-cover object-[center_20%]"
+            />
+          </div>
+
+          <div className="max-w-xl text-left">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange animate-fade-in-up">
               Entrenamiento Online
             </p>
             <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white tracking-tight animate-fade-in-up delay-100 leading-[1.05]">
               Elige cómo quieres avanzar.
             </h1>
-            <p className="mt-4 sm:mt-6 text-base sm:text-xl text-slate-200 font-medium animate-fade-in-up delay-200">
+            <p className="mt-4 sm:mt-6 text-base sm:text-xl text-slate-300 font-medium animate-fade-in-up delay-200">
               Sin permanencia. Empieza hoy mismo y avanza con criterio profesional.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 2. TARJETAS DE PLANES (Flotando sobre la imagen gracias a -mt-24 en móvil y -mt-32/48 en desktop) */}
-      <section className="relative z-20 mx-auto max-w-7xl px-6 lg:px-8 -mt-24 sm:-mt-32 lg:-mt-48 mb-24">
+      {/* 2. TARJETAS DE PLANES */}
+      <section className="relative z-20 mx-auto max-w-7xl px-6 lg:px-8 -mt-8 lg:-mt-48 mb-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
-          {/* TARJETA PREMIUM (1 a 1) - Ocupa más espacio (7 columnas) */}
+          {/* TARJETA PREMIUM (1 a 1) */}
           <div className="lg:col-span-7 relative rounded-[2.5rem] bg-navy p-8 sm:p-12 shadow-2xl shadow-navy/30 animate-fade-in-up delay-300 overflow-hidden border border-slate-700/50">
-            {/* Brillo decorativo */}
             <div className="absolute top-0 right-0 -mr-20 -mt-20 h-64 w-64 rounded-full bg-orange opacity-15 blur-[80px]"></div>
             
             <div className="relative flex flex-col sm:flex-row sm:items-start justify-between gap-6 border-b border-slate-700 pb-10">
@@ -90,7 +101,7 @@ export default function Planes() {
             </div>
           </div>
 
-          {/* TARJETA BÁSICA (A tu ritmo) - Estilo cristal/blanco (5 columnas) */}
+          {/* TARJETA BÁSICA (A tu ritmo) */}
           <div className="lg:col-span-5 flex flex-col h-full rounded-[2.5rem] bg-white/90 backdrop-blur-xl p-8 sm:p-10 shadow-xl shadow-slate-200/50 border border-white animate-fade-in-up delay-400">
             <div>
               <h3 className="font-display text-2xl font-bold text-navy">
