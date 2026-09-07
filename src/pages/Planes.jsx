@@ -4,19 +4,18 @@ export default function Planes() {
   return (
     <div className="bg-surface overflow-hidden">
       
-      {/* 1. HERO DE PLANES (Imagen reposicionada a la derecha para dejar el texto limpio) */}
-      <section className="relative w-full pt-40 pb-56 lg:pt-48 lg:pb-72">
-        {/* Imagen de fondo: object-[center_top] o ajustada para que tu figura encaje a la derecha */}
+      {/* 1. HERO DE PLANES (Optimizado para que la imagen respire en móvil y desktop) */}
+      <section className="relative w-full pt-36 pb-48 lg:pt-48 lg:pb-72">
+        {/* Imagen de fondo */}
         <img
           src="/brand/alberto-2.jpg"
           alt="Alberto entrenando"
-          className="absolute inset-0 h-full w-full object-cover object-[80%_20%] lg:object-[center_25%] opacity-85 animate-fade-in"
+          className="absolute inset-0 h-full w-full object-cover object-[70%_20%] lg:object-[center_25%] opacity-70 animate-fade-in"
         />
         
-        {/* Degradados profesionales: Bloque oscuro fuerte a la izquierda para el texto, y difuminado hacia abajo */}
-        <div className="absolute inset-0 bg-navy/40" /> 
-        <div className="absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-navy/30 lg:to-transparent w-full lg:w-2/3" />
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-surface via-surface/80 to-transparent" />
+        {/* Degradados adaptativos: En móvil usamos un degradado vertical superior/inferior para que la foto se vea de fondo y el texto resalte con una pastilla sutil, y en desktop el lateral clásico */}
+        <div className="absolute inset-0 bg-navy/50 lg:bg-navy/30" /> 
+        <div className="absolute inset-0 bg-gradient-to-t from-surface via-navy/60 to-navy/80 lg:bg-gradient-to-r lg:from-navy/95 lg:via-navy/60 lg:to-transparent" />
 
         {/* Texto del Hero */}
         <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
@@ -24,18 +23,18 @@ export default function Planes() {
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange animate-fade-in-up">
               Entrenamiento Online
             </p>
-            <h1 className="mt-4 font-display text-5xl font-extrabold text-white sm:text-6xl lg:text-7xl tracking-tight animate-fade-in-up delay-100 leading-[1.05]">
+            <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-7xl font-extrabold text-white tracking-tight animate-fade-in-up delay-100 leading-[1.05]">
               Elige cómo quieres avanzar.
             </h1>
-            <p className="mt-6 text-lg sm:text-xl text-slate-200 font-medium animate-fade-in-up delay-200">
+            <p className="mt-4 sm:mt-6 text-base sm:text-xl text-slate-200 font-medium animate-fade-in-up delay-200">
               Sin permanencia. Empieza hoy mismo y avanza con criterio profesional.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 2. TARJETAS DE PLANES (Flotando sobre la imagen gracias a -mt-32) */}
-      <section className="relative z-20 mx-auto max-w-7xl px-6 lg:px-8 -mt-32 lg:-mt-48 mb-24">
+      {/* 2. TARJETAS DE PLANES (Flotando sobre la imagen gracias a -mt-24 en móvil y -mt-32/48 en desktop) */}
+      <section className="relative z-20 mx-auto max-w-7xl px-6 lg:px-8 -mt-24 sm:-mt-32 lg:-mt-48 mb-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* TARJETA PREMIUM (1 a 1) - Ocupa más espacio (7 columnas) */}
