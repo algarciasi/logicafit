@@ -4,33 +4,34 @@ export default function Planes() {
   return (
     <div className="bg-surface overflow-hidden">
       
-      {/* 1. HERO DE PLANES: En móvil estructurado en bloque limpio (foto arriba, texto abajo sin solaparse), y en desktop con imagen de fondo inmersiva */}
-      <section className="relative w-full pt-32 pb-20 lg:pt-48 lg:pb-72 bg-navy">
+      {/* 1. HERO DE PLANES */}
+      <section className="relative w-full pt-0 lg:pt-48 pb-16 lg:pb-72 bg-navy">
         
-        {/* Imagen de fondo exclusiva para pantallas grandes (Desktop) */}
+        {/* IMAGEN MÓVIL: A todo lo ancho, sin redondeos y fundiéndose con el fondo */}
+        <div className="relative block lg:hidden w-full h-[400px]">
+          <img 
+            src="/brand/alberto-2.jpg" 
+            alt="Alberto entrenando" 
+            className="w-full h-full object-cover object-[center_20%]"
+          />
+          {/* Degradado para que el corte de la foto no sea brusco y fluya hacia el texto */}
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-navy to-transparent" />
+        </div>
+
+        {/* IMAGEN DESKTOP: Inmersiva de fondo */}
         <img
           src="/brand/alberto-2.jpg"
           alt="Alberto entrenando"
           className="hidden lg:block absolute inset-0 h-full w-full object-cover object-[center_25%] opacity-75 animate-fade-in"
         />
         
-        {/* Degradados solo para desktop */}
+        {/* Degradados exclusivos para desktop */}
         <div className="hidden lg:block absolute inset-0 bg-navy/40" /> 
         <div className="hidden lg:block absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-transparent w-3/5" />
         <div className="hidden lg:block absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-surface via-surface/80 to-transparent" />
 
-        {/* Contenido del Hero */}
-        <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
-          
-          {/* Imagen destacada limpia visible SOLO en móvil para que se vea tu físico sin letras encima */}
-          <div className="block lg:hidden mb-10 overflow-hidden rounded-[2rem] shadow-xl border border-slate-700/50 max-h-[380px]">
-            <img 
-              src="/brand/alberto-2.jpg" 
-              alt="Alberto entrenando" 
-              className="w-full h-full object-cover object-[center_20%]"
-            />
-          </div>
-
+        {/* TEXTO DEL HERO */}
+        <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 pt-8 lg:pt-0">
           <div className="max-w-xl text-left">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange animate-fade-in-up">
               Entrenamiento Online
@@ -45,12 +46,13 @@ export default function Planes() {
         </div>
       </section>
 
-      {/* 2. TARJETAS DE PLANES */}
-      <section className="relative z-20 mx-auto max-w-7xl px-6 lg:px-8 -mt-8 lg:-mt-48 mb-24">
+      {/* 2. TARJETAS DE PLANES (mt-12 en móvil para no solapar, -mt-48 en desktop para flotar) */}
+      <section className="relative z-20 mx-auto max-w-7xl px-6 lg:px-8 mt-12 lg:-mt-48 mb-24">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* TARJETA PREMIUM (1 a 1) */}
           <div className="lg:col-span-7 relative rounded-[2.5rem] bg-navy p-8 sm:p-12 shadow-2xl shadow-navy/30 animate-fade-in-up delay-300 overflow-hidden border border-slate-700/50">
+            {/* Brillo decorativo */}
             <div className="absolute top-0 right-0 -mr-20 -mt-20 h-64 w-64 rounded-full bg-orange opacity-15 blur-[80px]"></div>
             
             <div className="relative flex flex-col sm:flex-row sm:items-start justify-between gap-6 border-b border-slate-700 pb-10">
