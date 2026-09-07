@@ -4,38 +4,48 @@ export default function Calculadoras() {
   return (
     <div className="bg-surface overflow-hidden min-h-screen">
       
-      {/* 1. HERO (Imagen inmersiva con degradados) */}
-      <section className="relative w-full pt-40 pb-56 lg:pt-48 lg:pb-64 flex flex-col justify-center">
-        {/* Imagen de fondo */}
-        <img
-          src="/brand/macros-calc.jpg"
-          alt="Calculadoras"
-          className="absolute inset-0 h-full w-full object-cover object-[center_30%] opacity-90 animate-fade-in"
-        />
+      {/* 1. HERO (Estructura adaptativa: Bloque dividido en móvil, Inmersivo en desktop) */}
+      <section className="relative w-full pt-16 pb-0 sm:pt-40 sm:pb-32 lg:pt-48 lg:pb-40 flex flex-col sm:justify-center bg-navy">
         
-        {/* Degradados para fundir la imagen con la web */}
-        <div className="absolute inset-0 bg-navy/50" /> 
-        <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/60 to-transparent w-full md:w-3/4" />
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-surface via-surface/80 to-transparent" />
+        {/* BLOQUE DE IMAGEN */}
+        <div className="relative h-[38vh] min-h-[240px] w-full sm:absolute sm:inset-0 sm:h-full sm:min-h-0">
+          <img
+            src="/brand/macros-calc.jpg"
+            alt="Calculadoras"
+            className="h-full w-full object-cover object-[center_30%] opacity-100 sm:opacity-90 animate-fade-in"
+          />
+          {/* Degradado inferior móvil: funde la foto con el bloque navy de texto de debajo */}
+          <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/10 to-transparent sm:hidden" />
 
-        {/* Textos */}
-        <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 w-full">
-          <div className="max-w-2xl">
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange animate-fade-in-up">
-              Herramientas Gratuitas
-            </p>
-            <h1 className="mt-4 font-display text-5xl font-extrabold text-white sm:text-6xl tracking-tight animate-fade-in-up delay-100 leading-[1.05]">
-              Calculadoras
-            </h1>
-            <p className="mt-6 text-lg sm:text-xl text-slate-300 font-medium animate-fade-in-up delay-200 leading-relaxed max-w-lg">
-              Ajusta tu nutrición milimétricamente y planifica tus entrenamientos de carrera para asegurar tus resultados.
-            </p>
+          {/* Degradados desktop */}
+          <div className="hidden sm:block absolute inset-0 bg-navy/60" /> 
+          <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/60 to-transparent w-full md:w-3/4" />
+          <div className="hidden sm:block absolute inset-x-0 bottom-0 h-32 lg:h-48 bg-gradient-to-t from-surface to-transparent" />
+        </div>
+
+        {/* BLOQUE DE TEXTO */}
+        <div className="relative z-10 w-full bg-navy px-6 py-10 sm:bg-transparent sm:py-0 lg:px-8">
+          <div className="mx-auto max-w-7xl w-full">
+            <div className="max-w-2xl">
+              <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-orange animate-fade-in-up">
+                Herramientas Gratuitas
+              </p>
+              <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight animate-fade-in-up delay-100 leading-[1.05]">
+                Calculadoras
+              </h1>
+              <p className="mt-5 sm:mt-6 text-base sm:text-lg text-slate-300 font-medium animate-fade-in-up delay-200 leading-relaxed max-w-lg">
+                Ajusta tu nutrición milimétricamente y planifica tus entrenamientos de carrera para asegurar tus resultados.
+              </p>
+            </div>
           </div>
         </div>
+        
+        {/* Transición extra en móvil para conectar el fondo azul marino con el fondo gris de abajo */}
+        <div className="block sm:hidden absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-surface to-transparent z-10" />
       </section>
 
-      {/* 2. TARJETAS DE CALCULADORAS (Flotando sobre la imagen) */}
-      <section className="relative z-20 mx-auto max-w-5xl px-6 lg:px-8 -mt-32 lg:-mt-40 mb-32">
+      {/* 2. TARJETAS DE CALCULADORAS (Flotando sobre la imagen/fondo) */}
+      <section className="relative z-20 mx-auto max-w-5xl px-6 lg:px-8 -mt-6 sm:-mt-24 lg:-mt-32 mb-32">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           
           {/* Tarjeta 1: Macros */}
