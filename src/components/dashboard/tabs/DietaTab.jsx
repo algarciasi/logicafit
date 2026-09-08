@@ -269,12 +269,16 @@ export default function DietaTab({ client }) {
                       const foodKcal = Math.round(((Number(it.foods?.calorias || it.foods?.kcal) || 0) * (Number(it.cantidad_g) || 0)) / 100)
                       const isOption = !!it.opcion
                       const dayLabel = it.dia_semana ? DAYS_MAP[it.dia_semana] : 'Todos los días'
-                      
-                      return (
-                        <li key={it.id} className="flex items-center justify-between gap-4">
+                      const urlCompra = it.foods?.url_compra
+
+                      const content = (
+                        <>
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-sm font-bold text-navy">
                               {it.foods?.nombre}
+                              {urlCompra && (
+                                <span className="ml-1.5 text-[10px] font-extrabold text-orange">↗</span>
+                              )}
                             </p>
                             <p className="truncate text-[11px] font-bold text-slate-400 mt-0.5">
                               {it.cantidad_g}g · {dayLabel} 
@@ -289,6 +293,25 @@ export default function DietaTab({ client }) {
                           <div className="shrink-0 text-right">
                             <span className="text-xs font-extrabold text-navy">{foodKcal} kcal</span>
                           </div>
+                        </>
+                      )
+
+                      return (
+                        <li key={it.id}>
+                          {urlCompra ? (
+                            <a
+                              href={urlCompra}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="-mx-2 flex items-center justify-between gap-4 rounded-xl px-2 py-1.5 transition hover:bg-slate-50 active:bg-slate-100"
+                            >
+                              {content}
+                            </a>
+                          ) : (
+                            <div className="flex items-center justify-between gap-4">
+                              {content}
+                            </div>
+                          )}
                         </li>
                       )
                     })}
