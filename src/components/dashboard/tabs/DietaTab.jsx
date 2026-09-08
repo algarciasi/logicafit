@@ -267,7 +267,7 @@ export default function DietaTab({ client }) {
                   <ul className="flex flex-col gap-4">
                     {items.map((it) => {
                       const foodKcal = Math.round(((Number(it.foods?.calorias || it.foods?.kcal) || 0) * (Number(it.cantidad_g) || 0)) / 100)
-                      const isOption = it.opcion && it.opcion > 1
+                      const isOption = !!it.opcion
                       const dayLabel = it.dia_semana ? DAYS_MAP[it.dia_semana] : 'Todos los días'
                       
                       return (
