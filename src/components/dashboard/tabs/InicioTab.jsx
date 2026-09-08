@@ -34,7 +34,7 @@ export default function InicioTab({ client }) {
     return (
       <EmptyState
         icon="🔍"
-        title="No encontramos tu ficha de cliente"
+        title="Ficha no encontrada"
         body="Tu cuenta existe pero no está vinculada a ningún cliente todavía. Escríbeme y lo reviso."
       />
     )
@@ -54,72 +54,127 @@ export default function InicioTab({ client }) {
   }
 
   return (
-    <div>
-      <p className="font-display text-lg font-bold text-navy">
-        Hola {client.full_name?.split(' ')[0] || ''} 👋
-      </p>
+    <div className="flex flex-col gap-6">
+      
+      {/* HEADER DE BIENVENIDA */}
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-bold tracking-widest text-orange uppercase">
+            Resumen general
+          </p>
+          <h2 className="font-display text-3xl font-extrabold text-navy mt-1">
+            Hola, {client.full_name?.split(' ')[0] || 'Atleta'} <span className="inline-block animate-wave">👋</span>
+          </h2>
+        </div>
+        
+        {/* Avatar inicial */}
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-navy text-white shadow-md">
+          <span className="font-display text-xl font-bold uppercase">
+            {client.full_name?.charAt(0) || 'A'}
+          </span>
+        </div>
+      </div>
 
-      {loading && <p className="mt-4 text-sm text-text-secondary">Cargando…</p>}
+      {loading && <p className="text-sm font-medium text-slate-400">Cargando tus datos…</p>}
 
       {!loading && !hasAnything && (
-        <div className="mt-6">
-          <EmptyState
-            icon="🗓️"
-            title="Aún no tienes ningún entreno asignado"
-            body="En cuanto diseñe tu plan lo verás aquí. Si tienes prisa, escríbeme."
-          />
-        </div>
+        <EmptyState
+          icon="🗓️"
+          title="Sin entreno asignado"
+          body="En cuanto diseñe tu plan lo verás aquí. Si tienes prisa, escríbeme."
+        />
       )}
 
+      {/* TARJETA DE PLAN (Estilo VIP en color Navy) */}
       {!loading && hasPlanInfo && (
-        <div className="mt-4 rounded-2xl border border-slate-100 bg-surface-soft p-4">
-          {client.objetivo_entrenamiento && (
-            <p className="text-sm text-navy">
-              <span className="font-semibold">Objetivo:</span> {objetivoLabel(client.objetivo_entrenamiento)}
-            </p>
-          )}
-          {client.tipo_plan && (
-            <p className="mt-1 text-sm text-navy">
-              <span className="font-semibold">Plan:</span> {client.tipo_plan}
-            </p>
-          )}
-          {client.plan_vigente_hasta && (
-            <p className="mt-1 text-sm text-navy">
-              <span className="font-semibold">Vigente hasta:</span> {formatDate(client.plan_vigente_hasta)}
-            </p>
-          )}
-          {client.proxima_revision && (
-            <p className="mt-1 text-sm text-navy">
-              <span className="font-semibold">Próxima revisión:</span> {formatDate(client.proxima_revision)}
-            </p>
-          )}
+        <div className="relative overflow-hidden rounded-[2rem] bg-navy p-6 shadow-xl shadow-navy/20 border border-slate-700/50">
+          {/* Brillo sutil de fondo para textura */}
+          <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-orange opacity-15 blur-[50px]"></div>
+
+          <div className="relative z-10 flex flex-col gap-5">
+            
+            <div className="flex items-center justify-between border-b border-slate-700 pb-5">
+              <div>
+                <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1">Objetivo actual</p>
+                <p className="font-display text-xl font-bold text-white">
+                  {client.objetivo_entrenamiento ? objetivoLabel(client.objetivo_entrenamiento) : 'No definido'}
+                </p>
+              </div>
+              <div className="rounded-xl bg-orange/20 px-3 py-1.5 border border-orange/20">
+                <span className="text-[10px] font-extrabold text-orange uppercase tracking-wider">Activo</span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              {client.tipo_plan && (
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Plan</p>
+                  <p className="mt-1 text-sm font-semibold text-white">{client.tipo_plan}</p>
+                </div>
+              )}
+              {client.plan_vigente_hasta && (
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Vigencia</p>
+                  <p className="mt-1 text-sm font-semibold text-white">Hasta {formatDate(client.plan_vigente_hasta)}</p>
+                </div>
+              )}
+              {client.proxima_revision && (
+                <div className="col-span-2 mt-2">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Próxima revisión</p>
+                  <div className="mt-2 inline-flex items-center gap-2 rounded-xl bg-slate-800/50 px-3 py-2 border border-slate-700">
+                    <span className="h-2 w-2 rounded-full bg-orange"></span>
+                    <span className="text-sm font-semibold text-white">{formatDate(client.proxima_revision)}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
+      {/* BOTONES DE DESCARGA (Estilo UI Táctil y grandes) */}
       {!loading && (routineEntries.length > 0 || dietEntries.length > 0) && (
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="grid grid-cols-2 gap-4 mt-2">
+          
           {routineEntries.length > 0 && (
             <button
               type="button"
               onClick={() => handleDownload('rutina')}
               disabled={downloading === 'rutina'}
-              className="rounded-full bg-navy px-4 py-2 text-xs font-semibold text-white transition hover:bg-navy-light disabled:opacity-60"
+              className="group flex flex-col items-center justify-center gap-3 rounded-3xl bg-white border border-slate-100 p-5 shadow-sm transition-all hover:border-navy/30 hover:shadow-md active:scale-95 disabled:opacity-50 disabled:active:scale-100"
             >
-              {downloading === 'rutina' ? 'Generando…' : '📄 Descargar mi rutina'}
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-50 text-navy group-hover:bg-navy/5 transition-colors">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <span className="text-[11px] font-bold text-navy uppercase tracking-wider text-center">
+                {downloading === 'rutina' ? 'Generando...' : 'Descargar Rutina'}
+              </span>
             </button>
           )}
+
           {dietEntries.length > 0 && (
             <button
               type="button"
               onClick={() => handleDownload('dieta')}
               disabled={downloading === 'dieta'}
-              className="rounded-full bg-orange px-4 py-2 text-xs font-semibold text-white transition hover:bg-orange-dark disabled:opacity-60"
+              className="group flex flex-col items-center justify-center gap-3 rounded-3xl bg-orange border border-orange-dark p-5 shadow-lg shadow-orange/20 transition-all hover:bg-orange-dark active:scale-95 disabled:opacity-50 disabled:active:scale-100"
             >
-              {downloading === 'dieta' ? 'Generando…' : '📄 Descargar mi dieta'}
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 text-white">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <span className="text-[11px] font-bold text-white uppercase tracking-wider text-center">
+                {downloading === 'dieta' ? 'Generando...' : 'Descargar Dieta'}
+              </span>
             </button>
           )}
+          
         </div>
       )}
+
     </div>
   )
 }
