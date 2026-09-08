@@ -49,7 +49,7 @@ export default function Dashboard() {
   }[active]
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-28 pb-32">
+    <div className="min-h-screen bg-slate-50 pt-28 pb-44">
       
       {/* Contenedor central simulando pantalla de móvil en desktop */}
       <div className="mx-auto max-w-md px-6">
