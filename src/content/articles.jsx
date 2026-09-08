@@ -39,20 +39,20 @@ export const articles = [
         </p>
 
         <CoachNote title="Lo que hago yo">
-          Prefiero mantener una selección relativamente estable de ejercicios. Cambiar una rutina cada pocas semanas me parece mucho menos importante que exprimir realmente la que ya tengo.
+          Prefiero mantener una selección relativamente estable de ejercicios, <b>los básicos no fallan</b>. Cambiar una rutina cada pocas semanas me parece mucho menos importante que exprimir realmente la que ya tengo.
         </CoachNote>
 
-        <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">4. La técnica importa, pero no necesitas hacer una tesis</h2>
+        <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">4. La técnica importa, pero no necesitas tener un máster</h2>
         <p className="mb-6">
           Debes tener un buen control, un recorrido completo y buscar la estabilidad. Eso es innegociable. Pero a veces veo a gente obsesionada con modificar milimétricamente la rotación de la muñeca o el grado de inclinación del codo, olvidándose de lo básico: mover peso con intención y acercarse al fallo. 
         </p>
 
-        <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">5. Comer bien no necesita ser complicado</h2>
+        <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">5. Comer bien no debe ser complicado</h2>
         <p className="mb-6">
           He contado macros al gramo y he comido por intuición. Al final, se trata de principios simples: asegúrate de comer suficiente proteína, mantén las calorías en el rango de tu objetivo (superávit o déficit), elige alimentos razonablemente nutritivos la mayor parte del tiempo y ten flexibilidad. Si no hay adherencia y te supone un estrés constante, la dieta no la seguirás y efecto rebote será mayor. No necesitas dietas cerradas de pechuga, arroz y brócoli (no te dedicas al fitness).
         </p>
 
-        <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">6. El mejor plan es el que puedes mantener</h2>
+        <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">6. El mejor plan es el que puedes mantener en el tiempo</h2>
         <p className="mb-6">
           Tienes un trabajo, quizá una familia, días con más estrés, noches donde duermes peor y un tiempo disponible limitado. El programa tiene que adaptarse a ti, no tú al programa. Si tu plan sobre el papel es perfecto pero en tu vida real es inviable, es un mal plan.
         </p>
@@ -77,7 +77,7 @@ export const articles = [
 
         <h2 className="mt-12 mb-6 font-display text-2xl font-bold text-navy">10. Si tuviera que resumirlo</h2>
         <p className="mb-6">
-          Después de tantos años sigo entrenando por la misma razón por la que empecé: porque me gusta y me hace desconectar. La diferencia es que ahora necesito muchas menos cosas para saber si voy por buen camino.
+          Después de tantos años sigo entrenando por la misma razón por la que empecé: porque me gusta y me hace desconectar. La diferencia es que ahora necesito muchas menos cosas para saber si avanzo en mi objetivo.
         </p>
         <p className="mb-6">
           Al final, se trata exactamente de eso: menos ruido, más progreso.

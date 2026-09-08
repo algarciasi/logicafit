@@ -84,7 +84,7 @@ export default function Hero() {
             {/* Tarjeta de Acento (Estilo cristal/turquesa) */}
             <div className="md:col-span-6 md:col-start-7 lg:col-span-4 lg:col-start-9 bg-[#0e7490]/90 backdrop-blur-md rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-2xl border border-cyan-400/20 animate-fade-in-up delay-400">
               <p className="text-sm text-cyan-50 font-medium leading-relaxed">
-                Con un Entrenador Personal Online tendrás todos los beneficios de un entrenador presencial, pero con la flexibilidad de poder hacerlo todo a distancia gracias a la App Lógica Fit.
+                Si decides hacer seguimiento online decirte que, con conmigo tendrás todos los beneficios de un entrenador presencial, pero con la flexibilidad de poder hacerlo todo a distancia gracias a mi App Lógica Fit.
               </p>
             </div>
 
