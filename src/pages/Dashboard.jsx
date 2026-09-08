@@ -5,6 +5,7 @@ import InicioTab from "../components/dashboard/tabs/InicioTab"
 import EntrenoTab from "../components/dashboard/tabs/EntrenoTab"
 import ProgresoTab from "../components/dashboard/tabs/ProgresoTab"
 import DietaTab from "../components/dashboard/tabs/DietaTab"
+import ExtrasTab from "../components/dashboard/tabs/ExtrasTab"
 
 const TABS = [
   { 
@@ -27,6 +28,11 @@ const TABS = [
     label: "Dieta", 
     icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" /> 
   },
+  { 
+    id: "extras", 
+    label: "Extras", 
+    icon: <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /> 
+  },
 ]
 
 export default function Dashboard() {
@@ -39,6 +45,7 @@ export default function Dashboard() {
     entreno: <EntrenoTab client={client} />,
     progreso: <ProgresoTab client={client} />,
     dieta: <DietaTab client={client} />,
+    extras: <ExtrasTab client={client} />,
   }[active]
 
   return (
@@ -76,16 +83,16 @@ export default function Dashboard() {
             <button
               key={t.id}
               onClick={() => setActive(t.id)}
-              className={`relative flex flex-col items-center justify-center w-1/4 py-3 rounded-3xl transition-all duration-300 ${
+              className={`relative flex flex-col items-center justify-center w-1/5 py-3 rounded-3xl transition-all duration-300 ${
                 isActive 
                   ? "text-white bg-orange shadow-md shadow-orange/20 scale-105" 
                   : "text-slate-400 hover:text-slate-200"
               }`}
             >
-              <svg className="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-5 w-5 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 {t.icon}
               </svg>
-              <span className="text-[10px] font-extrabold tracking-wide">{t.label}</span>
+              <span className="text-[9px] font-extrabold tracking-wide">{t.label}</span>
             </button>
           )
         })}

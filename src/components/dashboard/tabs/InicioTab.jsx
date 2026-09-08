@@ -10,6 +10,11 @@ function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
+function formatShortDate(dateStr) {
+  if (!dateStr) return null
+  return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
 export default function InicioTab({ client }) {
   const [routineEntries, setRoutineEntries] = useState([])
   const [dietEntries, setDietEntries] = useState([])
@@ -40,7 +45,14 @@ export default function InicioTab({ client }) {
     )
   }
 
-  const hasPlanInfo = client.tipo_plan || client.plan_vigente_hasta || client.proxima_revision || client.objetivo_entrenamiento
+  const hasPlanInfo =
+    client.tipo_plan ||
+    client.plan_vigente_hasta ||
+    client.proxima_revision ||
+    client.objetivo_entrenamiento ||
+    client.peso ||
+    client.altura ||
+    client.edad
   const hasAnything = hasPlanInfo || routineEntries.length > 0 || dietEntries.length > 0
 
   const handleDownload = async (type) => {
@@ -53,20 +65,25 @@ export default function InicioTab({ client }) {
     }
   }
 
+  // Datos personales que sí tengamos rellenos
+  const personalStats = [
+    client.edad && { label: 'Edad', value: `${client.edad} años` },
+    client.altura && { label: 'Altura', value: `${client.altura} cm` },
+    client.peso && { label: 'Peso actual', value: `${client.peso} kg` },
+    client.created_at && { label: 'Miembro desde', value: formatShortDate(client.created_at) },
+  ].filter(Boolean)
+
   return (
     <div className="flex flex-col gap-6">
-      
-      {/* HEADER DE BIENVENIDA */}
+
+      {/* HEADER */}
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-bold tracking-widest text-orange uppercase">
-            Resumen general
+            Mi panel
           </p>
-          <h2 className="font-display text-3xl font-extrabold text-navy mt-1">
-            Hola, {client.full_name?.split(' ')[0] || 'Atleta'} <span className="inline-block animate-wave">👋</span>
-          </h2>
         </div>
-        
+
         {/* Avatar inicial */}
         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-navy text-white shadow-md">
           <span className="font-display text-xl font-bold uppercase">
@@ -85,14 +102,35 @@ export default function InicioTab({ client }) {
         />
       )}
 
-      {/* TARJETA DE PLAN (Estilo VIP en color Navy) */}
+      {/* TARJETA PRINCIPAL */}
       {!loading && hasPlanInfo && (
         <div className="relative overflow-hidden rounded-[2rem] bg-navy p-6 shadow-xl shadow-navy/20 border border-slate-700/50">
           {/* Brillo sutil de fondo para textura */}
           <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-orange opacity-15 blur-[50px]"></div>
 
           <div className="relative z-10 flex flex-col gap-5">
-            
+
+            {/* Nombre + datos personales */}
+            <div className="border-b border-slate-700 pb-5">
+              <p className="font-display text-2xl font-extrabold text-white">
+                {client.full_name || 'Atleta'}
+              </p>
+
+              {personalStats.length > 0 && (
+                <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3">
+                  {personalStats.map((stat) => (
+                    <div key={stat.label}>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                        {stat.label}
+                      </p>
+                      <p className="mt-1 text-sm font-semibold text-white">{stat.value}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Objetivo */}
             <div className="flex items-center justify-between border-b border-slate-700 pb-5">
               <div>
                 <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400 mb-1">Objetivo actual</p>
@@ -105,6 +143,7 @@ export default function InicioTab({ client }) {
               </div>
             </div>
 
+            {/* Plan */}
             <div className="grid grid-cols-2 gap-4">
               {client.tipo_plan && (
                 <div>
@@ -132,10 +171,10 @@ export default function InicioTab({ client }) {
         </div>
       )}
 
-      {/* BOTONES DE DESCARGA (Estilo UI Táctil y grandes) */}
+      {/* BOTONES DE DESCARGA */}
       {!loading && (routineEntries.length > 0 || dietEntries.length > 0) && (
         <div className="grid grid-cols-2 gap-4 mt-2">
-          
+
           {routineEntries.length > 0 && (
             <button
               type="button"
@@ -171,7 +210,7 @@ export default function InicioTab({ client }) {
               </span>
             </button>
           )}
-          
+
         </div>
       )}
 
