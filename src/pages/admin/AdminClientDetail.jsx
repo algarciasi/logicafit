@@ -87,15 +87,17 @@ export default function AdminClientDetail() {
   }
 
   if (loading) {
-    return <p className="mx-auto max-w-3xl px-6 py-12 text-sm text-text-secondary">Cargando…</p>
+    return <p className="mx-auto max-w-3xl px-6 pt-32 pb-12 text-sm text-text-secondary">Cargando…</p>
   }
 
   if (error || !client) {
     return (
-      <div className="mx-auto max-w-3xl px-6 py-12">
-        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-          No se pudo cargar este cliente{error ? `: ${error.message}` : ''}.
-        </p>
+      <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl">
+          <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
+            No se pudo cargar este cliente{error ? `: ${error.message}` : ''}.
+          </p>
+        </div>
       </div>
     )
   }
@@ -106,93 +108,96 @@ export default function AdminClientDetail() {
   }))
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-12">
-      <Link to="/admin/clientes" className="text-xs font-semibold text-text-secondary hover:text-navy">
-        ← Volver a clientes
-      </Link>
+    // Se añade min-h-screen, bg-slate-50 y pt-32 para librar el Navbar
+    <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-6 lg:px-8">
+      <div className="mx-auto max-w-3xl">
+        <Link to="/admin/clientes" className="text-xs font-semibold text-text-secondary hover:text-navy">
+          ← Volver a clientes
+        </Link>
 
-      <h1 className="mt-2 font-display text-2xl font-extrabold text-navy">
-        {client.full_name || client.email}
-      </h1>
-      <p className="text-sm text-text-secondary">
-        {client.email} {client.telefono ? `· ${client.telefono}` : ''}
-      </p>
-      {client.objetivo_entrenamiento && (
-        <p className="mt-1 text-sm text-text-secondary">
-          Objetivo: {client.objetivo_entrenamiento}
+        <h1 className="mt-2 font-display text-2xl font-extrabold text-navy">
+          {client.full_name || client.email}
+        </h1>
+        <p className="text-sm text-text-secondary">
+          {client.email} {client.telefono ? `· ${client.telefono}` : ''}
         </p>
-      )}
+        {client.objetivo_entrenamiento && (
+          <p className="mt-1 text-sm text-text-secondary">
+            Objetivo: {client.objetivo_entrenamiento}
+          </p>
+        )}
 
-      <div className="mt-8">
-        <WeightChart points={weightHistory} />
-      </div>
+        <div className="mt-8">
+          <WeightChart points={weightHistory} />
+        </div>
 
-      <div className="mt-8">
-        <ClientPlanEditor client={client} onSaved={loadAll} />
-      </div>
+        <div className="mt-8">
+          <ClientPlanEditor client={client} onSaved={loadAll} />
+        </div>
 
-      <div className="mt-10">
-        <h2 className="font-display text-lg font-bold text-navy">Asignar dieta</h2>
+        <div className="mt-10">
+          <h2 className="font-display text-lg font-bold text-navy">Asignar dieta</h2>
 
-        <div className="mt-4 space-y-4">
-          {entriesByMeal.map(({ meal, items }) => (
-            <div key={meal.id} className="rounded-2xl border border-slate-100 bg-white p-4">
-              <p className="font-display text-sm font-bold text-navy">
-                {meal.icon} {meal.label}
-              </p>
-              {items.length === 0 ? (
-                <p className="mt-2 text-xs text-text-secondary">Sin alimentos asignados.</p>
-              ) : (
-                <ul className="mt-2 space-y-1.5">
-                  {items.map((it) => (
-                    <li
-                      key={it.id}
-                      className="flex items-center justify-between rounded-lg bg-surface-soft px-3 py-1.5 text-xs"
-                    >
-                      <span className="text-navy-light">
-                        {it.foods?.nombre} — {it.cantidad_g}g
-                        <span className="ml-1.5 text-[10px] text-text-secondary">
-                          ({it.dia_semana ? diaLabel(it.dia_semana) : 'todos los días'}
-                          {it.opcion && it.opcion > 1 ? ` · Opción ${it.opcion}` : ''})
-                        </span>
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(it.id)}
-                        className="text-text-secondary hover:text-red-500"
+          <div className="mt-4 space-y-4">
+            {entriesByMeal.map(({ meal, items }) => (
+              <div key={meal.id} className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
+                <p className="font-display text-sm font-bold text-navy">
+                  {meal.icon} {meal.label}
+                </p>
+                {items.length === 0 ? (
+                  <p className="mt-2 text-xs text-text-secondary">Sin alimentos asignados.</p>
+                ) : (
+                  <ul className="mt-2 space-y-1.5">
+                    {items.map((it) => (
+                      <li
+                        key={it.id}
+                        className="flex items-center justify-between rounded-lg bg-surface-soft px-3 py-1.5 text-xs"
                       >
-                        ✕
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
+                        <span className="text-navy-light">
+                          {it.foods?.nombre} — {it.cantidad_g}g
+                          <span className="ml-1.5 text-[10px] text-text-secondary">
+                            ({it.dia_semana ? diaLabel(it.dia_semana) : 'todos los días'}
+                            {it.opcion && it.opcion > 1 ? ` · Opción ${it.opcion}` : ''})
+                          </span>
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(it.id)}
+                          className="text-text-secondary hover:text-red-500"
+                        >
+                          ✕
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
 
-              <MealFoodPicker mealId={meal.id} onAdd={handleAddMealFood} />
-            </div>
-          ))}
+                <MealFoodPicker mealId={meal.id} onAdd={handleAddMealFood} />
+              </div>
+            ))}
+          </div>
+
+          <DietHistoryPanel
+            clientId={id}
+            dietEntries={dietEntries}
+            history={dietHistory}
+            onChange={loadAll}
+          />
         </div>
 
-        <DietHistoryPanel
-          clientId={id}
-          dietEntries={dietEntries}
-          history={dietHistory}
-          onChange={loadAll}
-        />
-      </div>
+        <div className="mt-10">
+          <h2 className="font-display text-lg font-bold text-navy">Asignar rutina</h2>
+          <div className="mt-4">
+            <AdminRoutineEditor clientId={id} entries={routineEntries} onChange={loadAll} />
+          </div>
 
-      <div className="mt-10">
-        <h2 className="font-display text-lg font-bold text-navy">Asignar rutina</h2>
-        <div className="mt-4">
-          <AdminRoutineEditor clientId={id} entries={routineEntries} onChange={loadAll} />
+          <RoutineHistoryPanel
+            clientId={id}
+            routineEntries={routineEntries}
+            history={routineHistory}
+            onChange={loadAll}
+          />
         </div>
-
-        <RoutineHistoryPanel
-          clientId={id}
-          routineEntries={routineEntries}
-          history={routineHistory}
-          onChange={loadAll}
-        />
       </div>
     </div>
   )

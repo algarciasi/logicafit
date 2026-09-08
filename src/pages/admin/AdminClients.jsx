@@ -76,53 +76,56 @@ export default function AdminClients() {
   const noActivos = clients.filter((c) => (c.status || 'activo') !== 'activo')
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-12">
-      <p className="text-xs font-semibold uppercase tracking-wide text-orange-dark">Admin</p>
-      <h1 className="mt-1 font-display text-2xl font-extrabold text-navy">Tus clientes</h1>
+    // Se añade min-h-screen, bg-slate-50 y pt-32 para librar el Navbar
+    <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-6 lg:px-8">
+      <div className="mx-auto max-w-3xl">
+        <p className="text-xs font-semibold uppercase tracking-wide text-orange-dark">Admin</p>
+        <h1 className="mt-1 font-display text-2xl font-extrabold text-navy">Tus clientes</h1>
 
-      {loading && <p className="mt-6 text-sm text-text-secondary">Cargando…</p>}
+        {loading && <p className="mt-6 text-sm text-text-secondary">Cargando…</p>}
 
-      {error && (
-        <p className="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
-          Error al cargar clientes: {error.message}
-        </p>
-      )}
-
-      {!loading && !error && clients.length === 0 && (
-        <p className="mt-6 text-sm text-text-secondary">
-          Aún no tienes ningún cliente en la tabla `clients`.
-        </p>
-      )}
-
-      {!loading && activos.length > 0 && (
-        <div className="mt-6">
-          <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-            Activos ({activos.length})
+        {error && (
+          <p className="mt-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600">
+            Error al cargar clientes: {error.message}
           </p>
-          <ul className="mt-3 space-y-3">
-            {activos.map((c) => (
-              <li key={c.id}>
-                <ClientCard c={c} onStatusChange={handleStatusChange} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        )}
 
-      {!loading && noActivos.length > 0 && (
-        <div className="mt-10">
-          <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
-            No activos ({noActivos.length})
+        {!loading && !error && clients.length === 0 && (
+          <p className="mt-6 text-sm text-text-secondary">
+            Aún no tienes ningún cliente en la tabla `clients`.
           </p>
-          <ul className="mt-3 space-y-3 opacity-70">
-            {noActivos.map((c) => (
-              <li key={c.id}>
-                <ClientCard c={c} onStatusChange={handleStatusChange} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        )}
+
+        {!loading && activos.length > 0 && (
+          <div className="mt-6">
+            <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+              Activos ({activos.length})
+            </p>
+            <ul className="mt-3 space-y-3">
+              {activos.map((c) => (
+                <li key={c.id}>
+                  <ClientCard c={c} onStatusChange={handleStatusChange} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {!loading && noActivos.length > 0 && (
+          <div className="mt-10">
+            <p className="text-xs font-semibold uppercase tracking-wide text-text-secondary">
+              No activos ({noActivos.length})
+            </p>
+            <ul className="mt-3 space-y-3 opacity-70">
+              {noActivos.map((c) => (
+                <li key={c.id}>
+                  <ClientCard c={c} onStatusChange={handleStatusChange} />
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
