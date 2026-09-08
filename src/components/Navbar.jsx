@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { isAdminEmail } from '../lib/adminConfig'
+import { supabase } from '../lib/supabaseClient' // Necesario para el logout
 
 const isNativeApp = () => typeof window !== 'undefined' && window.Capacitor !== undefined
 
@@ -14,10 +15,6 @@ const NAV_LINKS_WEB = [
   { to: '/conoceme', label: 'Sobre mí', type: 'link' },
 ]
 
-// Páginas cuyo hero es oscuro a pantalla completa (foto inmersiva o bg-navy sólido):
-// el navbar nace transparente en desktop y se vuelve sólido al hacer scroll.
-// Calculadora y CalculadoraRunning quedan fuera porque su hero es sobre fondo claro,
-// donde el texto blanco del navbar transparente sería ilegible.
 const HERO_PAGES = ['/', '/calculadoras', '/aprende', '/conoceme', '/planes', '/casos-reales', '/calculadora', '/calculadora-running']
 
 export default function Navbar() {
@@ -27,10 +24,22 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
 
   const location = useLocation()
+  const navigate = useNavigate()
   const isHeroPage = HERO_PAGES.includes(location.pathname)
   const native = isNativeApp()
 
   const closeMenu = () => setOpen(false)
+
+  // FUNCIÓN PARA CERRAR SESIÓN
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut()
+      closeMenu()
+      navigate('/') // Redirige a la home al salir
+    } catch (error) {
+      console.error("Error cerrando sesión:", error)
+    }
+  }
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -43,9 +52,6 @@ export default function Navbar() {
     return () => { document.body.style.overflow = '' }
   }, [open])
 
-  // Móvil: SIEMPRE membrete navy sólido, altura fija h-16.
-  // Desktop (sm+): transparente sobre el hero mientras no hay scroll,
-  // solo en páginas con hero oscuro; sólido en el resto.
   const navBg = open
     ? 'opacity-0 pointer-events-none'
     : `bg-navy h-16 sm:h-auto ${
@@ -94,6 +100,17 @@ export default function Navbar() {
             <Link to={user ? '/dashboard' : '/login'} className={`text-sm font-bold transition-colors ${textColor} hover:text-orange`}>
               {user ? 'Mi área' : 'Acceder'}
             </Link>
+            
+            {/* BOTÓN DE LOGOUT EN DESKTOP */}
+            {user && (
+              <button 
+                onClick={handleLogout}
+                className={`text-sm font-bold transition-colors ${textColor} hover:text-red-500`}
+              >
+                Salir
+              </button>
+            )}
+
             {!native && (
               <Link to="/planes" className="rounded-full bg-orange px-6 py-2.5 text-sm font-bold text-white shadow-lg transition-all hover:bg-orange-dark hover:scale-105">
                 Ver planes
@@ -101,7 +118,6 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Botón Menú Móvil (abrir) — siempre blanco sobre el membrete navy */}
           <button
             onClick={() => setOpen(true)}
             aria-label="Abrir menú"
@@ -117,8 +133,8 @@ export default function Navbar() {
       </header>
 
       {open && (
-        <div className="fixed inset-0 z-[60] bg-navy md:hidden">
-          <div className="flex h-16 items-center justify-between px-6">
+        <div className="fixed inset-0 z-[60] bg-navy md:hidden flex flex-col">
+          <div className="flex h-16 items-center justify-between px-6 shrink-0">
             <Link to="/" onClick={closeMenu} className="flex items-center gap-2">
               <img src="/brand/logo.png" alt="Lógica Fit" className="h-9 w-9 rounded-full object-cover" />
               <span className="font-display text-xl font-extrabold tracking-tight text-white">
@@ -136,7 +152,7 @@ export default function Navbar() {
             </button>
           </div>
 
-          <div className="flex h-[calc(100%-64px)] flex-col justify-between px-6 pb-8 overflow-y-auto">
+          <div className="flex-1 overflow-y-auto px-6 pb-8">
             <nav className="flex flex-col">
               {NAV_LINKS_WEB.map((item, index) => {
                 const num = String(index + 1).padStart(2, '0')
@@ -176,11 +192,21 @@ export default function Navbar() {
               </Link>
             </nav>
 
+            {/* BOTÓN DE LOGOUT EN MÓVIL */}
+            {user && (
+              <button 
+                onClick={handleLogout} 
+                className="mt-8 w-full flex items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-6 py-4 text-center text-sm font-bold tracking-wide text-red-400 active:bg-red-500/20 transition-colors"
+              >
+                Cerrar sesión
+              </button>
+            )}
+
             {!native && (
               <Link
                 to="/planes"
                 onClick={closeMenu}
-                className="mt-6 block rounded-full bg-orange px-6 py-4 text-center text-sm font-bold uppercase tracking-wide text-white shadow-lg active:scale-[0.98]"
+                className="mt-6 block w-full rounded-full bg-orange px-6 py-4 text-center text-sm font-bold uppercase tracking-wide text-white shadow-lg active:scale-[0.98]"
               >
                 Ver planes
               </Link>
