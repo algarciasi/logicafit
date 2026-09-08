@@ -1,87 +1,155 @@
-import { useState } from 'react'
-import { MEASUREMENT_FIELDS } from '../../lib/notes'
+import { useState, useMemo } from 'react'
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts'
 
-function ChartBody({ points, metric, unit }) {
-  const values = points.map((p) => p[metric])
-  const max = Math.max(...values)
-  const min = Math.min(...values)
-  const range = max - min || 1
-
-  const coords = points.map((p, i) => {
-    const x = (i / (points.length - 1)) * 270 + 5
-    const y = 80 - ((p[metric] - min) / range) * 65
-    return { x, y }
-  })
-
-  const linePoints = coords.map((c) => `${c.x},${c.y}`).join(' ')
-  const first = points[0]
-  const last = points[points.length - 1]
-  const diff = (last[metric] - first[metric]).toFixed(1)
-
-  return (
-    <div>
-      <div className="mt-3 flex items-baseline justify-between">
-        <p className="font-display text-2xl font-extrabold text-navy">
-          {last[metric]} {unit}
-        </p>
-        <span className="rounded-full bg-orange/10 px-2 py-0.5 text-[11px] font-semibold text-orange-dark">
-          {diff > 0 ? '+' : ''}
-          {diff} {unit}
-        </span>
-      </div>
-
-      <svg viewBox="0 0 280 90" className="mt-2 h-24 w-full">
-        <polyline
-          fill="none"
-          stroke="#f97316"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          points={linePoints}
-        />
-        {coords.map((c, i) => (
-          <circle key={i} cx={c.x} cy={c.y} r="3" fill="#f97316" />
-        ))}
-      </svg>
-      <div className="flex justify-between text-[10px] text-text-secondary">
-        <span>{new Date(first.created_at).toLocaleDateString('es-ES')}</span>
-        <span>{new Date(last.created_at).toLocaleDateString('es-ES')}</span>
-      </div>
-    </div>
-  )
+const formatShortDate = (dateString) => {
+  if (!dateString) return ''
+  const date = new Date(dateString)
+  return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
 }
 
-export default function MeasurementsChart({ entries }) {
-  const [metric, setMetric] = useState('peso')
-  const field = MEASUREMENT_FIELDS.find((f) => f.key === metric)
-  const points = entries.filter((e) => e[metric] !== null && e[metric] !== undefined)
+const CustomTooltip = ({ active, payload, label, unit }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="rounded-2xl bg-navy p-3 shadow-xl ring-1 ring-white/10 transition-all">
+        <p className="mb-1 text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+          {formatShortDate(label)}
+        </p>
+        <p className="font-display text-xl font-extrabold text-white">
+          {payload[0].value} <span className="text-sm font-bold text-slate-400">{unit}</span>
+        </p>
+      </div>
+    )
+  }
+  return null
+}
+
+export default function MeasurementsChart({ 
+  dataEntries = [], 
+  metrics = [], 
+  title, 
+  subtitle, 
+  icon, 
+  color = "#EA580C", 
+  unit = "kg" 
+}) {
+  const [selectedMetric, setSelectedMetric] = useState(metrics[0]?.id || '')
+
+  const chartData = useMemo(() => {
+    if (!dataEntries || dataEntries.length === 0 || !selectedMetric || selectedMetric === 'sin_datos') return []
+    
+    return [...dataEntries]
+      .sort((a, b) => new Date(a.fecha || a.date) - new Date(b.fecha || b.date))
+      .map(e => ({
+        date: e.fecha || e.date,
+        value: parseFloat(e[selectedMetric]) || 0
+      }))
+      .filter(d => d.value > 0)
+  }, [dataEntries, selectedMetric])
+
+  if (chartData.length === 0) {
+    return (
+      <div className="overflow-hidden rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100 mb-6 group">
+        <div className="mb-2 flex items-center justify-between">
+          <div>
+            <h3 className="font-display text-xl font-extrabold text-navy">{title}</h3>
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mt-1">{subtitle}</p>
+          </div>
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl transition-transform group-hover:scale-105" style={{ backgroundColor: `${color}15`, color: color }}>
+            {icon}
+          </div>
+        </div>
+        <p className="text-sm text-slate-400 mt-4">No hay suficientes datos registrados.</p>
+      </div>
+    )
+  }
+
+  const currentVal = chartData[chartData.length - 1].value
+  const firstVal = chartData[0].value
+  const diff = (currentVal - firstVal).toFixed(1)
+  const isPositive = diff > 0
+
+  const values = chartData.map(d => d.value)
+  const minVal = Math.floor(Math.min(...values) - (unit === 'kg' ? 2 : 5))
+  const maxVal = Math.ceil(Math.max(...values) + (unit === 'kg' ? 2 : 5))
 
   return (
-    <div className="rounded-2xl border border-slate-100 p-4">
-      <div className="flex items-center justify-between">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-text-secondary">
-          Evolución
-        </p>
-        <select
-          value={metric}
-          onChange={(e) => setMetric(e.target.value)}
-          className="rounded-full border border-slate-200 px-2.5 py-1 text-xs text-navy"
-        >
-          {MEASUREMENT_FIELDS.map((f) => (
-            <option key={f.key} value={f.key}>
-              {f.label}
-            </option>
-          ))}
-        </select>
+    <div className="overflow-hidden rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100 transition-all hover:shadow-md mb-6 group">
+      
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h3 className="font-display text-xl font-extrabold text-navy">{title}</h3>
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mt-1">{subtitle}</p>
+        </div>
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl transition-transform group-hover:scale-105" style={{ backgroundColor: `${color}15`, color: color }}>
+          {icon}
+        </div>
       </div>
 
-      {points.length < 2 ? (
-        <p className="mt-6 text-center text-xs text-text-secondary">
-          Necesitas al menos 2 registros de "{field.label}" para ver la gráfica.
-        </p>
-      ) : (
-        <ChartBody points={points} metric={metric} unit={field.unit} />
-      )}
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 mb-1">
+            Valor actual
+          </p>
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-display text-4xl font-extrabold text-navy tracking-tight">
+              {currentVal}
+            </span>
+            <span className="text-lg font-bold" style={{ color }}>{unit}</span>
+          </div>
+        </div>
+
+        <div className="flex flex-col items-end gap-3">
+          
+          {/* Desplegable siempre visible */}
+          <div className="relative">
+            <select
+              value={selectedMetric}
+              onChange={(e) => setSelectedMetric(e.target.value)}
+              className="appearance-none rounded-full bg-slate-50 border border-slate-200 pl-4 pr-8 py-1.5 text-[11px] font-extrabold text-navy outline-none focus:ring-1 cursor-pointer transition-colors hover:bg-slate-100 max-w-[140px] sm:max-w-[180px] truncate"
+              style={{ focusRing: color }}
+            >
+              {metrics.map(m => (
+                <option key={m.id} value={m.id}>{m.label}</option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-navy">
+              <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+          
+          <div className={`rounded-full px-3 py-1 text-[11px] font-extrabold tracking-wider border ${isPositive ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100'}`}>
+            {diff > 0 ? '+' : ''}{diff} {unit}
+          </div>
+        </div>
+      </div>
+
+      <div className="h-48 w-full mt-2 -ml-3 sm:ml-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+            <defs>
+              <linearGradient id={`colorGradient-${selectedMetric}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={color} stopOpacity={0.4} />
+                <stop offset="95%" stopColor={color} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+            <XAxis dataKey="date" tickFormatter={formatShortDate} axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }} dy={15} minTickGap={20} />
+            <YAxis domain={[minVal, maxVal]} axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }} dx={-10} />
+            <Tooltip content={<CustomTooltip unit={unit} />} cursor={{ stroke: '#cbd5e1', strokeWidth: 1.5, strokeDasharray: '4 4' }} />
+            <Area type="monotone" dataKey="value" stroke={color} strokeWidth={4} fillOpacity={1} fill={`url(#colorGradient-${selectedMetric})`} activeDot={{ r: 7, fill: '#0f172a', stroke: '#ffffff', strokeWidth: 3 }} />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 }
