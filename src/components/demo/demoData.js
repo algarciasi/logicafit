@@ -8,6 +8,10 @@ export const demoClient = {
   tipo_plan: 'Método Lógica',
   plan_vigente_hasta: '2026-12-20',
   proxima_revision: '2026-09-14',
+  edad: 34,
+  altura: 178,
+  peso: 78.4,
+  created_at: '2026-03-12',
 }
 
 export const demoRoutineEntries = [
