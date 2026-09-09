@@ -14,11 +14,13 @@ function formatShortDate(dateStr) {
 export default function InicioTab() {
   const [downloading, setDownloading] = useState(null)
 
-  const handleDownload = async (type) => {
+    const handleDownload = async (type) => {
     setDownloading(type)
     try {
       if (type === 'rutina') await generateRoutinePdf(demoClient, demoRoutineEntries)
       if (type === 'dieta') await generateDietPdf(demoClient, demoDietEntries)
+    } catch (e) {
+      alert('No se pudo generar el PDF: ' + (e?.message || e))
     } finally {
       setDownloading(null)
     }

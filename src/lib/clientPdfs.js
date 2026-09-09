@@ -1,5 +1,6 @@
 import { DIAS_SEMANA } from './routines'
 import { MEALS } from './macros'
+import { savePdf } from './pdfSave'
 
 const NAVY = [30, 41, 59]
 const ORANGE = [249, 115, 22]
@@ -118,7 +119,7 @@ export async function generateRoutinePdf(client, routineEntries) {
     y += 20
   })
 
-  doc.save('logica-fit-mi-rutina.pdf')
+  await savePdf(doc, 'logica-fit-mi-rutina.pdf')
 }
 
 // ── Cálculo de macros con opciones ────────────────────────────────────────────
@@ -334,5 +335,6 @@ export async function generateDietPdf(client, dietEntries) {
     if (group.label) y += 6
   })
 
-  doc.save('logica-fit-mi-dieta.pdf')
+  await savePdf(doc, 'logica-fit-mi-rutina.pdf')
+
 }

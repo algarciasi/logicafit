@@ -1,3 +1,5 @@
+import { savePdf } from './pdfSave'
+
 const NAVY = [30, 41, 59]
 const ORANGE = [249, 115, 22]
 const GRAY = [100, 116, 139]
@@ -168,5 +170,6 @@ export async function generateRunningGuide() {
   doc.setTextColor(203, 213, 225)
   doc.text('Escríbeme por WhatsApp y lo vemos juntos, sin compromiso.', margin + 14, y + 24)
 
-  doc.save('logica-fit-guia-primeros-5k.pdf')
+  //doc.save('logica-fit-guia-primeros-5k.pdf')
+  await savePdf(doc, 'logica-fit-guia-primeros-5ks.pdf')
 }

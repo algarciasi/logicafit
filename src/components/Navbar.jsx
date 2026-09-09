@@ -15,6 +15,13 @@ const NAV_LINKS_WEB = [
   { to: '/conoceme', label: 'Sobre mí', type: 'link' },
 ]
 
+// En la app nativa el cliente ya conoce la marca: solo lo útil
+const NAV_LINKS_APP = [
+  { to: '/calculadoras', label: 'Calculadoras', type: 'link' },
+  { to: '/aprende', label: 'Aprende', type: 'link' },
+  { to: '/conoceme', label: 'Sobre mí', type: 'link' },
+]
+
 const HERO_PAGES = ['/', '/calculadoras', '/aprende', '/conoceme', '/planes', '/casos-reales', '/calculadora', '/calculadora-running']
 
 export default function Navbar() {
@@ -27,6 +34,7 @@ export default function Navbar() {
   const navigate = useNavigate()
   const isHeroPage = HERO_PAGES.includes(location.pathname)
   const native = isNativeApp()
+  const NAV_LINKS = native ? NAV_LINKS_APP : NAV_LINKS_WEB
 
   const closeMenu = () => setOpen(false)
 
@@ -75,7 +83,7 @@ export default function Navbar() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8 text-[13px] font-bold uppercase tracking-wide">
-            {NAV_LINKS_WEB.map((item) => (
+            {NAV_LINKS.map((item) => (
               <div key={item.label} className="relative group">
                 {item.type === 'anchor' ? (
                   <a href={item.href} className={`transition-colors py-2 ${linkColor}`}>
@@ -118,17 +126,28 @@ export default function Navbar() {
             )}
           </div>
 
-          <button
-            onClick={() => setOpen(true)}
-            aria-label="Abrir menú"
-            className="relative z-50 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors md:hidden"
-          >
-            <div className="relative w-5 h-4">
-              <span className="absolute left-0 top-0 h-[2px] w-full bg-current"></span>
-              <span className="absolute left-0 top-2 h-[2px] w-full bg-current"></span>
-              <span className="absolute left-0 top-4 h-[2px] w-full bg-current"></span>
-            </div>
-          </button>
+          {/* Acciones móvil: acceso directo + hamburguesa */}
+          <div className="flex items-center gap-2 md:hidden">
+            <Link
+              to={user ? '/dashboard' : '/login'}
+              onClick={closeMenu}
+              className="rounded-full bg-orange px-4 py-2 text-xs font-bold text-white shadow-md transition-transform active:scale-95"
+            >
+              {user ? 'Mi área' : 'Acceder'}
+            </Link>
+
+            <button
+              onClick={() => setOpen(true)}
+              aria-label="Abrir menú"
+              className="relative z-50 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors"
+            >
+              <div className="relative w-5 h-4">
+                <span className="absolute left-0 top-0 h-[2px] w-full bg-current"></span>
+                <span className="absolute left-0 top-2 h-[2px] w-full bg-current"></span>
+                <span className="absolute left-0 top-4 h-[2px] w-full bg-current"></span>
+              </div>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -154,7 +173,7 @@ export default function Navbar() {
 
           <div className="flex-1 overflow-y-auto px-6 pb-8">
             <nav className="flex flex-col">
-              {NAV_LINKS_WEB.map((item, index) => {
+              {NAV_LINKS.map((item, index) => {
                 const num = String(index + 1).padStart(2, '0')
                 const content = (
                   <>
@@ -184,12 +203,15 @@ export default function Navbar() {
                 </Link>
               )}
 
-              <Link to={user ? '/dashboard' : '/login'} onClick={closeMenu} className="flex items-center gap-4 py-4">
-                <span className="text-orange font-mono text-sm font-bold tracking-widest">••</span>
-                <span className="font-display text-3xl font-extrabold text-white tracking-tight">
-                  {user ? 'Mi área' : 'Acceder'}
-                </span>
-              </Link>
+              {/* En la app el acceso ya está arriba, no lo repetimos */}
+              {!native && (
+                <Link to={user ? '/dashboard' : '/login'} onClick={closeMenu} className="flex items-center gap-4 py-4">
+                  <span className="text-orange font-mono text-sm font-bold tracking-widest">••</span>
+                  <span className="font-display text-3xl font-extrabold text-white tracking-tight">
+                    {user ? 'Mi área' : 'Acceder'}
+                  </span>
+                </Link>
+              )}
             </nav>
 
             {/* BOTÓN DE LOGOUT EN MÓVIL */}

@@ -1,3 +1,5 @@
+import { savePdf } from './pdfSave'
+
 const NAVY = [30, 41, 59]
 const GRAY = [100, 116, 139]
 
@@ -81,5 +83,7 @@ export async function generateHistorySnapshotPdf({ subtitle, nombre, fecha, cont
   })
 
   const safeName = nombre.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-  doc.save(`logica-fit-${safeName || 'historico'}.pdf`)
+  //doc.save(`logica-fit-${safeName || 'historico'}.pdf`)
+  await savePdf(doc, 'logica-fit-mi-rutina-historico.pdf')
+
 }

@@ -1,4 +1,5 @@
 import { MEALS, mealTarget, ACTIVITY_LABELS, GOAL_LABELS } from './macros'
+import { savePdf } from './pdfSave'
 
 const NAVY = [30, 41, 59]
 const ORANGE = [249, 115, 22]
@@ -240,5 +241,7 @@ export async function generateMacroPdf({ formData, target, mealItems }) {
 
   y += 76
 
-  doc.save('logica-fit-plan-macros.pdf')
+ // doc.save('logica-fit-plan-macros.pdf')
+  await savePdf(doc, 'logica-fit-plan-macros.pdf')
+
 }

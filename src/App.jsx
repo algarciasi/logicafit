@@ -90,16 +90,9 @@ function App() {
                 </NativeOnly>
               }
             />
-            <Route
-              path="/conoceme"
-              element={
-                <NativeOnly>
-                  <About />
-                </NativeOnly>
-              }
-            />
 
             {/* Disponibles en web y en app */}
+            <Route path="/conoceme" element={<About />} />
             <Route path="/calculadoras" element={<Calculadoras />} />
             <Route path="/calculadora" element={<Calculadora />} />
             <Route

@@ -5,6 +5,10 @@ import { useAuth } from '../context/AuthContext'
 const FIELD = 'w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-navy focus:border-orange focus:outline-none focus:ring-1 focus:ring-orange'
 const LABEL = 'mb-1.5 block text-xs font-semibold text-navy-light'
 
+// Detecta si corre dentro de Capacitor (app nativa Android/iOS)
+const isNativeApp = () =>
+  typeof window !== 'undefined' && window.Capacitor !== undefined
+
 export default function Login() {
   const { signIn } = useAuth()
   const navigate = useNavigate()
@@ -12,6 +16,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const native = isNativeApp()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -84,18 +89,16 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="mt-5 text-center text-sm text-text-secondary">
-          ¿Aún no tienes cuenta?{' '}
-          <Link to="/registro" className="font-semibold text-orange-dark hover:underline">
-            Regístrate
-          </Link>
-        </p>
-        <p className="mt-2 text-center text-xs text-text-secondary">
-          ¿Aún no eres cliente?{' '}
-          <Link to="/planes" className="font-semibold text-navy hover:underline">
-            Ver planes
-          </Link>
-        </p>
+        {/* El acceso lo doy yo al dar de alta al cliente: no hay auto-registro.
+            En la app este enlace tampoco se muestra porque /planes está bloqueada. */}
+        {!native && (
+          <p className="mt-5 text-center text-sm text-text-secondary">
+            ¿Aún no eres cliente?{' '}
+            <Link to="/planes" className="font-semibold text-navy hover:underline">
+              Ver planes
+            </Link>
+          </p>
+        )}
       </div>
     </div>
   )
