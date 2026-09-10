@@ -18,6 +18,21 @@ export default function CalculadoraRunning() {
   const [result, setResult] = useState(null)
   const [downloading, setDownloading] = useState(false)
 
+  // FUNCIÓN ESCUDO: Intercepta y valida los límites antes de actualizar el estado
+  const handleFormChange = (newData) => {
+    // Permitimos que el campo esté vacío temporalmente mientras el usuario borra para escribir
+    const h = newData.hours === '' ? 0 : Number(newData.hours)
+    const m = newData.minutes === '' ? 0 : Number(newData.minutes)
+    const s = newData.seconds === '' ? 0 : Number(newData.seconds)
+
+    // LÍMITES ESTRICTOS (Horas: 100, Minutos: 59, Segundos: 59)
+    if (h < 0 || h > 100) return
+    if (m < 0 || m > 59) return
+    if (s < 0 || s > 59) return
+
+    setFormData(newData)
+  }
+
   const handleSubmit = () => {
     const km =
       formData.distancePreset === 'custom'
@@ -25,9 +40,9 @@ export default function CalculadoraRunning() {
         : Number(formData.distancePreset)
 
     const seconds = parseTimeToSeconds({
-      h: formData.hours,
-      m: formData.minutes,
-      s: formData.seconds,
+      h: formData.hours === '' ? 0 : formData.hours,
+      m: formData.minutes === '' ? 0 : formData.minutes,
+      s: formData.seconds === '' ? 0 : formData.seconds,
     })
 
     if (!km || !seconds) return
@@ -49,31 +64,20 @@ export default function CalculadoraRunning() {
   return (
     <div className="bg-surface-soft min-h-screen">
 
-      {/* 0. HERO (Imagen inmersiva con degradados, mismo lenguaje que el resto de la web) */}
+      {/* 0. HERO */}
       <section className="relative w-full pt-16 pb-0 sm:pt-40 sm:pb-24 lg:pt-48 lg:pb-28 flex flex-col sm:justify-center">
-
-        {/* BLOQUE DE IMAGEN
-            Móvil: bloque normal de altura fija justo debajo del membrete navy, se ve entera.
-            Desktop (sm+): absolute inset-0 a pantalla completa. */}
         <div className="relative h-[38vh] min-h-[240px] w-full sm:absolute sm:inset-0 sm:h-full sm:min-h-0">
           <img
             src="/brand/alberto-running.jpg"
             alt="Alberto García corriendo, entrenador personal Lógica Fit"
             className="h-full w-full object-cover object-[center_35%] opacity-100 sm:opacity-90 animate-fade-in"
           />
-
-          {/* Degradado inferior móvil: funde la foto con el bloque navy de texto de debajo */}
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/10 to-transparent sm:hidden" />
-
-          {/* Degradados desktop */}
           <div className="hidden sm:block absolute inset-0 bg-navy/60" />
           <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/60 to-transparent w-full md:w-3/4" />
           <div className="hidden sm:block absolute inset-x-0 bottom-0 h-32 lg:h-40 bg-gradient-to-t from-surface-soft to-transparent" />
         </div>
 
-        {/* BLOQUE DE TEXTO
-            Móvil: flujo normal debajo de la imagen, fondo navy sólido, sin superposición.
-            Desktop (sm+): overlay clásico sobre la foto. */}
         <div className="relative z-10 w-full bg-navy px-6 py-10 sm:bg-transparent sm:py-0 lg:px-8">
           <div className="mx-auto max-w-7xl w-full">
             <div className="max-w-2xl">
@@ -100,7 +104,11 @@ export default function CalculadoraRunning() {
       {/* 1. FORMULARIO */}
       <div className="pt-12 sm:pt-16 pb-16">
         <div className="mx-auto max-w-2xl px-6">
-          <RunningForm data={formData} onChange={setFormData} onSubmit={handleSubmit} />
+          <RunningForm 
+            data={formData} 
+            onChange={handleFormChange} /* Usamos nuestra función escudo aquí */
+            onSubmit={handleSubmit} 
+          />
         </div>
 
         {result && (
@@ -109,6 +117,7 @@ export default function CalculadoraRunning() {
           </div>
         )}
 
+        {/* REGALO / DESCARGA */}
         <div className="mx-auto mt-10 max-w-2xl px-6">
           <div className="flex flex-col items-center gap-3 rounded-2xl border border-orange-light bg-orange/5 px-8 py-10 text-center">
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-orange text-2xl text-white">

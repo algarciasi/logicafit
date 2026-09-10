@@ -2,8 +2,17 @@ import { useState } from 'react'
 import { MEASUREMENT_FIELDS, PHOTO_SLOTS, addProgressEntry } from '../../lib/notes'
 import { uploadProgressPhoto } from '../../lib/storage'
 
-const FIELD = 'w-full rounded-xl border border-slate-200 px-3 py-2 text-sm text-navy focus:border-orange focus:outline-none focus:ring-1 focus:ring-orange'
-const LABEL = 'mb-1 block text-[11px] font-semibold text-navy-light'
+// 1. DICCIONARIO DE LÍMITES ESTRICTOS (basado en las keys que tengas en MEASUREMENT_FIELDS)
+const LIMITS = {
+  peso: 200,
+  pecho: 150,
+  hombros: 90,
+  brazo: 70,
+  cintura: 200,
+  cadera: 200,
+  cuadriceps: 100,
+  gemelo: 70
+}
 
 export default function ProgressForm({ clientId, onSaved }) {
   const [values, setValues] = useState({})
@@ -12,7 +21,25 @@ export default function ProgressForm({ clientId, onSaved }) {
   const [error, setError] = useState(null)
   const [open, setOpen] = useState(false)
 
-  const setField = (key) => (e) => setValues((v) => ({ ...v, [key]: e.target.value }))
+  // 2. FUNCIÓN INTERCEPTORA: Valida antes de guardar en el estado
+  const setField = (key) => (e) => {
+    const val = e.target.value
+    
+    // Si borran el número para corregirlo, se permite
+    if (val === '') {
+      setValues((v) => ({ ...v, [key]: '' }))
+      return
+    }
+    
+    const numVal = Number(val)
+    const maxLimit = LIMITS[key] || 999 // Fallback por si en el futuro añades otro campo
+    
+    // Si meten un valor negativo o superan tu límite, ignoramos la tecla
+    if (numVal < 0 || numVal > maxLimit) return
+
+    setValues((v) => ({ ...v, [key]: val }))
+  }
+
   const setPhoto = (key) => (e) => setPhotos((p) => ({ ...p, [key]: e.target.files?.[0] || null }))
 
   const handleSubmit = async (e) => {
@@ -61,7 +88,7 @@ export default function ProgressForm({ clientId, onSaved }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="w-full rounded-2xl border border-dashed border-orange-light bg-orange/5 px-4 py-3 text-sm font-semibold text-orange-dark transition hover:bg-orange/10"
+        className="w-full rounded-2xl border-2 border-dashed border-orange/30 px-4 py-4 text-sm font-bold text-orange transition-all hover:bg-orange/5 hover:border-orange active:scale-[0.98]"
       >
         + Registrar medidas de esta semana
       </button>
@@ -69,53 +96,80 @@ export default function ProgressForm({ clientId, onSaved }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-100 p-4">
-      <div className="flex items-center justify-between">
-        <p className="font-display text-sm font-bold text-navy">Registro de esta semana</p>
-        <button type="button" onClick={() => setOpen(false)} className="text-xs text-text-secondary">
+    <form onSubmit={handleSubmit} className="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100 animate-fade-in">
+      
+      <div className="mb-6 flex items-center justify-between">
+        <h3 className="font-display text-xl font-extrabold text-navy">Registro de esta semana</h3>
+        <button type="button" onClick={() => setOpen(false)} className="text-sm font-semibold text-slate-400 transition-colors hover:text-navy">
           Cancelar
         </button>
       </div>
 
-      <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {MEASUREMENT_FIELDS.map(({ key, label, unit }) => (
-          <div key={key}>
-            <label className={LABEL}>
-              {label} ({unit})
-            </label>
-            <input
-              type="number"
-              step="0.1"
-              min="0"
-              value={values[key] || ''}
-              onChange={setField(key)}
-              className={FIELD}
-            />
-          </div>
-        ))}
+      {/* GRID DE MEDIDAS CON VALIDACIÓN */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {MEASUREMENT_FIELDS.map(({ key, label, unit }) => {
+          const max = LIMITS[key] || ''
+          return (
+            <div key={key}>
+              <label className="mb-1.5 block text-[11px] font-extrabold text-navy">
+                {label} ({unit})
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                min="0"
+                max={max} // Límite HTML nativo
+                value={values[key] || ''}
+                onChange={setField(key)} // Interceptor React
+                placeholder={max ? `Máx: ${max}` : ''}
+                className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-navy outline-none transition-colors focus:border-orange focus:bg-white focus:ring-1 focus:ring-orange"
+              />
+            </div>
+          )
+        })}
       </div>
 
-      <p className="mt-4 text-[11px] font-semibold text-navy-light">Fotos (opcional)</p>
-      <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        {PHOTO_SLOTS.map(({ key, label }) => (
-          <div key={key}>
-            <label className={LABEL}>{label}</label>
-            <input type="file" accept="image/*" onChange={setPhoto(key)} className="w-full text-[10px]" />
-          </div>
-        ))}
+      {/* ZONA DE FOTOS ESTILIZADA */}
+      <div className="mt-6">
+        <p className="mb-3 text-[11px] font-extrabold text-navy">Fotos (opcional)</p>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {PHOTO_SLOTS.map(({ key, label }) => (
+            <div key={key}>
+              <p className="mb-1 text-[10px] font-bold text-slate-500">{label}</p>
+              {/* Contenedor que simula un input para subir archivos de forma limpia */}
+              <div className="relative flex h-20 cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 transition-colors hover:bg-slate-100 focus-within:border-orange focus-within:ring-1 focus-within:ring-orange overflow-hidden">
+                <span className="truncate px-2 text-[10px] font-medium text-slate-400">
+                  {photos[key] ? photos[key].name : 'Seleccionar archivo'}
+                </span>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  onChange={setPhoto(key)} 
+                  className="absolute inset-0 h-full w-full cursor-pointer opacity-0" 
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {error && (
-        <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600">{error.message}</p>
+        <p className="mt-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-xs font-bold text-red-600">
+          {error.message}
+        </p>
       )}
 
-      <button
-        type="submit"
-        disabled={saving}
-        className="mt-4 rounded-full bg-orange px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-orange-dark disabled:opacity-60"
-      >
-        {saving ? 'Guardando…' : 'Guardar registro'}
-      </button>
+      {/* BOTÓN DE GUARDADO */}
+      <div className="mt-6 flex justify-start">
+        <button
+          type="submit"
+          disabled={saving}
+          className="rounded-full bg-orange px-8 py-3 text-sm font-bold text-white shadow-md shadow-orange/20 transition-all hover:bg-orange-dark hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
+        >
+          {saving ? 'Guardando…' : 'Guardar registro'}
+        </button>
+      </div>
+      
     </form>
   )
 }
