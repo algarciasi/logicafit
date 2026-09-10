@@ -7,7 +7,8 @@ import { supabase } from './supabaseClient'
 export async function listClientDiet(clientId) {
   const { data, error } = await supabase
     .from('diets')
-    .select('id, momento_dia, dia_semana, opcion, cantidad_g, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas, url_compra)')
+    // ¡AQUÍ ESTABA EL FALLO! Faltaba 'supermercado' al final del paréntesis de foods
+    .select('id, momento_dia, dia_semana, opcion, cantidad_g, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas, url_compra, supermercado)')
     .eq('client_id', clientId)
     .order('momento_dia', { ascending: true })
   return { entries: data || [], error }
@@ -25,7 +26,7 @@ export async function addDietEntry({ clientId, foodId, momentoDia, diaSemana, op
       cantidad_g: cantidadG,
       notas: notas || null,
     })
-    .select('id, momento_dia, dia_semana, opcion, cantidad_g, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas, url_compra)')
+    .select('id, momento_dia, dia_semana, opcion, cantidad_g, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas, url_compra, supermercado)')
     .single()
   return { entry: data, error }
 }

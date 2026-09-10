@@ -8,9 +8,15 @@ let cachedFoods = null
 export default function MealFoodPicker({ mealId, onAdd }) {
   const [foods, setFoods] = useState(cachedFoods || [])
   const [loading, setLoading] = useState(!cachedFoods)
+  
+  const [superFilter, setSuperFilter] = useState('')
+  const [searchText, setSearchText] = useState('')
   const [selectedId, setSelectedId] = useState('')
-  const [gramos, setGramos] = useState(100)
+  
+  const [cantidad, setCantidad] = useState(100)
+  const [unidad, setUnidad] = useState('g')
   const [opcion, setOpcion] = useState(1)
+  
   const [todosLosDias, setTodosLosDias] = useState(true)
   const [selectedDays, setSelectedDays] = useState([])
   const [saving, setSaving] = useState(false)
@@ -23,6 +29,25 @@ export default function MealFoodPicker({ mealId, onAdd }) {
       setLoading(false)
     })
   }, [])
+
+  // Extraer lista única de supermercados para el filtro (Ignorando los que estén vacíos)
+  const supermarkets = [...new Set(foods.map(f => f.supermercado).filter(Boolean))].sort()
+
+  // Filtrar alimentos según el supermercado seleccionado
+  const filteredFoods = foods.filter(f => !superFilter || f.supermercado === superFilter)
+
+  const handleSearchChange = (e) => {
+    const val = e.target.value
+    setSearchText(val)
+    
+    // Buscar si coincide
+    const found = filteredFoods.find(f => {
+      const label = f.supermercado ? `${f.nombre} (${f.supermercado})` : f.nombre
+      return label === val
+    })
+    
+    setSelectedId(found ? found.id : '')
+  }
 
   const toggleDay = (value) => {
     setSelectedDays((prev) =>
@@ -38,18 +63,19 @@ export default function MealFoodPicker({ mealId, onAdd }) {
     setSaving(true)
 
     if (todosLosDias) {
-      await onAdd(mealId, food, Number(gramos), null, Number(opcion))
+      await onAdd(mealId, food, Number(cantidad), null, Number(opcion))
     } else {
       for (const dia of selectedDays) {
         // eslint-disable-next-line no-await-in-loop
-        await onAdd(mealId, food, Number(gramos), dia, Number(opcion))
+        await onAdd(mealId, food, Number(cantidad), dia, Number(opcion))
       }
     }
 
     setSaving(false)
     setSelectedId('')
-    setGramos(100)
-    // No reseteamos "opcion" para que sea más fácil añadir varios alimentos a la misma opción
+    setSearchText('')
+    setCantidad(100)
+    setUnidad('g')
   }
 
   if (loading) {
@@ -60,50 +86,97 @@ export default function MealFoodPicker({ mealId, onAdd }) {
 
   return (
     <div className="mt-4 rounded-2xl bg-slate-50 border border-slate-100 p-4">
-      <div className="flex flex-col sm:flex-row gap-3">
+      
+      {/* FILA 1: Supermercado y Buscador */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-3">
         
-        {/* Buscador de Alimento */}
-        <div className="flex-1 relative">
+        {/* Filtro de Supermercado con flecha custom */}
+        <div className="relative sm:w-48 shrink-0">
           <select
-            value={selectedId}
-            onChange={(e) => setSelectedId(e.target.value)}
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-navy outline-none focus:border-orange focus:ring-1 focus:ring-orange"
+            value={superFilter}
+            onChange={(e) => {
+              setSuperFilter(e.target.value)
+              setSearchText('')
+              setSelectedId('')
+            }}
+            className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm font-bold text-navy outline-none focus:border-orange focus:ring-1 focus:ring-orange cursor-pointer transition-colors hover:border-slate-300"
           >
-            <option value="">Buscar alimento...</option>
-            {foods.map((f) => (
-              <option key={f.id} value={f.id}>{f.nombre}</option>
+            <option value="">Todos los súpers</option>
+            {supermarkets.map(s => (
+              <option key={s} value={s}>{s}</option>
             ))}
           </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
         </div>
 
-        {/* Gramos y Opción */}
-        <div className="flex gap-3">
+        {/* Buscador de Alimento con Datalist */}
+        <div className="flex-1 relative">
+          <input
+            list={`foods-list-${mealId}`}
+            value={searchText}
+            onChange={handleSearchChange}
+            placeholder="Buscar o escribir alimento..."
+            className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-navy outline-none focus:border-orange focus:ring-1 focus:ring-orange"
+          />
+          <datalist id={`foods-list-${mealId}`}>
+            {filteredFoods.map((f) => (
+              <option key={f.id} value={f.supermercado ? `${f.nombre} (${f.supermercado})` : f.nombre} />
+            ))}
+          </datalist>
+        </div>
+      </div>
+
+      {/* FILA 2: Cantidad, Unidad y Opción */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        
+        <div className="flex gap-2 w-full sm:w-auto">
           <div className="relative w-24 shrink-0">
             <input
               type="number"
               min="1"
-              value={gramos}
-              onChange={(e) => setGramos(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold text-navy outline-none focus:border-orange focus:ring-1 focus:ring-orange"
+              value={cantidad}
+              onChange={(e) => setCantidad(e.target.value)}
+              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold text-navy outline-none focus:border-orange focus:ring-1 focus:ring-orange text-center"
             />
-            <span className="absolute right-3 top-2.5 text-sm font-bold text-slate-400 pointer-events-none">g</span>
           </div>
-
-          <div className="relative w-32 shrink-0">
+          
+          {/* Selector g / ml con flecha custom */}
+          <div className="relative w-16 shrink-0">
             <select
-              value={opcion}
-              onChange={(e) => setOpcion(e.target.value)}
-              className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold text-orange outline-none focus:border-orange focus:ring-1 focus:ring-orange"
+              value={unidad}
+              onChange={(e) => setUnidad(e.target.value)}
+              className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-2 py-2.5 text-sm font-bold text-slate-500 outline-none focus:border-orange focus:ring-1 focus:ring-orange text-center cursor-pointer transition-colors hover:border-slate-300"
             >
-              {[1, 2, 3, 4, 5].map((n) => (
-                <option key={n} value={n}>Opción {n}</option>
-              ))}
+              <option value="g">g</option>
+              <option value="ml">ml</option>
             </select>
+          </div>
+        </div>
+
+        {/* Bloque: Opción con flecha custom */}
+        <div className="relative w-full sm:w-32 shrink-0">
+          <select
+            value={opcion}
+            onChange={(e) => setOpcion(e.target.value)}
+            className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm font-bold text-orange outline-none focus:border-orange focus:ring-1 focus:ring-orange cursor-pointer transition-colors hover:border-slate-300"
+          >
+            {[1, 2, 3, 4, 5].map((n) => (
+              <option key={n} value={n}>Opción {n}</option>
+            ))}
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-orange">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+            </svg>
           </div>
         </div>
       </div>
 
-      {/* Días de la semana */}
+      {/* FILA 3: Días de la semana y Guardar */}
       <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-slate-200/60 pt-4">
         
         <div className="flex flex-wrap items-center gap-3">
@@ -153,6 +226,7 @@ export default function MealFoodPicker({ mealId, onAdd }) {
           {saving ? 'Añadiendo…' : '+ Añadir a dieta'}
         </button>
       </div>
+      
     </div>
   )
 }
