@@ -13,6 +13,7 @@ import RoutineHistoryPanel from "../../components/admin/RoutineHistoryPanel";
 import DietHistoryPanel from "../../components/admin/DietHistoryPanel";
 import { MEALS } from "../../lib/macros";
 import { diaLabel } from "../../lib/routines";
+import { generateRoutinePdf, generateDietPdf } from "../../lib/clientPdfs";
 
 const FIELD =
   "w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-navy focus:border-orange focus:outline-none focus:ring-1 focus:ring-orange";
@@ -29,6 +30,8 @@ export default function AdminClientDetail() {
   const [error, setError] = useState(null);
 
   const [saving, setSaving] = useState(false);
+  const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [generatingRoutinePdf, setGeneratingRoutinePdf] = useState(false);
 
   const loadAll = async () => {
     setLoading(true);
@@ -62,7 +65,6 @@ export default function AdminClientDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // AÑADIDO: Recibe 'unidad' y lo pasa a addDietEntry
   const handleAddMealFood = async (mealId, food, grams, diaSemana, opcion, unidad = 'g') => {
     const { error } = await addDietEntry({
       clientId: id,
@@ -80,6 +82,17 @@ export default function AdminClientDetail() {
     loadAll();
   };
 
+  const handlePreviewRoutinePDF = async () => {
+    setGeneratingRoutinePdf(true);
+    try {
+      await generateRoutinePdf(client, routineEntries, true);
+    } catch (err) {
+      alert("Error al previsualizar la rutina: " + err.message);
+    } finally {
+      setGeneratingRoutinePdf(false);
+    }
+  };
+
   const handleDelete = async (entryId) => {
     const { error } = await deleteDietEntry(entryId);
     if (error) {
@@ -87,6 +100,17 @@ export default function AdminClientDetail() {
       return;
     }
     loadAll();
+  };
+
+  const handlePreviewPDF = async () => {
+    setGeneratingPdf(true);
+    try {
+      await generateDietPdf(client, dietEntries, true);
+    } catch (err) {
+      alert("Error al previsualizar PDF: " + err.message);
+    } finally {
+      setGeneratingPdf(false);
+    }
   };
 
   if (loading) {
@@ -145,9 +169,29 @@ export default function AdminClientDetail() {
         </div>
 
         <div className="mt-10">
-          <h2 className="font-display text-lg font-bold text-navy">
-            Asignar dieta
-          </h2>
+          
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-lg font-bold text-navy">
+              Asignar dieta
+            </h2>
+            <button
+              onClick={handlePreviewPDF}
+              disabled={generatingPdf || dietEntries.length === 0}
+              className="inline-flex items-center gap-2 rounded-full bg-slate-200 px-4 py-2 text-xs font-bold text-navy transition-colors hover:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {generatingPdf ? (
+                "Generando..."
+              ) : (
+                <>
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  Previsualizar PDF
+                </>
+              )}
+            </button>
+          </div>
 
           <div className="mt-4 space-y-4">
             {entriesByMeal.map(({ meal, items }) => (
@@ -170,7 +214,6 @@ export default function AdminClientDetail() {
                         className="flex items-center justify-between rounded-lg bg-surface-soft px-3 py-1.5 text-xs"
                       >
                         <span className="text-navy-light">
-                          {/* AÑADIDO: Renderiza it.unidad (o 'g' si es antiguo/nulo) */}
                           {it.foods?.nombre} — {it.cantidad_g}{it.unidad || 'g'}
                           <span className="ml-1.5 text-[10px] text-text-secondary">
                             (
@@ -206,9 +249,29 @@ export default function AdminClientDetail() {
         </div>
 
         <div className="mt-10">
-          <h2 className="font-display text-lg font-bold text-navy">
-            Asignar rutina
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-lg font-bold text-navy">
+              Asignar rutina
+            </h2>
+            <button
+              onClick={handlePreviewRoutinePDF}
+              disabled={generatingRoutinePdf || routineEntries.length === 0}
+              className="inline-flex items-center gap-2 rounded-full bg-slate-200 px-4 py-2 text-xs font-bold text-navy transition-colors hover:bg-slate-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {generatingRoutinePdf ? (
+                "Generando..."
+              ) : (
+                <>
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  Previsualizar PDF
+                </>
+              )}
+            </button>
+          </div>
+
           <div className="mt-4">
             <AdminRoutineEditor
               clientId={id}

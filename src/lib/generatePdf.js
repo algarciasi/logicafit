@@ -28,7 +28,8 @@ async function loadImageAsDataUrl(url) {
   })
 }
 
-export async function generateMacroPdf({ formData, target, mealItems }) {
+// AÑADIDO: Parámetro preview (por defecto false para no romper lo de los clientes)
+export async function generateMacroPdf({ formData, target, mealItems, preview = false }) {
   const { default: jsPDF } = await import('jspdf')
   const doc = new jsPDF({ unit: 'pt', format: 'a4' })
   const pageWidth = doc.internal.pageSize.getWidth()
@@ -69,7 +70,7 @@ export async function generateMacroPdf({ formData, target, mealItems }) {
 
   y = 122
 
-  // Datos personales — todos los campos del formulario
+  // Datos personales
   doc.setTextColor(...NAVY)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(11)
@@ -127,7 +128,6 @@ export async function generateMacroPdf({ formData, target, mealItems }) {
   doc.line(margin, y, pageWidth - margin, y)
   y += 24
 
-  // Un cuadrado de color en vez de emoji (los emojis no se renderizan en PDF)
   const drawMealBullet = (x, yPos) => {
     doc.setFillColor(...ORANGE)
     doc.roundedRect(x, yPos - 9, 10, 10, 2, 2, 'F')
@@ -199,7 +199,6 @@ export async function generateMacroPdf({ formData, target, mealItems }) {
     y += 6
   })
 
-  // Recuento total del día — con aviso si se supera algún macro
   ensureSpace(90)
   doc.setDrawColor(...LIGHT_LINE)
   doc.line(margin, y, pageWidth - margin, y)
@@ -241,7 +240,12 @@ export async function generateMacroPdf({ formData, target, mealItems }) {
 
   y += 76
 
- // doc.save('logica-fit-plan-macros.pdf')
-  await savePdf(doc, 'logica-fit-plan-macros.pdf')
-
+  // 🚀 LÓGICA DE PREVIEW VS DESCARGA
+  if (preview) {
+    const pdfUrl = doc.output('bloburl')
+    window.open(pdfUrl, '_blank')
+    return pdfUrl
+  } else {
+    await savePdf(doc, 'logica-fit-plan-macros.pdf')
+  }
 }

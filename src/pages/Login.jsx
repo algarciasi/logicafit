@@ -9,6 +9,8 @@ const LABEL = 'mb-1.5 block text-xs font-semibold text-navy-light'
 const isNativeApp = () =>
   typeof window !== 'undefined' && window.Capacitor !== undefined
 
+const ADMIN_EMAIL = 'tulogicafit@gmail.com' 
+
 export default function Login() {
   const { signIn } = useAuth()
   const navigate = useNavigate()
@@ -36,7 +38,12 @@ export default function Login() {
       return
     }
 
-    navigate('/dashboard')
+    // 🚀 REDIRECCIÓN INTELIGENTE
+    if (email.toLowerCase().trim() === ADMIN_EMAIL.toLowerCase()) {
+      navigate('/admin/clientes')
+    } else {
+      navigate('/dashboard')
+    }
   }
 
   return (
@@ -89,8 +96,6 @@ export default function Login() {
           </button>
         </form>
 
-        {/* El acceso lo doy yo al dar de alta al cliente: no hay auto-registro.
-            En la app este enlace tampoco se muestra porque /planes está bloqueada. */}
         {!native && (
           <p className="mt-5 text-center text-sm text-text-secondary">
             ¿Aún no eres cliente?{' '}

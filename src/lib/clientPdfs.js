@@ -17,7 +17,6 @@ const DAYS_MAP = {
   7: 'Domingo',
 }
 
-// Claves alternativas por si en `foods` el campo tiene otro nombre
 const KCAL_KEYS = ['calorias', 'kcal']
 const PROT_KEYS = ['proteinas', 'p']
 const CARB_KEYS = ['carbos', 'carbohidratos', 'c']
@@ -66,7 +65,8 @@ async function startDoc(subtitle) {
   return { doc, pageWidth, margin }
 }
 
-export async function generateRoutinePdf(client, routineEntries) {
+// 🚀 RUTINA PDF CON SOPORTE DE PREVIEW
+export async function generateRoutinePdf(client, routineEntries, preview = false) {
   const { doc, pageWidth, margin } = await startDoc('Tu rutina de entrenamiento')
   const pageHeight = doc.internal.pageSize.getHeight()
   let y = 122
@@ -119,14 +119,16 @@ export async function generateRoutinePdf(client, routineEntries) {
     y += 20
   })
 
-  await savePdf(doc, 'logica-fit-mi-rutina.pdf')
+  if (preview) {
+    const pdfUrl = doc.output('bloburl')
+    window.open(pdfUrl, '_blank')
+    return pdfUrl
+  } else {
+    await savePdf(doc, 'logica-fit-mi-rutina.pdf')
+  }
 }
 
 // ── Cálculo de macros con opciones ────────────────────────────────────────────
-// Misma lógica que DietaTab.jsx para que la app y el PDF nunca discrepen:
-// los alimentos de la opción 1 marcados como "todos los días" son la base y se
-// suman al resto de opciones; el total es la media entre las opciones que hay.
-
 const getMacroVal = (food, keys) => {
   for (const k of keys) {
     if (food[k] !== undefined && food[k] !== null) return Number(food[k])
@@ -163,7 +165,6 @@ function calcMealAverage(items, macroKeys) {
   return totalSum / optionKeys.length
 }
 
-// Kcal + los tres macros de una comida, todos como media entre opciones
 function mealMacros(items) {
   return {
     kcal: calcMealAverage(items, KCAL_KEYS),
@@ -176,7 +177,8 @@ function mealMacros(items) {
 const macroLine = (m) =>
   `P ${Math.round(m.protein)}g  ·  C ${Math.round(m.carbs)}g  ·  G ${Math.round(m.fat)}g`
 
-export async function generateDietPdf(client, dietEntries) {
+// 🚀 DIETA PDF CON SOPORTE DE PREVIEW
+export async function generateDietPdf(client, dietEntries, preview = false) {
   const { doc, pageWidth, margin } = await startDoc('Tu plan de nutrición')
   const pageHeight = doc.internal.pageSize.getHeight()
   let y = 122
@@ -194,7 +196,6 @@ export async function generateDietPdf(client, dietEntries) {
   doc.text(client.full_name || client.email, margin, y)
   y += 20
 
-  // ¿Hay alimentos asignados a días concretos? Si no, un único plan diario.
   const hasSpecificDays = dietEntries.some((e) => e.dia_semana)
   const dayGroups = hasSpecificDays
     ? [1, 2, 3, 4, 5, 6, 7].map((d) => ({
@@ -216,7 +217,6 @@ export async function generateDietPdf(client, dietEntries) {
   dayGroups.forEach((group) => {
     if (group.items.length === 0) return
 
-    // Total del día = suma de las medias de cada comida (kcal y macros)
     const dayTotals = { kcal: 0, protein: 0, carbs: 0, fat: 0 }
     MEALS.forEach((meal) => {
       const m = mealMacros(group.items.filter((e) => e.momento_dia === meal.id))
@@ -276,7 +276,6 @@ export async function generateDietPdf(client, dietEntries) {
       doc.text(macroLine(mm), margin, y)
       y += 16
 
-      // Agrupar los alimentos de esta comida por opción
       const byOption = {}
       items.forEach((it) => {
         const opt = Number(it.opcion || 1)
@@ -312,7 +311,7 @@ export async function generateDietPdf(client, dietEntries) {
           doc.setFont('helvetica', 'normal')
           doc.setFontSize(10)
           doc.setTextColor(...NAVY)
-          doc.text(`•  ${food.nombre} (${it.cantidad_g}g)`, indent, y)
+          doc.text(`•  ${food.nombre} (${it.cantidad_g}${it.unidad || 'g'})`, indent, y)
           doc.setTextColor(...ORANGE)
           doc.text(`${kcal} kcal`, pageWidth - margin, y, { align: 'right' })
           y += 11
@@ -335,6 +334,11 @@ export async function generateDietPdf(client, dietEntries) {
     if (group.label) y += 6
   })
 
-  await savePdf(doc, 'logica-fit-mi-rutina.pdf')
-
+  if (preview) {
+    const pdfUrl = doc.output('bloburl')
+    window.open(pdfUrl, '_blank')
+    return pdfUrl
+  } else {
+    await savePdf(doc, 'logica-fit-plan-nutricion.pdf')
+  }
 }
