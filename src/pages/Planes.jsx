@@ -151,7 +151,7 @@ export default function Planes() {
               href="https://wa.me/34678951544?text=Hola!%20Me%20interesa%20el%20plan%20A%20tu%20ritmo,%20quiero%20saber%20más"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-10 inline-flex items-center justify-center gap-2.5 w-full rounded-full bg-slate-50 ring-1 ring-slate-200 px-8 py-5 text-center text-sm font-bold text-navy transition-all hover:bg-slate-100 hover:ring-slate-300"
+              className="mt-10 inline-flex items-center justify-center gap-2.5 w-full rounded-full bg-slate-50 ring-1 ring-slate-200 px-8 py-5 text-center text-sm font-bold text-navy transition-all hover:bg-slate-100 hover:ring-slate-300 hover:scale-105"
             >
               {/* LOGO WHATSAPP "BLANCO" / NEUTRAL */}
               <svg className="h-5 w-5 text-navy opacity-70" fill="currentColor" viewBox="0 0 24 24">
