@@ -1,20 +1,17 @@
 import { supabase } from './supabaseClient'
 
-// `diets` relaciona un cliente con un alimento (`foods`) para un momento del día,
-// con una cantidad en gramos. `momento_dia` usa los mismos ids que lib/macros.js
-// (desayuno, almuerzo, comida, merienda, cena) para mantener todo consistente.
-
 export async function listClientDiet(clientId) {
   const { data, error } = await supabase
     .from('diets')
-    // ¡AQUÍ ESTABA EL FALLO! Faltaba 'supermercado' al final del paréntesis de foods
-    .select('id, momento_dia, dia_semana, opcion, cantidad_g, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas, url_compra, supermercado)')
+    // Añadimos 'unidad' al select
+    .select('id, momento_dia, dia_semana, opcion, cantidad_g, unidad, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas, url_compra, supermercado)')
     .eq('client_id', clientId)
     .order('momento_dia', { ascending: true })
   return { entries: data || [], error }
 }
 
-export async function addDietEntry({ clientId, foodId, momentoDia, diaSemana, opcion, cantidadG, notas }) {
+// Recibimos 'unidad' en los parámetros
+export async function addDietEntry({ clientId, foodId, momentoDia, diaSemana, opcion, cantidadG, unidad, notas }) {
   const { data, error } = await supabase
     .from('diets')
     .insert({
@@ -24,9 +21,11 @@ export async function addDietEntry({ clientId, foodId, momentoDia, diaSemana, op
       dia_semana: diaSemana ?? null,
       opcion: opcion ?? 1,
       cantidad_g: cantidadG,
+      unidad: unidad || 'g', // Lo guardamos en la base de datos
       notas: notas || null,
     })
-    .select('id, momento_dia, dia_semana, opcion, cantidad_g, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas, url_compra, supermercado)')
+    // Añadimos 'unidad' al select
+    .select('id, momento_dia, dia_semana, opcion, cantidad_g, unidad, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas, url_compra, supermercado)')
     .single()
   return { entry: data, error }
 }
@@ -38,8 +37,7 @@ export async function deleteDietEntry(id) {
   if (!data || data.length === 0) {
     return {
       error: {
-        message:
-          'No se ha borrado ninguna fila (0 filas afectadas). Revisa los permisos/RLS de la tabla diets en Supabase.',
+        message: 'No se ha borrado ninguna fila.',
       },
     }
   }

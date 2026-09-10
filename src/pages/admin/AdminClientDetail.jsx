@@ -62,7 +62,8 @@ export default function AdminClientDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const handleAddMealFood = async (mealId, food, grams, diaSemana, opcion) => {
+  // AÑADIDO: Recibe 'unidad' y lo pasa a addDietEntry
+  const handleAddMealFood = async (mealId, food, grams, diaSemana, opcion, unidad = 'g') => {
     const { error } = await addDietEntry({
       clientId: id,
       foodId: food.id,
@@ -70,6 +71,7 @@ export default function AdminClientDetail() {
       diaSemana,
       opcion,
       cantidadG: grams,
+      unidad, 
     });
     if (error) {
       alert("Error al guardar: " + error.message);
@@ -113,7 +115,6 @@ export default function AdminClientDetail() {
   }));
 
   return (
-    // Se añade min-h-screen, bg-slate-50 y pt-32 para librar el Navbar
     <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
         <Link
@@ -169,7 +170,8 @@ export default function AdminClientDetail() {
                         className="flex items-center justify-between rounded-lg bg-surface-soft px-3 py-1.5 text-xs"
                       >
                         <span className="text-navy-light">
-                          {it.foods?.nombre} — {it.cantidad_g}g
+                          {/* AÑADIDO: Renderiza it.unidad (o 'g' si es antiguo/nulo) */}
+                          {it.foods?.nombre} — {it.cantidad_g}{it.unidad || 'g'}
                           <span className="ml-1.5 text-[10px] text-text-secondary">
                             (
                             {it.dia_semana
