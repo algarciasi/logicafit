@@ -41,13 +41,13 @@ export default function MeasurementsChart({
   unit = "kg" 
 }) {
   const [selectedMetric, setSelectedMetric] = useState(metrics[0]?.id || '')
+  // Nuevo estado para controlar el menú desplegable custom
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const chartData = useMemo(() => {
     if (!dataEntries || dataEntries.length === 0 || !selectedMetric || selectedMetric === 'sin_datos') return []
 
     return [...dataEntries]
-      // `notes` guarda la fecha en created_at; dejamos fecha/date por si otra
-      // fuente de datos usa esos nombres.
       .map(e => ({
         date: e.fecha || e.date || e.created_at,
         value: parseFloat(e[selectedMetric]) || 0
@@ -56,24 +56,47 @@ export default function MeasurementsChart({
       .sort((a, b) => new Date(a.date) - new Date(b.date))
   }, [dataEntries, selectedMetric])
 
-  // El selector se pinta igual haya datos o no, para poder cambiar de métrica
-  // aunque la actual esté vacía.
-  const metricSelector = metrics.length > 0 && (
+  // Menú custom: SOLO se muestra si hay más de 1 métrica (oculta el del Peso Corporal)
+  const selectedMetricLabel = metrics.find(m => m.id === selectedMetric)?.label
+  
+  const metricSelector = metrics.length > 1 && (
     <div className="relative">
-      <select
-        value={selectedMetric}
-        onChange={(e) => setSelectedMetric(e.target.value)}
-        className="appearance-none rounded-full bg-slate-50 border border-slate-200 pl-4 pr-8 py-1.5 text-[11px] font-extrabold text-navy outline-none focus:ring-1 cursor-pointer transition-colors hover:bg-slate-100 max-w-[140px] sm:max-w-[180px] truncate"
+      <button
+        type="button"
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        className="flex items-center gap-2 appearance-none rounded-full bg-slate-50 border border-slate-200 pl-4 pr-3 py-1.5 text-[11px] font-extrabold text-navy outline-none cursor-pointer transition-colors hover:bg-slate-100"
       >
-        {metrics.map(m => (
-          <option key={m.id} value={m.id}>{m.label}</option>
-        ))}
-      </select>
-      <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-navy">
-        <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <span className="truncate max-w-[100px] sm:max-w-[140px]">{selectedMetricLabel}</span>
+        <svg className={`h-3 w-3 text-navy transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
         </svg>
-      </div>
+      </button>
+
+      {/* El div flotante que hace de menú limpio estilo web */}
+      {isDropdownOpen && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)}></div>
+          <div className="absolute right-0 top-full z-50 mt-2 w-40 rounded-xl border border-slate-100 bg-white p-1.5 shadow-xl animate-fade-in-up">
+            {metrics.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => {
+                  setSelectedMetric(m.id)
+                  setIsDropdownOpen(false)
+                }}
+                className={`block w-full rounded-lg px-3 py-2 text-left text-[11px] font-extrabold transition-colors ${
+                  selectedMetric === m.id
+                    ? 'bg-orange/10 text-orange'
+                    : 'text-navy hover:bg-slate-50'
+                }`}
+              >
+                {m.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   )
 
@@ -93,9 +116,9 @@ export default function MeasurementsChart({
     return (
       <div className="overflow-hidden rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100 mb-6 group">
         {header}
-        <div className="flex flex-col items-start gap-4">
+        <div className="flex flex-col items-end gap-4 w-full">
           {metricSelector}
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-400 w-full text-left mt-2">
             Todavía no hay registros de esta medida. Elige otra en el desplegable
             o añade un registro nuevo.
           </p>
@@ -104,10 +127,13 @@ export default function MeasurementsChart({
     )
   }
 
+  // Cálculos para DOBLE BADGE (Último vs Total)
   const currentVal = chartData[chartData.length - 1].value
   const firstVal = chartData[0].value
-  const diff = (currentVal - firstVal).toFixed(1)
-  const isPositive = diff > 0
+  const prevVal = chartData.length > 1 ? chartData[chartData.length - 2].value : firstVal
+
+  const diffTotal = (currentVal - firstVal).toFixed(1)
+  const diffLast = (currentVal - prevVal).toFixed(1)
 
   const values = chartData.map(d => d.value)
   const minVal = Math.floor(Math.min(...values) - (unit === 'kg' ? 2 : 5))
@@ -134,9 +160,30 @@ export default function MeasurementsChart({
         <div className="flex flex-col items-end gap-3">
           {metricSelector}
 
+          {/* DOBLE BADGE */}
           {chartData.length > 1 && (
-            <div className={`rounded-full px-3 py-1 text-[11px] font-extrabold tracking-wider border ${isPositive ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100'}`}>
-              {diff > 0 ? '+' : ''}{diff} {unit}
+            <div className="flex gap-2">
+              <div className="flex flex-col items-end">
+                <span className="mb-0.5 text-[8px] font-extrabold uppercase tracking-widest text-slate-400">Última</span>
+                <div className={`rounded-lg px-2 py-1 text-[10px] font-extrabold tracking-wider border ${
+                  diffLast > 0 ? 'bg-red-50 text-red-600 border-red-100' : 
+                  diffLast < 0 ? 'bg-green-50 text-green-600 border-green-100' : 
+                  'bg-slate-50 text-slate-500 border-slate-200'
+                }`}>
+                  {diffLast > 0 ? '+' : ''}{diffLast} {unit}
+                </div>
+              </div>
+
+              <div className="flex flex-col items-end">
+                <span className="mb-0.5 text-[8px] font-extrabold uppercase tracking-widest text-slate-400">Total</span>
+                <div className={`rounded-lg px-2 py-1 text-[10px] font-extrabold tracking-wider border ${
+                  diffTotal > 0 ? 'bg-red-50 text-red-600 border-red-100' : 
+                  diffTotal < 0 ? 'bg-green-50 text-green-600 border-green-100' : 
+                  'bg-slate-50 text-slate-500 border-slate-200'
+                }`}>
+                  {diffTotal > 0 ? '+' : ''}{diffTotal} {unit}
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -147,7 +194,7 @@ export default function MeasurementsChart({
           Con un solo registro no hay tendencia todavía. Añade otro y verás tu evolución aquí.
         </p>
       ) : (
-        <div className="h-48 w-full mt-2 -ml-3 sm:ml-0">
+        <div className="h-48 w-full mt-2 -ml-3 sm:ml-0 relative z-0">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
               <defs>

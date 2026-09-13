@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { MEASUREMENT_FIELDS, PHOTO_SLOTS, addProgressEntry } from '../../lib/notes'
 import { uploadProgressPhoto } from '../../lib/storage'
 
-// 1. DICCIONARIO DE LÍMITES ESTRICTOS (basado en las keys que tengas en MEASUREMENT_FIELDS)
+// 1. DICCIONARIO DE LÍMITES ESTRICTOS
 const LIMITS = {
   peso: 200,
   pecho: 150,
@@ -21,20 +21,23 @@ export default function ProgressForm({ clientId, onSaved }) {
   const [error, setError] = useState(null)
   const [open, setOpen] = useState(false)
 
-  // 2. FUNCIÓN INTERCEPTORA: Valida antes de guardar en el estado
+  // 2. FUNCIÓN INTERCEPTORA: Valida decimales y límites máximos
   const setField = (key) => (e) => {
-    const val = e.target.value
-    
-    // Si borran el número para corregirlo, se permite
+    let val = e.target.value
+
     if (val === '') {
       setValues((v) => ({ ...v, [key]: '' }))
       return
     }
-    
-    const numVal = Number(val)
-    const maxLimit = LIMITS[key] || 999 // Fallback por si en el futuro añades otro campo
-    
-    // Si meten un valor negativo o superan tu límite, ignoramos la tecla
+
+    // Permitir solo números y hasta 2 decimales (acepta punto o coma)
+    const regex = /^\d*[.,]?\d{0,2}$/
+    if (!regex.test(val)) return // Si incumple, ignora la tecla pulsada
+
+    // Reemplazamos coma por punto para que Number() no falle
+    const numVal = Number(val.replace(',', '.'))
+    const maxLimit = LIMITS[key] || 999 
+
     if (numVal < 0 || numVal > maxLimit) return
 
     setValues((v) => ({ ...v, [key]: val }))
@@ -49,7 +52,10 @@ export default function ProgressForm({ clientId, onSaved }) {
 
     const measurements = {}
     MEASUREMENT_FIELDS.forEach(({ key }) => {
-      if (values[key]) measurements[key] = Number(values[key])
+      if (values[key]) {
+        // Aseguramos que se guarde con punto decimal
+        measurements[key] = Number(values[key].replace(',', '.'))
+      }
     })
 
     for (const { key } of PHOTO_SLOTS) {
@@ -105,7 +111,6 @@ export default function ProgressForm({ clientId, onSaved }) {
         </button>
       </div>
 
-      {/* GRID DE MEDIDAS CON VALIDACIÓN */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {MEASUREMENT_FIELDS.map(({ key, label, unit }) => {
           const max = LIMITS[key] || ''
@@ -115,12 +120,10 @@ export default function ProgressForm({ clientId, onSaved }) {
                 {label} ({unit})
               </label>
               <input
-                type="number"
-                step="0.1"
-                min="0"
-                max={max} // Límite HTML nativo
+                type="text" // Pasamos a text para que la regex funcione mejor en móviles
+                inputMode="decimal" // Levanta el teclado numérico con coma
                 value={values[key] || ''}
-                onChange={setField(key)} // Interceptor React
+                onChange={setField(key)} 
                 placeholder={max ? `Máx: ${max}` : ''}
                 className="w-full appearance-none rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-navy outline-none transition-colors focus:border-orange focus:bg-white focus:ring-1 focus:ring-orange"
               />
@@ -129,14 +132,12 @@ export default function ProgressForm({ clientId, onSaved }) {
         })}
       </div>
 
-      {/* ZONA DE FOTOS ESTILIZADA */}
       <div className="mt-6">
         <p className="mb-3 text-[11px] font-extrabold text-navy">Fotos (opcional)</p>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {PHOTO_SLOTS.map(({ key, label }) => (
             <div key={key}>
               <p className="mb-1 text-[10px] font-bold text-slate-500">{label}</p>
-              {/* Contenedor que simula un input para subir archivos de forma limpia */}
               <div className="relative flex h-20 cursor-pointer items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 transition-colors hover:bg-slate-100 focus-within:border-orange focus-within:ring-1 focus-within:ring-orange overflow-hidden">
                 <span className="truncate px-2 text-[10px] font-medium text-slate-400">
                   {photos[key] ? photos[key].name : 'Seleccionar archivo'}
@@ -159,7 +160,6 @@ export default function ProgressForm({ clientId, onSaved }) {
         </p>
       )}
 
-      {/* BOTÓN DE GUARDADO */}
       <div className="mt-6 flex justify-start">
         <button
           type="submit"
