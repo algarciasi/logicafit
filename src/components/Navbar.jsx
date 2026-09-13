@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { isAdminEmail } from '../lib/adminConfig'
-import { supabase } from '../lib/supabaseClient' // Necesario para el logout
+import { supabase } from '../lib/supabaseClient' 
 
 const isNativeApp = () => typeof window !== 'undefined' && window.Capacitor !== undefined
 
@@ -15,7 +15,6 @@ const NAV_LINKS_WEB = [
   { to: '/conoceme', label: 'Sobre mí', type: 'link' },
 ]
 
-// En la app nativa el cliente ya conoce la marca: solo lo útil
 const NAV_LINKS_APP = [
   { to: '/calculadoras', label: 'Calculadoras', type: 'link' },
   { to: '/aprende', label: 'Aprende', type: 'link' },
@@ -38,12 +37,11 @@ export default function Navbar() {
 
   const closeMenu = () => setOpen(false)
 
-  // FUNCIÓN PARA CERRAR SESIÓN
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut()
       closeMenu()
-      navigate('/') // Redirige a la home al salir
+      navigate('/') 
     } catch (error) {
       console.error("Error cerrando sesión:", error)
     }
@@ -55,187 +53,158 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [open])
-
-  const navBg = open
-    ? 'opacity-0 pointer-events-none'
-    : `bg-navy h-16 sm:h-auto ${
-        scrolled || !isHeroPage
-          ? 'sm:bg-surface/95 sm:backdrop-blur-md sm:shadow-sm sm:border-b sm:border-slate-100 sm:py-2'
-          : 'sm:bg-transparent sm:py-5'
-      }`
+  const navBg = `bg-navy h-16 sm:h-auto ${
+    scrolled || !isHeroPage
+      ? 'sm:bg-surface/95 sm:backdrop-blur-md sm:shadow-sm sm:border-b sm:border-slate-100 sm:py-2'
+      : 'sm:bg-transparent sm:py-5'
+  }`
+  
   const textColor = `text-white ${scrolled || !isHeroPage ? 'sm:text-navy' : 'sm:text-white'}`
   const linkColor = scrolled || !isHeroPage ? 'text-text-secondary hover:text-navy' : 'text-slate-200 hover:text-white'
 
   return (
-    <>
-      <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-200 ${navBg}`}>
-        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-8">
+    <header className={`fixed top-0 left-0 w-full z-50 transition-all duration-200 ${navBg}`}>
+      <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-6 lg:px-8">
 
-          <Link to="/" onClick={closeMenu} className="flex items-center gap-2 group">
-            <img src="/brand/logo.png" alt="Lógica Fit" className="h-9 w-9 rounded-full object-cover transition-transform duration-500 group-hover:rotate-12" />
-            <span className={`font-display text-xl font-extrabold tracking-tight transition-colors ${textColor}`}>
-              Lógica <span className="text-orange">Fit</span>
-            </span>
+        <Link to="/" onClick={closeMenu} className="flex items-center gap-2 group relative z-50">
+          <img src="/brand/logo.png" alt="Lógica Fit" className="h-9 w-9 rounded-full object-cover transition-transform duration-500 group-hover:rotate-12" />
+          <span className={`font-display text-xl font-extrabold tracking-tight transition-colors ${textColor}`}>
+            Lógica <span className="text-orange">Fit</span>
+          </span>
+        </Link>
+
+        <nav className="hidden md:flex items-center gap-8 text-[13px] font-bold uppercase tracking-wide">
+          {NAV_LINKS.map((item) => (
+            <div key={item.label} className="relative group">
+              {item.type === 'anchor' ? (
+                <a href={item.href} className={`transition-colors py-2 ${linkColor}`}>
+                  {item.label}
+                </a>
+              ) : (
+                <Link to={item.to} className={`transition-colors py-2 ${linkColor}`}>
+                  {item.label}
+                </Link>
+              )}
+              <span className={`absolute -bottom-1 left-0 w-0 h-[2px] transition-all duration-300 group-hover:w-full ${scrolled || !isHeroPage ? 'bg-navy' : 'bg-white'}`}></span>
+            </div>
+          ))}
+        </nav>
+
+        <div className="hidden md:flex items-center gap-5">
+          {isAdmin && (
+            <Link to="/admin/clientes" className={`text-sm font-bold transition-colors ${textColor} hover:text-orange`}>
+              Admin
+            </Link>
+          )}
+          <Link to={user ? '/dashboard' : '/login'} className={`text-sm font-bold transition-colors ${textColor} hover:text-orange`}>
+            {user ? 'Mi área' : 'Acceder'}
+          </Link>
+          
+          {user && (
+            <button 
+              onClick={handleLogout}
+              className={`text-sm font-bold transition-colors ${textColor} hover:text-red-500`}
+            >
+              Salir
+            </button>
+          )}
+
+          {!native && (
+            <Link to="/planes" className="rounded-full bg-orange px-6 py-2.5 text-sm font-bold text-white shadow-lg transition-all hover:bg-orange-dark hover:scale-105">
+              Ver planes
+            </Link>
+          )}
+        </div>
+
+        {/* SECCIÓN MÓVIL (MI ÁREA + HAMBURGUESA Y MENÚ DESPLEGABLE) */}
+        <div className="flex items-center gap-2 md:hidden relative">
+          <Link
+            to={user ? '/dashboard' : '/login'}
+            onClick={closeMenu}
+            className="rounded-full bg-orange px-4 py-2 text-xs font-bold text-white shadow-md transition-transform active:scale-95 relative z-50"
+          >
+            {user ? 'Mi área' : 'Acceder'}
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8 text-[13px] font-bold uppercase tracking-wide">
-            {NAV_LINKS.map((item) => (
-              <div key={item.label} className="relative group">
-                {item.type === 'anchor' ? (
-                  <a href={item.href} className={`transition-colors py-2 ${linkColor}`}>
-                    {item.label}
-                  </a>
-                ) : (
-                  <Link to={item.to} className={`transition-colors py-2 ${linkColor}`}>
-                    {item.label}
+          {/* Botón Hamburguesa */}
+          <button
+            onClick={() => setOpen(!open)}
+            aria-label="Menú"
+            className="relative z-50 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors"
+          >
+            <div className="relative w-5 h-4">
+              <span className={`absolute left-0 h-[2px] w-full bg-current transition-all duration-300 ${open ? 'top-2 rotate-45' : 'top-0'}`}></span>
+              <span className={`absolute left-0 top-2 h-[2px] w-full bg-current transition-all duration-300 ${open ? 'opacity-0' : 'opacity-100'}`}></span>
+              <span className={`absolute left-0 h-[2px] w-full bg-current transition-all duration-300 ${open ? 'top-2 -rotate-45' : 'top-4'}`}></span>
+            </div>
+          </button>
+
+          {/* DROPDOWN MENU ESTILO TARJETA (Totalmente anclado a la derecha debajo de la cabecera) */}
+          {open && (
+            <>
+              {/* Fondo invisible que cubre toda la pantalla para cerrar el menú al hacer clic fuera */}
+              <div 
+                className="fixed inset-0 z-40" 
+                onClick={closeMenu}
+              ></div>
+              
+              {/* TARJETA FLOTANTE: Ancho contenido (w-56) y posición absoluta respecto a la cabecera */}
+              <div className="absolute right-0 top-full mt-4 z-50 flex w-56 flex-col rounded-3xl bg-navy p-5 shadow-2xl ring-1 ring-white/10 animate-fade-in-up origin-top-right">
+                <nav className="flex flex-col">
+                  {NAV_LINKS.map((item, index) => {
+                    const num = String(index + 1).padStart(2, '0')
+                    const content = (
+                      <>
+                        <span className="text-orange font-mono text-[11px] font-bold tracking-widest">{num}</span>
+                        <span className="font-display text-xl font-extrabold text-white tracking-tight">
+                          {item.label}
+                        </span>
+                      </>
+                    )
+                    const rowClass = 'flex items-center gap-3 py-2.5 border-b border-white/5 active:translate-x-1 transition-transform'
+
+                    return item.type === 'anchor' ? (
+                      <a key={item.label} href={item.href} onClick={closeMenu} className={rowClass}>
+                        {content}
+                      </a>
+                    ) : (
+                      <Link key={item.label} to={item.to} onClick={closeMenu} className={rowClass}>
+                        {content}
+                      </Link>
+                    )
+                  })}
+
+                  {isAdmin && (
+                    <Link to="/admin/clientes" onClick={closeMenu} className="flex items-center gap-3 py-2.5 border-b border-white/5">
+                      <span className="text-orange font-mono text-[11px] font-bold tracking-widest">••</span>
+                      <span className="font-display text-xl font-extrabold text-white tracking-tight">Admin</span>
+                    </Link>
+                  )}
+                </nav>
+
+                {user && (
+                  <button 
+                    onClick={handleLogout} 
+                    className="mt-5 w-full flex items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-3 py-2.5 text-center text-[11px] font-bold uppercase tracking-widest text-red-400 active:bg-red-500/20 transition-colors"
+                  >
+                    Cerrar sesión
+                  </button>
+                )}
+
+                {!native && !user && (
+                  <Link
+                    to="/planes"
+                    onClick={closeMenu}
+                    className="mt-4 block w-full rounded-full bg-orange px-3 py-2.5 text-center text-[11px] font-bold uppercase tracking-widest text-white shadow-lg active:scale-[0.98]"
+                  >
+                    Ver planes
                   </Link>
                 )}
-                <span className={`absolute -bottom-1 left-0 w-0 h-[2px] transition-all duration-300 group-hover:w-full ${scrolled || !isHeroPage ? 'bg-navy' : 'bg-white'}`}></span>
               </div>
-            ))}
-          </nav>
-
-          <div className="hidden md:flex items-center gap-5">
-            {isAdmin && (
-              <Link to="/admin/clientes" className={`text-sm font-bold transition-colors ${textColor} hover:text-orange`}>
-                Admin
-              </Link>
-            )}
-            <Link to={user ? '/dashboard' : '/login'} className={`text-sm font-bold transition-colors ${textColor} hover:text-orange`}>
-              {user ? 'Mi área' : 'Acceder'}
-            </Link>
-            
-            {/* BOTÓN DE LOGOUT EN DESKTOP */}
-            {user && (
-              <button 
-                onClick={handleLogout}
-                className={`text-sm font-bold transition-colors ${textColor} hover:text-red-500`}
-              >
-                Salir
-              </button>
-            )}
-
-            {!native && (
-              <Link to="/planes" className="rounded-full bg-orange px-6 py-2.5 text-sm font-bold text-white shadow-lg transition-all hover:bg-orange-dark hover:scale-105">
-                Ver planes
-              </Link>
-            )}
-          </div>
-
-          {/* Acciones móvil: acceso directo + hamburguesa */}
-          <div className="flex items-center gap-2 md:hidden">
-            <Link
-              to={user ? '/dashboard' : '/login'}
-              onClick={closeMenu}
-              className="rounded-full bg-orange px-4 py-2 text-xs font-bold text-white shadow-md transition-transform active:scale-95"
-            >
-              {user ? 'Mi área' : 'Acceder'}
-            </Link>
-
-            <button
-              onClick={() => setOpen(true)}
-              aria-label="Abrir menú"
-              className="relative z-50 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors"
-            >
-              <div className="relative w-5 h-4">
-                <span className="absolute left-0 top-0 h-[2px] w-full bg-current"></span>
-                <span className="absolute left-0 top-2 h-[2px] w-full bg-current"></span>
-                <span className="absolute left-0 top-4 h-[2px] w-full bg-current"></span>
-              </div>
-            </button>
-          </div>
+            </>
+          )}
         </div>
-      </header>
-
-      {open && (
-        <div className="fixed inset-0 z-[60] bg-navy md:hidden flex flex-col">
-          <div className="flex h-16 items-center justify-between px-6 shrink-0">
-            <Link to="/" onClick={closeMenu} className="flex items-center gap-2">
-              <img src="/brand/logo.png" alt="Lógica Fit" className="h-9 w-9 rounded-full object-cover" />
-              <span className="font-display text-xl font-extrabold tracking-tight text-white">
-                Lógica <span className="text-orange">Fit</span>
-              </span>
-            </Link>
-            <button
-              onClick={closeMenu}
-              aria-label="Cerrar menú"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white"
-            >
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="flex-1 overflow-y-auto px-6 pb-8">
-            <nav className="flex flex-col">
-              {NAV_LINKS.map((item, index) => {
-                const num = String(index + 1).padStart(2, '0')
-                const content = (
-                  <>
-                    <span className="text-orange font-mono text-sm font-bold tracking-widest">{num}</span>
-                    <span className="font-display text-3xl font-extrabold text-white tracking-tight">
-                      {item.label}
-                    </span>
-                  </>
-                )
-                const rowClass = 'flex items-center gap-4 py-4 border-b border-white/10 active:translate-x-1 transition-transform'
-
-                return item.type === 'anchor' ? (
-                  <a key={item.label} href={item.href} onClick={closeMenu} className={rowClass}>
-                    {content}
-                  </a>
-                ) : (
-                  <Link key={item.label} to={item.to} onClick={closeMenu} className={rowClass}>
-                    {content}
-                  </Link>
-                )
-              })}
-
-              {isAdmin && (
-                <Link to="/admin/clientes" onClick={closeMenu} className="flex items-center gap-4 py-4 border-b border-white/10">
-                  <span className="text-orange font-mono text-sm font-bold tracking-widest">••</span>
-                  <span className="font-display text-3xl font-extrabold text-white tracking-tight">Admin</span>
-                </Link>
-              )}
-
-              {/* En la app el acceso ya está arriba, no lo repetimos */}
-              {!native && (
-                <Link to={user ? '/dashboard' : '/login'} onClick={closeMenu} className="flex items-center gap-4 py-4">
-                  <span className="text-orange font-mono text-sm font-bold tracking-widest">••</span>
-                  <span className="font-display text-3xl font-extrabold text-white tracking-tight">
-                    {user ? 'Mi área' : 'Acceder'}
-                  </span>
-                </Link>
-              )}
-            </nav>
-
-            {/* BOTÓN DE LOGOUT EN MÓVIL */}
-            {user && (
-              <button 
-                onClick={handleLogout} 
-                className="mt-8 w-full flex items-center justify-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-6 py-4 text-center text-sm font-bold tracking-wide text-red-400 active:bg-red-500/20 transition-colors"
-              >
-                Cerrar sesión
-              </button>
-            )}
-
-            {!native && (
-              <Link
-                to="/planes"
-                onClick={closeMenu}
-                className="mt-6 block w-full rounded-full bg-orange px-6 py-4 text-center text-sm font-bold uppercase tracking-wide text-white shadow-lg active:scale-[0.98]"
-              >
-                Ver planes
-              </Link>
-            )}
-          </div>
-        </div>
-      )}
-    </>
+      </div>
+    </header>
   )
 }
