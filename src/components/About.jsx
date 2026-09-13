@@ -3,13 +3,18 @@ import { Link } from "react-router-dom";
 export default function Conoceme() {
   return (
     <div className="bg-white">
-      {/* SECCIÓN 1: HERO (Imagen inmersiva con degradados, mismo lenguaje que Calculadoras/Aprende) */}
+      {/* Precarga invisible súper agresiva para la imagen principal */}
+      <link rel="preload" as="image" href="/brand/alberto-4.jpg" fetchPriority="high" />
+
+      {/* SECCIÓN 1: HERO (Imagen inmersiva con degradados) */}
       <section className="relative w-full pt-16 pb-0 sm:pt-40 sm:pb-24 lg:pt-48 lg:pb-28 flex flex-col sm:justify-center">
         <div className="relative h-[42vh] min-h-[280px] w-full sm:absolute sm:inset-0 sm:h-full sm:min-h-0">
           <img
             src="/brand/alberto-4.jpg"
             alt="Alberto García, entrenador personal Lógica Fit"
-            className="h-full w-full object-cover object-[75%_30%] sm:object-[72%_15%] opacity-100 sm:opacity-95 animate-fade-in"
+            fetchPriority="high" // Descarga prioritaria
+            // Quitamos la clase de animación para que se muestre instantáneamente
+            className="h-full w-full object-cover object-[75%_30%] sm:object-[72%_15%] opacity-100 sm:opacity-95"
           />
 
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/10 to-transparent sm:hidden" />
@@ -21,8 +26,6 @@ export default function Conoceme() {
 
         <div className="relative z-10 w-full bg-navy px-6 py-10 sm:bg-transparent sm:py-0 lg:px-8">
           <div className="mx-auto max-w-7xl w-full">
-            {/* margin-top explícito: baja el bloque de texto dentro del hero,
-                independiente de la altura de la sección o de la imagen */}
             <div className="max-w-2xl sm:mt-48 lg:mt-64">
               <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-orange animate-fade-in-up">
                 Conóceme
@@ -107,11 +110,13 @@ export default function Conoceme() {
           </div>
 
           <figure className="mt-12">
-            {/* FOTO 2: Foto revisando planificación o tus propios entrenamientos */}
             <div className="aspect-[21/9] w-full overflow-hidden rounded-sm bg-slate-200">
               <img
                 src="/ruta-a-foto-revisando-planificacion.jpg"
                 alt="Revisando mis propios entrenamientos"
+                // Esta imagen está más abajo y no es el LCP. A esta sí le viene genial el lazy y el async
+                loading="lazy" 
+                decoding="async" 
                 className="h-full w-full object-cover"
               />
             </div>
@@ -132,6 +137,9 @@ export default function Conoceme() {
               <img
                 src="/brand/estudiando.jpg"
                 alt="Alberto estudiando el manual de Entrenamiento Personal"
+                // Aplicamos también lazy y async porque está al final de la web
+                loading="lazy"
+                decoding="async"
                 className="h-full w-full object-cover object-top"
               />
             </div>

@@ -2,15 +2,22 @@ import { useState } from "react";
 
 export default function ExerciseLogItem({ clientId, routineEntry }) {
   const [expanded, setExpanded] = useState(false);
-  const [serie, setSerie] = useState(1);
-  const [peso, setPeso] = useState("");
   
   // Extraemos objetivo
   const repsObj = routineEntry.reps_objetivo || routineEntry.reps || "-";
   const seriesObj = routineEntry.series_objetivo || routineEntry.series || "-";
+  
+  // Calculamos cuántas filas crear (por defecto 1 si falla el número)
+  const numSeries = !isNaN(seriesObj) ? Number(seriesObj) : 1;
 
-  // Inicializamos reps con el objetivo predefinido si es un número válido, sino vacío
-  const [reps, setReps] = useState(!isNaN(repsObj) ? repsObj.toString() : "");
+  // Estado que genera automáticamente un array con las X series planificadas
+  const [sets, setSets] = useState(() => {
+    return Array.from({ length: numSeries }, (_, i) => ({
+      serie: i + 1,
+      peso: "",
+      reps: !isNaN(repsObj) ? repsObj.toString() : "",
+    }));
+  });
 
   const ejercicio = routineEntry.ejercicios || routineEntry.ejercicio || {};
   const nombre = ejercicio.nombre || routineEntry.nombre_ejercicio || "Ejercicio";
@@ -22,44 +29,58 @@ export default function ExerciseLogItem({ clientId, routineEntry }) {
       nombre + " tecnica ejercicio",
     )}`;
 
-  // Función interceptora para Peso (Máx 999, 2 decimales)
-  const handlePesoChange = (e) => {
+  // Interceptora para Peso adaptada a múltiples filas
+  const handlePesoChange = (index, e) => {
     let val = e.target.value;
-    if (val === '') return setPeso('');
+    if (val !== '') {
+      const regex = /^\d*[.,]?\d{0,2}$/;
+      if (!regex.test(val)) return;
+      const numVal = Number(val.replace(',', '.'));
+      if (numVal > 999) return;
+    }
     
-    const regex = /^\d*[.,]?\d{0,2}$/;
-    if (!regex.test(val)) return;
-
-    const numVal = Number(val.replace(',', '.'));
-    if (numVal > 999) return;
-
-    setPeso(val);
+    const newSets = [...sets];
+    newSets[index].peso = val;
+    setSets(newSets);
   };
 
-  // Función interceptora para Reps (Máx 99, 0 decimales)
-  const handleRepsChange = (e) => {
+  // Interceptora para Reps adaptada a múltiples filas
+  const handleRepsChange = (index, e) => {
     let val = e.target.value;
-    if (val === '') return setReps('');
+    if (val !== '') {
+      const regex = /^\d+$/; // Solo enteros
+      if (!regex.test(val)) return;
+      const numVal = Number(val);
+      if (numVal < 0 || numVal > 99) return;
+    }
 
-    const regex = /^\d+$/; // Solo números enteros
-    if (!regex.test(val)) return;
-
-    const numVal = Number(val);
-    if (numVal < 0 || numVal > 99) return;
-
-    setReps(val);
+    const newSets = [...sets];
+    newSets[index].reps = val;
+    setSets(newSets);
   };
 
-  const handleSave = () => {
-    if (!peso || !reps) return alert("Rellena peso y reps");
-    alert(`¡Guardado! Serie ${serie}: ${peso}kg x ${reps} reps`);
-    setSerie((prev) => Number(prev) + 1);
-    setPeso("");
-    // Se mantiene el último rep usado por comodidad al anotar la siguiente serie
+  // Guardar en bloque
+  const handleSaveAll = () => {
+    // Filtramos para evitar guardar series totalmente vacías
+    const validSets = sets.filter(s => s.peso !== "" && s.reps !== "");
+    
+    if (validSets.length === 0) {
+      return alert("Rellena al menos el peso de una serie antes de guardar.");
+    }
+
+    // Aquí iría tu llamada a Supabase. Ejemplo:
+    // await saveExerciseHistoryBatch({ clientId, exerciseId: ejercicio.id, sets: validSets })
+
+    const resumen = validSets.map(s => `• Serie ${s.serie}: ${s.peso}kg x ${s.reps} reps`).join('\n');
+    alert(`¡Series guardadas con éxito!\n\n${resumen}`);
+    
+    // Opcional: Cerrar el acordeón tras guardar
+    setExpanded(false);
   };
 
   return (
     <div className="mb-3 overflow-hidden rounded-[1.25rem] bg-white shadow-sm ring-1 ring-slate-100 transition-all hover:shadow-md">
+      {/* CABECERA (RESUMEN ESTILO APP NATIVA) */}
       <div className="flex items-center gap-4 p-3 sm:p-4">
         <a
           href={videoUrl}
@@ -120,11 +141,12 @@ export default function ExerciseLogItem({ clientId, routineEntry }) {
         </div>
       </div>
 
+      {/* ZONA DESPLEGABLE: APUNTAR PESOS (Aparece al tocar el cuaderno) */}
       {expanded && (
         <div className="border-t border-slate-100 bg-slate-50/50 p-4 animate-fade-in">
-          <div className="mb-3 flex items-center justify-between">
+          <div className="mb-4 flex items-center justify-between">
             <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
-              Registrar serie
+              Registrar series
             </p>
             <p className="text-[11px] font-semibold text-slate-500">
               Objetivo:{" "}
@@ -134,56 +156,60 @@ export default function ExerciseLogItem({ clientId, routineEntry }) {
             </p>
           </div>
 
-          <div className="flex items-end gap-2 sm:gap-3">
-            <div className="w-14 shrink-0">
-              <label className="mb-1 ml-1 block text-[10px] font-extrabold uppercase text-slate-400">
-                #
-              </label>
-              <input
-                type="number"
-                value={serie}
-                onChange={(e) => setSerie(e.target.value)}
-                className="h-10 w-full rounded-xl border border-slate-200 bg-white text-center text-sm font-bold text-navy outline-none focus:border-orange focus:ring-1 focus:ring-orange"
-              />
-            </div>
-
-            <div className="flex-1">
-              <label className="mb-1 ml-1 block text-[10px] font-extrabold uppercase text-slate-400">
-                KG
-              </label>
-              <input
-                type="text"
-                inputMode="decimal"
-                placeholder="Ej: 20.5"
-                value={peso}
-                onChange={handlePesoChange}
-                className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-navy outline-none placeholder:font-medium placeholder:text-slate-300 focus:border-orange focus:ring-1 focus:ring-orange"
-              />
-            </div>
-
-            <div className="flex-1">
-              <label className="mb-1 ml-1 block text-[10px] font-extrabold uppercase text-slate-400">
-                Reps
-              </label>
-              <input
-                type="text"
-                inputMode="numeric"
-                placeholder={repsObj.toString()}
-                value={reps}
-                onChange={handleRepsChange}
-                className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-navy outline-none placeholder:font-medium placeholder:text-slate-300 focus:border-orange focus:ring-1 focus:ring-orange"
-              />
-            </div>
-
-            <button
-              onClick={handleSave}
-              className="flex h-10 w-12 shrink-0 items-center justify-center rounded-xl bg-navy text-white shadow-md transition-all hover:bg-orange active:scale-95"
-            >
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-              </svg>
-            </button>
+          {/* CABECERA DE COLUMNAS */}
+          <div className="mb-2 flex gap-2 px-1 sm:gap-3">
+            <div className="w-10 shrink-0 text-[10px] font-extrabold uppercase text-slate-400 sm:w-14">#</div>
+            <div className="flex-1 text-[10px] font-extrabold uppercase text-slate-400">KG</div>
+            <div className="flex-1 text-[10px] font-extrabold uppercase text-slate-400">Reps</div>
           </div>
+
+          {/* LISTA AUTOMÁTICA DE SERIES */}
+          <div className="space-y-2">
+            {sets.map((set, index) => (
+              <div key={index} className="flex items-center gap-2 sm:gap-3">
+                
+                {/* Número de serie (Fijo) */}
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-sm font-extrabold text-slate-400 sm:w-14">
+                  {set.serie}
+                </div>
+
+                {/* Input Peso */}
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="Ej: 20.5"
+                    value={set.peso}
+                    onChange={(e) => handlePesoChange(index, e)}
+                    className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-navy outline-none placeholder:font-medium placeholder:text-slate-300 focus:border-orange focus:ring-1 focus:ring-orange"
+                  />
+                </div>
+
+                {/* Input Reps */}
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    placeholder={repsObj.toString()}
+                    value={set.reps}
+                    onChange={(e) => handleRepsChange(index, e)}
+                    className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-navy outline-none placeholder:font-medium placeholder:text-slate-300 focus:border-orange focus:ring-1 focus:ring-orange"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* BOTÓN ENVIAR BLOQUE ENTERO */}
+          <button
+            onClick={handleSaveAll}
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-navy py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-orange active:scale-95"
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+            Guardar {numSeries > 1 ? 'todas las series' : 'serie'}
+          </button>
         </div>
       )}
     </div>

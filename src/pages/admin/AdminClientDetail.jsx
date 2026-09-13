@@ -11,9 +11,10 @@ import AdminRoutineEditor from "../../components/admin/AdminRoutineEditor";
 import ClientPlanEditor from "../../components/admin/ClientPlanEditor";
 import RoutineHistoryPanel from "../../components/admin/RoutineHistoryPanel";
 import DietHistoryPanel from "../../components/admin/DietHistoryPanel";
-import { MEALS } from "../../lib/macros";
 import { diaLabel } from "../../lib/routines";
 import { generateRoutinePdf, generateDietPdf } from "../../lib/clientPdfs";
+
+import { MEALS, GOAL_LABELS } from "../../lib/macros";
 
 const FIELD =
   "w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm text-navy focus:border-orange focus:outline-none focus:ring-1 focus:ring-orange";
@@ -138,6 +139,23 @@ export default function AdminClientDetail() {
     items: dietEntries.filter((e) => e.momento_dia === meal.id),
   }));
 
+  // Traductor robusto para los slugs de la base de datos
+  const formatObjetivo = (slug) => {
+    if (!slug) return "";
+    
+    if (GOAL_LABELS && GOAL_LABELS[slug]) return GOAL_LABELS[slug];
+    
+    const labels = {
+      "perdida_peso": "Pérdida de peso",
+      "ganancia_muscular": "Ganancia muscular",
+      "recomposicion": "Recomposición corporal",
+      "mantenimiento": "Mantenimiento",
+      "rendimiento": "Rendimiento deportivo"
+    };
+    
+    return labels[slug] || slug.replace(/_/g, ' ');
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-20 px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
@@ -154,9 +172,11 @@ export default function AdminClientDetail() {
         <p className="text-sm text-text-secondary">
           {client.email} {client.telefono ? `· ${client.telefono}` : ""}
         </p>
+        
+        {/* Usamos nuestro traductor robusto */}
         {client.objetivo_entrenamiento && (
           <p className="mt-1 text-sm text-text-secondary">
-            Objetivo: {client.objetivo_entrenamiento}
+            Objetivo: {formatObjetivo(client.objetivo_entrenamiento)}
           </p>
         )}
 

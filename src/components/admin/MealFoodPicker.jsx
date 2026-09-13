@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { listAllFoods } from "../../lib/foods";
 import { DIAS_SEMANA } from "../../lib/routines";
+import { diaLabel } from "../../lib/routines"; // Importamos para mostrar el día bonito
 
 // Cache simple en memoria
 let cachedFoods = null;
@@ -19,7 +20,15 @@ export default function MealFoodPicker({ mealId, onAdd }) {
 
   const [todosLosDias, setTodosLosDias] = useState(true);
   const [selectedDays, setSelectedDays] = useState([]);
+  
+  // 🚀 NUEVO: Array para guardar los alimentos temporalmente antes de subirlos
+  const [stagedItems, setStagedItems] = useState([]);
   const [saving, setSaving] = useState(false);
+
+  // Estados para los menús desplegables custom
+  const [superOpen, setSuperOpen] = useState(false);
+  const [unidadOpen, setUnidadOpen] = useState(false);
+  const [opcionOpen, setOpcionOpen] = useState(false);
 
   useEffect(() => {
     if (cachedFoods) return;
@@ -30,12 +39,10 @@ export default function MealFoodPicker({ mealId, onAdd }) {
     });
   }, []);
 
-  // Extraer lista única de supermercados para el filtro (Ignorando los que estén vacíos)
   const supermarkets = [
     ...new Set(foods.map((f) => f.supermercado).filter(Boolean)),
   ].sort();
 
-  // Filtrar alimentos según el supermercado seleccionado
   const filteredFoods = foods.filter(
     (f) => !superFilter || f.supermercado === superFilter,
   );
@@ -44,7 +51,6 @@ export default function MealFoodPicker({ mealId, onAdd }) {
     const val = e.target.value;
     setSearchText(val);
 
-    // Buscar si coincide
     const found = filteredFoods.find((f) => {
       const label = f.supermercado
         ? `${f.nombre} (${f.supermercado})`
@@ -61,88 +67,135 @@ export default function MealFoodPicker({ mealId, onAdd }) {
     );
   };
 
-  const handleAdd = async () => {
+  // 🚀 NUEVO: Añadir a la lista temporal
+  const handleStageItem = () => {
     if (!selectedId) return;
     const food = foods.find((f) => f.id === Number(selectedId));
     if (!food) return;
 
-    setSaving(true);
-
+    const newItems = [];
     if (todosLosDias) {
-      // AQUÍ: Añadida la variable "unidad" al final
-      await onAdd(mealId, food, Number(cantidad), null, Number(opcion), unidad);
+      newItems.push({ food, cantidad: Number(cantidad), dia: null, opcion: Number(opcion), unidad });
     } else {
       for (const dia of selectedDays) {
-        // AQUÍ TAMBIÉN: Añadida la variable "unidad" al final
-        // eslint-disable-next-line no-await-in-loop
-        await onAdd(
-          mealId,
-          food,
-          Number(cantidad),
-          dia,
-          Number(opcion),
-          unidad,
-        );
+        newItems.push({ food, cantidad: Number(cantidad), dia, opcion: Number(opcion), unidad });
       }
     }
 
-    setSaving(false);
+    setStagedItems([...stagedItems, ...newItems]);
+    
+    // Limpiamos solo el buscador para añadir rápido el siguiente
     setSelectedId("");
     setSearchText("");
     setCantidad(100);
-    setUnidad("g");
+  };
+
+  const handleRemoveStaged = (indexToRemove) => {
+    setStagedItems(stagedItems.filter((_, idx) => idx !== indexToRemove));
+  };
+
+  // 🚀 NUEVO: Guardar todo de golpe en la base de datos
+  const handleSaveAll = async () => {
+    setSaving(true);
+    // Ejecutamos todos los guardados secuencialmente
+    for (const item of stagedItems) {
+      // eslint-disable-next-line no-await-in-loop
+      await onAdd(mealId, item.food, item.cantidad, item.dia, item.opcion, item.unidad);
+    }
+    setStagedItems([]);
+    setSaving(false);
   };
 
   if (loading) {
-    return (
-      <p className="mt-4 text-xs font-medium text-slate-400">
-        Cargando base de datos de alimentos…
-      </p>
-    );
+    return <p className="mt-4 text-xs font-medium text-slate-400">Cargando base de datos de alimentos…</p>;
   }
 
-  const canAdd = selectedId && (todosLosDias || selectedDays.length > 0);
+  const canStage = selectedId && (todosLosDias || selectedDays.length > 0);
 
   return (
     <div className="mt-4 rounded-2xl bg-slate-50 border border-slate-100 p-4">
-      {/* FILA 1: Supermercado y Buscador */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-3">
-        {/* Filtro de Supermercado con flecha custom */}
-        <div className="relative sm:w-48 shrink-0">
-          <select
-            value={superFilter}
-            onChange={(e) => {
-              setSuperFilter(e.target.value);
-              setSearchText("");
-              setSelectedId("");
-            }}
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm font-bold text-navy outline-none focus:border-orange focus:ring-1 focus:ring-orange cursor-pointer transition-colors hover:border-slate-300"
-          >
-            <option value="">Todos los súpers</option>
-            {supermarkets.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2.5"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
+      
+      {/* 🚀 LISTA TEMPORAL (Solo se muestra si hay items preparados) */}
+      {stagedItems.length > 0 && (
+        <div className="mb-5 rounded-xl bg-white p-3 ring-1 ring-slate-200/60 shadow-sm animate-fade-in-up">
+          <div className="mb-2 flex items-center justify-between">
+            <p className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+              Listos para guardar ({stagedItems.length})
+            </p>
           </div>
+          <ul className="mb-3 space-y-1.5">
+            {stagedItems.map((it, idx) => (
+              <li key={idx} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-xs">
+                <span className="text-navy font-semibold truncate pr-2">
+                  {it.food.nombre} — <span className="text-orange">{it.cantidad}{it.unidad}</span>
+                  <span className="ml-1 text-[10px] text-slate-400 font-medium">
+                    ({it.dia ? diaLabel(it.dia).slice(0,3) : "todos"} · Opc {it.opcion})
+                  </span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveStaged(idx)}
+                  className="text-slate-400 hover:text-red-500 font-bold px-1"
+                >
+                  ✕
+                </button>
+              </li>
+            ))}
+          </ul>
+          <button
+            type="button"
+            onClick={handleSaveAll}
+            disabled={saving}
+            className="w-full rounded-xl bg-navy py-2.5 text-xs font-bold text-white shadow-md transition-all hover:bg-orange active:scale-95 disabled:opacity-50"
+          >
+            {saving ? "Guardando todos…" : "Confirmar y guardar en el plan"}
+          </button>
+        </div>
+      )}
+
+      {/* FILA 1: Supermercado y Buscador */}
+      <div className="flex flex-col sm:flex-row gap-3 mb-3 relative z-30">
+        
+        {/* CUSTOM DROPDOWN: Supermercado */}
+        <div className="relative sm:w-48 shrink-0">
+          <button
+            type="button"
+            onClick={() => setSuperOpen(!superOpen)}
+            className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold text-navy outline-none focus:border-orange focus:ring-1 hover:border-slate-300"
+          >
+            <span className="truncate">{superFilter || "Todos los súpers"}</span>
+            <svg className={`h-4 w-4 text-slate-400 transition-transform ${superOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          {superOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setSuperOpen(false)}></div>
+              <div className="absolute left-0 top-full z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-slate-100 bg-white p-1.5 shadow-xl animate-fade-in-up">
+                <button
+                  type="button"
+                  onClick={() => { setSuperFilter(""); setSearchText(""); setSelectedId(""); setSuperOpen(false); }}
+                  className={`block w-full rounded-lg px-3 py-2 text-left text-xs font-extrabold transition-colors ${!superFilter ? 'bg-orange/10 text-orange' : 'text-navy hover:bg-slate-50'}`}
+                >
+                  Todos los súpers
+                </button>
+                {supermarkets.map((s) => (
+                  <button
+                    key={s}
+                    type="button"
+                    onClick={() => { setSuperFilter(s); setSearchText(""); setSelectedId(""); setSuperOpen(false); }}
+                    className={`block w-full rounded-lg px-3 py-2 text-left text-xs font-extrabold transition-colors ${superFilter === s ? 'bg-orange/10 text-orange' : 'text-navy hover:bg-slate-50'}`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Buscador de Alimento con Datalist */}
+        {/* Buscador de Alimento con Datalist (Nativo está OK porque es un input de texto) */}
         <div className="flex-1 relative">
           <input
             list={`foods-list-${mealId}`}
@@ -153,19 +206,14 @@ export default function MealFoodPicker({ mealId, onAdd }) {
           />
           <datalist id={`foods-list-${mealId}`}>
             {filteredFoods.map((f) => (
-              <option
-                key={f.id}
-                value={
-                  f.supermercado ? `${f.nombre} (${f.supermercado})` : f.nombre
-                }
-              />
+              <option key={f.id} value={f.supermercado ? `${f.nombre} (${f.supermercado})` : f.nombre} />
             ))}
           </datalist>
         </div>
       </div>
 
       {/* FILA 2: Cantidad, Unidad y Opción */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col sm:flex-row gap-3 relative z-20">
         <div className="flex gap-2 w-full sm:w-auto">
           <div className="relative w-24 shrink-0">
             <input
@@ -177,52 +225,72 @@ export default function MealFoodPicker({ mealId, onAdd }) {
             />
           </div>
 
-          {/* Selector g / ml con flecha custom */}
-          <div className="relative w-16 shrink-0">
-            <select
-              value={unidad}
-              onChange={(e) => setUnidad(e.target.value)}
-              className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-2 py-2.5 text-sm font-bold text-slate-500 outline-none focus:border-orange focus:ring-1 focus:ring-orange text-center cursor-pointer transition-colors hover:border-slate-300"
+          {/* CUSTOM DROPDOWN: Unidad */}
+          <div className="relative w-20 shrink-0">
+            <button
+              type="button"
+              onClick={() => setUnidadOpen(!unidadOpen)}
+              className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-bold text-slate-500 outline-none hover:border-slate-300"
             >
-              <option value="g">g</option>
-              <option value="ml">ml</option>
-            </select>
+              <span>{unidad}</span>
+              <svg className={`h-3 w-3 text-slate-400 transition-transform ${unidadOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {unidadOpen && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setUnidadOpen(false)}></div>
+                <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-xl border border-slate-100 bg-white p-1.5 shadow-xl animate-fade-in-up">
+                  {["g", "ml"].map((u) => (
+                    <button
+                      key={u}
+                      type="button"
+                      onClick={() => { setUnidad(u); setUnidadOpen(false); }}
+                      className={`block w-full rounded-lg px-2 py-2 text-center text-xs font-extrabold transition-colors ${unidad === u ? 'bg-orange/10 text-orange' : 'text-slate-500 hover:bg-slate-50'}`}
+                    >
+                      {u}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
         </div>
 
-        {/* Bloque: Opción con flecha custom */}
-        <div className="relative w-full sm:w-32 shrink-0">
-          <select
-            value={opcion}
-            onChange={(e) => setOpcion(e.target.value)}
-            className="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2.5 pr-8 text-sm font-bold text-orange outline-none focus:border-orange focus:ring-1 focus:ring-orange cursor-pointer transition-colors hover:border-slate-300"
+        {/* CUSTOM DROPDOWN: Opción */}
+        <div className="relative w-full sm:w-36 shrink-0 z-10">
+          <button
+            type="button"
+            onClick={() => setOpcionOpen(!opcionOpen)}
+            className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-orange outline-none hover:border-slate-300"
           >
-            {[1, 2, 3, 4, 5].map((n) => (
-              <option key={n} value={n}>
-                Opción {n}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-orange">
-            <svg
-              className="h-4 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2.5"
-                d="M19 9l-7 7-7-7"
-              />
+            <span>Opción {opcion}</span>
+            <svg className={`h-3 w-3 text-orange transition-transform ${opcionOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
             </svg>
-          </div>
+          </button>
+          {opcionOpen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setOpcionOpen(false)}></div>
+              <div className="absolute left-0 top-full z-50 mt-1 w-full rounded-xl border border-slate-100 bg-white p-1.5 shadow-xl animate-fade-in-up">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => { setOpcion(n); setOpcionOpen(false); }}
+                    className={`block w-full rounded-lg px-3 py-2 text-left text-xs font-extrabold transition-colors ${opcion === n ? 'bg-orange/10 text-orange' : 'text-navy hover:bg-slate-50'}`}
+                  >
+                    Opción {n}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       </div>
 
-      {/* FILA 3: Días de la semana y Guardar */}
-      <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-slate-200/60 pt-4">
+      {/* FILA 3: Días de la semana y Añadir a lista */}
+      <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-slate-200/60 pt-4 relative z-0">
         <div className="flex flex-wrap items-center gap-3">
           <label className="flex items-center gap-2 text-xs font-bold text-navy cursor-pointer">
             <input
@@ -263,11 +331,11 @@ export default function MealFoodPicker({ mealId, onAdd }) {
 
         <button
           type="button"
-          onClick={handleAdd}
-          disabled={saving || !canAdd}
-          className="shrink-0 rounded-xl bg-orange px-6 py-2.5 text-xs font-bold text-white shadow-md shadow-orange/20 transition-all hover:bg-orange-dark hover:scale-105 disabled:opacity-50 disabled:hover:scale-100"
+          onClick={handleStageItem}
+          disabled={!canStage}
+          className="shrink-0 rounded-xl bg-orange/10 border border-orange/20 px-6 py-2.5 text-xs font-extrabold text-orange transition-all hover:bg-orange/20 active:scale-95 disabled:opacity-50 disabled:hover:scale-100"
         >
-          {saving ? "Añadiendo…" : "+ Añadir a dieta"}
+          + Pre-añadir alimento
         </button>
       </div>
     </div>

@@ -3,16 +3,17 @@ import { Link } from 'react-router-dom'
 export default function Hero() {
   return (
     <section className="relative w-full bg-navy overflow-hidden pt-16 pb-10 sm:pt-40 sm:pb-24 lg:pt-48 lg:pb-28">
+      
+      {/* Precarga invisible súper agresiva para que el navegador la descargue lo antes posible */}
+      <link rel="preload" as="image" href="/brand/alberto-gym.jpg" fetchPriority="high" />
 
-      {/* BLOQUE DE IMAGEN
-          Móvil: bloque normal de altura fija justo debajo del membrete navy, se ve entera.
-          Desktop (sm+): absolute inset-0 rellenando la altura que marca el contenido
-          (título + tarjetas + padding), no el viewport — igual que el resto de páginas. */}
+      {/* BLOQUE DE IMAGEN */}
       <div className="relative h-[48vh] min-h-[320px] w-full sm:absolute sm:inset-0 sm:h-full sm:min-h-0">
         <img
           src="/brand/alberto-gym.jpg"
           alt="Alberto García, entrenador personal Lógica Fit"
-          className="h-full w-full object-cover object-[75%_30%] sm:object-[68%_18%] opacity-100 sm:opacity-90 animate-fade-in"
+          fetchPriority="high" // Descarga prioritaria en red
+          className="h-full w-full object-cover object-[75%_30%] sm:object-[68%_18%] opacity-100 sm:opacity-90"
         />
 
         {/* Degradado inferior móvil: funde la foto con el bloque navy de texto de debajo */}
@@ -23,9 +24,7 @@ export default function Hero() {
         <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/55 to-transparent w-full md:w-3/5" />
       </div>
 
-      {/* BLOQUE DE CONTENIDO
-          Móvil: flujo normal debajo de la imagen, fondo navy sólido, sin superposición.
-          Desktop (sm+): overlay clásico sobre la foto, altura determinada por el propio contenido. */}
+      {/* BLOQUE DE CONTENIDO */}
       <div className="relative z-10 w-full bg-navy px-5 pt-8 pb-10 sm:bg-transparent sm:px-6 sm:pt-0 sm:pb-0 lg:px-8">
         <div className="mx-auto w-full max-w-7xl">
 
