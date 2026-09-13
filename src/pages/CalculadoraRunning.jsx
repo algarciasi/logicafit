@@ -88,7 +88,7 @@ export default function CalculadoraRunning() {
                 Calcula tu ritmo de carrera
               </h1>
               <p className="mt-5 sm:mt-6 text-base sm:text-lg text-slate-300 font-medium animate-fade-in-up delay-200 leading-relaxed max-w-lg">
-                Dinos una marca y predecimos tu ritmo para otras distancias.
+                Piensa una marca y la calculadora te predice tu ritmo para otras distancias.
               </p>
               <Link
                 to="/calculadora"
