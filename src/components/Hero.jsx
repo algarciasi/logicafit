@@ -9,7 +9,7 @@ export default function Hero() {
           src="/brand/alberto-gym.jpg"
           alt="Alberto García, entrenador personal Lógica Fit"
           fetchPriority="high"
-          className="h-full w-full object-cover object-[72%_8%] sm:object-[68%_18%]"
+          className="h-full w-full object-cover object-[7%_6%] sm:object-[68%_18%]"
         />
 
         {/* Mobile */}
