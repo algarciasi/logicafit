@@ -1,120 +1,224 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom"
+import PageHero from "../components/PageHero"
+
+function ArrowIcon() {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      fill="none"
+      className="h-4 w-4"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 10h13M11 5l5 5-5 5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
 
 export default function Calculadoras() {
   return (
-    <div className="bg-surface overflow-hidden min-h-screen">
-      
-      {/* 1. HERO (Estructura adaptativa: Bloque dividido en móvil, Inmersivo en desktop) */}
-      <section className="relative w-full pt-16 pb-0 sm:pt-40 sm:pb-32 lg:pt-48 lg:pb-40 flex flex-col sm:justify-center bg-navy">
-        
-        {/* BLOQUE DE IMAGEN */}
-        <div className="relative h-[38vh] min-h-[240px] w-full sm:absolute sm:inset-0 sm:h-full sm:min-h-0">
-          <img
-            src="/brand/macros-calc.jpg"
-            alt="Calculadoras"
-            className="h-full w-full object-cover object-[center_30%] opacity-100 sm:opacity-90 animate-fade-in"
-          />
-          {/* Degradado inferior móvil: funde la foto con el bloque navy de texto de debajo */}
-          <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/10 to-transparent sm:hidden" />
+    <main className="overflow-hidden bg-white">
+      <PageHero
+        image="/brand/macros-calc.jpg"
+        imageAlt="Alimentos utilizados para planificación nutricional"
+        eyebrow="Herramientas gratuitas"
+        title="Los números ayudan."
+        accent="Entenderlos ayuda más."
+        description="Calcula tus necesidades nutricionales o tus ritmos de carrera con herramientas sencillas para tomar mejores decisiones."
+        objectPosition="sm:object-[72%_42%]"
+      />
 
-          {/* Degradados desktop */}
-          <div className="hidden sm:block absolute inset-0 bg-navy/60" /> 
-          <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/60 to-transparent w-full md:w-3/4" />
-          <div className="hidden sm:block absolute inset-x-0 bottom-0 h-32 lg:h-48 bg-gradient-to-t from-surface to-transparent" />
-        </div>
-
-        {/* BLOQUE DE TEXTO */}
-        <div className="relative z-10 w-full bg-navy px-6 py-10 sm:bg-transparent sm:py-0 lg:px-8">
-          <div className="mx-auto max-w-7xl w-full">
-            <div className="max-w-2xl">
-              <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-orange animate-fade-in-up">
-                Herramientas Gratuitas
+      <section className="border-b border-slate-200 bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-16 sm:py-20 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
+            <div className="lg:col-span-7">
+              <p className="text-sm font-semibold text-orange">
+                Calculadoras Lógica Fit
               </p>
-              <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight animate-fade-in-up delay-100 leading-[1.05]">
-                Calculadoras
-              </h1>
-              <p className="mt-5 sm:mt-6 text-base sm:text-lg text-slate-300 font-medium animate-fade-in-up delay-200 leading-relaxed max-w-lg">
-                Ajusta tu nutrición milimétricamente y planifica tus entrenamientos de carrera para asegurar tus resultados.
+
+              <h2 className="mt-3 max-w-3xl font-display text-3xl font-extrabold leading-[1.07] tracking-[-0.035em] text-navy sm:text-4xl lg:text-5xl">
+                Dos herramientas.
+                <br />
+                Dos problemas concretos.
+              </h2>
+            </div>
+
+            <div className="lg:col-span-4 lg:col-start-9">
+              <p className="text-base leading-7 text-text-secondary">
+                No necesitas veinte métricas. Necesitas calcular lo importante
+                y entender qué hacer después con el resultado.
               </p>
             </div>
           </div>
         </div>
-        
-        {/* Transición extra en móvil para conectar el fondo azul marino con el fondo gris de abajo */}
-        <div className="block sm:hidden absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-surface to-transparent z-10" />
       </section>
 
-      {/* 2. TARJETAS DE CALCULADORAS (Flotando sobre la imagen/fondo) */}
-      <section className="relative z-20 mx-auto max-w-5xl px-6 lg:px-8 -mt-6 sm:-mt-24 lg:-mt-32 mb-32">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-          
-          {/* Tarjeta 1: Macros */}
-          <Link
-            to="/calculadora"
-            className="group flex flex-col justify-between rounded-[2rem] bg-white p-8 sm:p-10 shadow-2xl shadow-slate-200/50 ring-1 ring-slate-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-orange/10 animate-fade-in-up delay-300"
-          >
-            <div>
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange/10 text-orange mb-6 transition-colors group-hover:bg-orange group-hover:text-white">
-                {/* Icono Nutrición/Macros */}
-                <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <h2 className="font-display text-2xl font-bold text-navy">
-                Calculadora de macros
+      <section className="border-b border-slate-200 bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-24 lg:px-8 lg:py-28">
+          <div className="grid gap-12 lg:grid-cols-12 lg:items-start">
+            <div className="lg:col-span-2">
+              <span className="font-display text-sm font-bold text-orange">01</span>
+              <p className="mt-3 text-sm text-text-secondary">Nutrición</p>
+            </div>
+
+            <div className="lg:col-span-5">
+              <h2 className="font-display text-4xl font-extrabold leading-[1.04] tracking-[-0.035em] text-navy sm:text-5xl">
+                Calculadora
+                <br />
+                de macros
               </h2>
-              <p className="mt-3 text-base text-text-secondary leading-relaxed font-medium">
-                Calcula tus calorías diarias exactas y reparte tus macronutrientes (proteínas, grasas e hidratos) para poder armar tu propio menú.
+
+              <p className="mt-6 max-w-xl text-lg leading-8 text-text-secondary">
+                Estima las calorías que necesitas cada día y obtén una
+                distribución de proteínas, grasas e hidratos adaptada a tu
+                objetivo.
               </p>
-            </div>
-            
-            <div className="mt-10 flex items-center gap-2 text-sm font-bold text-orange transition-colors group-hover:text-orange-dark">
-              Abrir calculadora
-              <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </div>
-          </Link>
 
-          {/* Tarjeta 2: Running */}
-          <Link
-            to="/calculadora-running"
-            className="group flex flex-col justify-between rounded-[2rem] bg-navy p-8 sm:p-10 shadow-2xl shadow-navy/30 ring-1 ring-slate-800 transition-all duration-300 hover:-translate-y-2 hover:shadow-orange/20 animate-fade-in-up delay-400 relative overflow-hidden"
-          >
-            {/* Brillo sutil de fondo en la tarjeta oscura */}
-            <div className="absolute top-0 right-0 -mr-10 -mt-10 h-32 w-32 rounded-full bg-orange opacity-20 blur-[50px] pointer-events-none"></div>
+              <Link
+                to="/calculadora"
+                className="mt-8 inline-flex items-center gap-3 text-sm font-bold text-navy transition-colors hover:text-orange"
+              >
+                Calcular mis macros
+                <ArrowIcon />
+              </Link>
+            </div>
 
-            <div className="relative z-10">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 text-white mb-6 transition-colors group-hover:bg-orange group-hover:text-white">
-                {/* Icono Running/Cronómetro */}
-                <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div className="flex items-center gap-3 mb-2">
-                <h2 className="font-display text-2xl font-bold text-white">
-                  Calculadora de ritmo
-                </h2>
-                <span className="inline-block rounded-full bg-[#FC4C02]/20 px-2.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#FC4C02]">
-                  Running
-                </span>
-              </div>
-              <p className="mt-3 text-base text-slate-300 leading-relaxed font-medium">
-                Predice tus tiempos de carrera, descubre tus ritmos ideales de entrenamiento y llévate una guía de 5K totalmente gratis.
+            <div className="lg:col-span-4 lg:col-start-9">
+              <p className="text-sm font-semibold text-text-secondary">
+                Qué puedes calcular
               </p>
-            </div>
-            
-            <div className="relative z-10 mt-10 flex items-center gap-2 text-sm font-bold text-orange transition-colors group-hover:text-white">
-              Abrir calculadora
-              <svg className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </div>
-          </Link>
 
+              <div className="mt-5 divide-y divide-slate-200 border-y border-slate-200">
+                <div className="py-4">
+                  <p className="font-medium text-navy">Calorías diarias estimadas</p>
+                </div>
+                <div className="py-4">
+                  <p className="font-medium text-navy">Proteínas</p>
+                </div>
+                <div className="py-4">
+                  <p className="font-medium text-navy">Grasas</p>
+                </div>
+                <div className="py-4">
+                  <p className="font-medium text-navy">Hidratos de carbono</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-    </div>
+      <section className="bg-[#F6F5F2]">
+        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-24 lg:px-8 lg:py-28">
+          <div className="grid gap-12 lg:grid-cols-12 lg:items-start">
+            <div className="lg:col-span-2">
+              <span className="font-display text-sm font-bold text-orange">02</span>
+              <p className="mt-3 text-sm text-text-secondary">Running</p>
+            </div>
+
+            <div className="lg:col-span-5">
+              <h2 className="font-display text-4xl font-extrabold leading-[1.04] tracking-[-0.035em] text-navy sm:text-5xl">
+                Calculadora
+                <br />
+                de ritmo
+              </h2>
+
+              <p className="mt-6 max-w-xl text-lg leading-8 text-text-secondary">
+                Utiliza una marca reciente para estimar tus tiempos de carrera
+                y tener una referencia clara de los ritmos que puedes manejar
+                entrenando.
+              </p>
+
+              <Link
+                to="/calculadora-running"
+                className="mt-8 inline-flex items-center gap-3 text-sm font-bold text-navy transition-colors hover:text-orange"
+              >
+                Calcular mis ritmos
+                <ArrowIcon />
+              </Link>
+            </div>
+
+            <div className="lg:col-span-4 lg:col-start-9">
+              <p className="text-sm font-semibold text-text-secondary">
+                Qué puedes obtener
+              </p>
+
+              <div className="mt-5 divide-y divide-slate-300 border-y border-slate-300">
+                <div className="py-4">
+                  <p className="font-medium text-navy">Ritmo medio</p>
+                </div>
+                <div className="py-4">
+                  <p className="font-medium text-navy">Predicción de tiempos</p>
+                </div>
+                <div className="py-4">
+                  <p className="font-medium text-navy">
+                    Ritmos orientativos de entrenamiento
+                  </p>
+                </div>
+                <div className="py-4">
+                  <p className="font-medium text-navy">
+                    Referencias para tu próximo objetivo
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-slate-200 bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-14 lg:px-8">
+          <div className="grid gap-5 sm:grid-cols-[200px_1fr]">
+            <p className="text-sm font-bold text-navy">
+              Una referencia, no una sentencia
+            </p>
+
+            <p className="max-w-3xl text-sm leading-6 text-text-secondary">
+              Los resultados de estas calculadoras son estimaciones y sirven
+              como punto de partida. Tu respuesta real al entrenamiento, tu
+              alimentación y tu evolución son los datos que terminan marcando
+              los ajustes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-navy">
+        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-24 lg:px-8 lg:py-28">
+          <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
+            <div className="lg:col-span-7">
+              <p className="text-sm font-semibold text-orange">
+                ¿Quieres ir un paso más allá?
+              </p>
+
+              <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.04] tracking-[-0.035em] text-white sm:text-5xl">
+                Calcular es fácil.
+                <br />
+                Aplicarlo bien es otra cosa.
+              </h2>
+            </div>
+
+            <div className="lg:col-span-4 lg:col-start-9">
+              <p className="text-base leading-7 text-slate-300">
+                Si quieres que esos números formen parte de una planificación
+                adaptada a ti, puedo ayudarte a convertirlos en un plan.
+              </p>
+
+              <Link
+                to="/planes"
+                className="mt-7 inline-flex items-center gap-3 text-sm font-bold text-white transition-colors hover:text-orange"
+              >
+                Ver cómo trabajo
+                <ArrowIcon />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   )
 }

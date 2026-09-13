@@ -1,312 +1,421 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
+import PageHero from "../components/PageHero"
+
+function ArrowIcon() {
+  return (
+    <svg
+      viewBox="0 0 20 20"
+      fill="none"
+      className="h-4 w-4"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 10h13M11 5l5 5-5 5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+const WHATSAPP =
+  "https://wa.me/34678951544?text=" +
+  encodeURIComponent(
+    "Hola Alberto. He leído tu historia en Lógica Fit y me gustaría contarte mi caso."
+  )
+
+const FORMACION = [
+  "Curso de Entrenador Personal de Alto Rendimiento y Técnicas Avanzadas de Musculación",
+  "Máster en Nutrición Deportiva de Alto Rendimiento y Dietética Avanzada",
+  "Máster en Suplementación Deportiva",
+  "Especialista en Running, Trail Running y Barefoot",
+]
+
+const PRINCIPIOS = [
+  {
+    number: "01",
+    title: "Tu vida manda.",
+    text: "La rutina y la alimentación tienen que encajar en tu vida. No al revés.",
+  },
+  {
+    number: "02",
+    title: "Cambiar por cambiar no sirve.",
+    text: "No modifico ejercicios para entretenerte. Cambio lo que necesita ser cambiado.",
+  },
+  {
+    number: "03",
+    title: "Quiero que entiendas el proceso.",
+    text: "Prefiero explicarte por qué hacemos algo antes que pedirte que sigas instrucciones a ciegas.",
+  },
+  {
+    number: "04",
+    title: "Lo que no funciona, se ajusta.",
+    text: "El plan no es intocable. Analizamos, medimos y corregimos cuando hace falta.",
+  },
+]
 
 export default function Conoceme() {
   return (
-    <div className="bg-white">
-      {/* Precarga invisible súper agresiva para la imagen principal */}
-      <link rel="preload" as="image" href="/brand/alberto-4.jpg" fetchPriority="high" />
+    <main className="overflow-hidden bg-white">
+      <PageHero
+        image="/brand/alberto-4.jpg"
+        imageAlt="Alberto García, entrenador personal de Lógica Fit"
+        eyebrow="Sobre mí"
+        title="Más de 20 años entrenando."
+        accent="Y sigo aprendiendo."
+        description="Antes de dedicarme a ayudar a otras personas pasé muchos años intentando mejorar yo mismo, equivocándome, probando y aprendiendo."
+        secondary="Lógica Fit nace de esa experiencia, pero también de entender que experiencia y conocimiento no son exactamente lo mismo."
 
-      {/* SECCIÓN 1: HERO (Imagen inmersiva con degradados) */}
-      <section className="relative w-full pt-16 pb-0 sm:pt-40 sm:pb-24 lg:pt-48 lg:pb-28 flex flex-col sm:justify-center">
-        <div className="relative h-[42vh] min-h-[280px] w-full sm:absolute sm:inset-0 sm:h-full sm:min-h-0">
-          <img
-            src="/brand/alberto-4.jpg"
-            alt="Alberto García, entrenador personal Lógica Fit"
-            fetchPriority="high" // Descarga prioritaria
-            // Quitamos la clase de animación para que se muestre instantáneamente
-            className="h-full w-full object-cover object-[75%_30%] sm:object-[72%_15%] opacity-100 sm:opacity-95"
-          />
+        /* MOBILE:
+           Subimos el encuadre para que la cabeza quede visible
+           y damos algo más de altura a la imagen.
+        */
+        mobileObjectPosition="object-[50%_8%]"
+        mobileImageHeight="h-[48vh] min-h-[360px]"
 
-          <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/10 to-transparent sm:hidden" />
+        /* DESKTOP */
+        objectPosition="sm:object-[72%_18%]"
+      >
+        <Link
+          to="/planes"
+          className="inline-flex items-center gap-3 text-sm font-bold text-white transition-colors hover:text-orange"
+        >
+          Ver cómo trabajo
+          <ArrowIcon />
+        </Link>
+      </PageHero>
 
-          <div className="hidden sm:block absolute inset-0 bg-navy/30" />
-          <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/50 to-transparent w-full md:w-1/2" />
-          <div className="hidden sm:block absolute inset-x-0 bottom-0 h-32 lg:h-40 bg-gradient-to-t from-white to-transparent" />
-        </div>
-
-        <div className="relative z-10 w-full bg-navy px-6 py-10 sm:bg-transparent sm:py-0 lg:px-8">
-          <div className="mx-auto max-w-7xl w-full">
-            <div className="max-w-2xl sm:mt-48 lg:mt-64">
-              <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.2em] text-orange animate-fade-in-up">
-                Conóceme
+      {/* HISTORIA */}
+      <section className="border-b border-slate-200 bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-28 lg:px-8 lg:py-32">
+          <div className="grid gap-14 lg:grid-cols-12">
+            <div className="lg:col-span-5">
+              <p className="text-sm font-semibold text-orange">
+                Antes de Lógica Fit
               </p>
-              <h1 className="mt-4 font-display text-4xl sm:text-5xl font-extrabold text-white tracking-tight animate-fade-in-up delay-100 leading-[1.05]">
-                Más de 20 años entrenando.
-                <br className="hidden sm:block" /> Y sigo aprendiendo.
-              </h1>
-              <div className="mt-5 sm:mt-6 space-y-4 text-base sm:text-lg text-slate-300 font-medium animate-fade-in-up delay-200 leading-relaxed max-w-lg">
+
+              <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-[-0.035em] text-navy sm:text-5xl">
+                Esto empezó mucho antes de ser entrenador.
+              </h2>
+            </div>
+
+            <div className="lg:col-span-6 lg:col-start-7">
+              <div className="space-y-6 text-lg leading-8 text-text-secondary">
                 <p>
-                  Antes de pensar en ayudar a otras personas, estuve muchos años
-                  intentando mejorar yo mismo. He probado miles de rutinas y
-                  dietas. He cometido muchos errores y eso me ha hecho aprender
-                  durante todo este tiempo.
+                  Empecé a entrenar hace más de veinte años. Al principio no
+                  buscaba convertirme en entrenador ni dedicarme profesionalmente
+                  a esto. Simplemente encontré en el gimnasio un lugar al que
+                  quería volver.
                 </p>
+
                 <p>
-                  Después de mucho tiempo y experiencia acumulada, decidí
-                  invertir en formación y utilizarla para ayudar a otras
-                  personas a entrenar con criterio.
+                  Durante todos estos años he pasado por muchas etapas. He
+                  cambiado rutinas, probado sistemas de entrenamiento, aprendido
+                  sobre alimentación y también me he equivocado muchas veces.
+                </p>
+
+                <p>
+                  Esos errores forman parte de lo que hoy sé. No nací sabiendo
+                  entrenar y ni siquiera fui siempre una persona especialmente
+                  deportista. Lo fui construyendo con los años.
                 </p>
               </div>
-              <div className="mt-8 sm:mt-10 animate-fade-in-up delay-300">
-                <Link
-                  to="/planes"
-                  className="inline-flex rounded-full bg-white/10 px-8 py-3.5 text-sm font-semibold text-white ring-1 ring-white/20 transition hover:bg-white/20 sm:bg-slate-100 sm:text-navy sm:ring-0 sm:hover:bg-slate-200"
-                >
-                  Ver cómo trabajo
-                </Link>
-              </div>
+
+              <p className="mt-10 border-l-2 border-orange pl-6 font-display text-2xl font-bold leading-snug text-navy">
+                La experiencia te enseña mucho. Pero también llega un momento en
+                que necesitas entender por qué funcionan las cosas.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECCIÓN 2: MI HISTORIA (Solo texto editorial, SIN FOTO) */}
-      <section className="mx-auto max-w-3xl px-6 py-16 sm:py-24">
-        <h2 className="font-display text-3xl font-bold text-navy sm:text-4xl">
-          Esto empezó mucho antes de ser entrenador.
-        </h2>
-        <div className="mt-8 space-y-6 text-lg leading-relaxed text-slate-600">
-          <p>
-            Empecé a entrenar hace más de veinte años, cuando mi única
-            preocupación era tener un espacio para mi y no pensar en ciertos
-            aspectos de la vida.
-          </p>
-          <p>
-            Como casi todos, durante estos años he pasado por diferentes etapas.
-            He cambiado rutinas, probado sistemas de entrenamiento, aprendido
-            sobre entrenamiento y alimentación y también he cometido demasiados
-            errores.
-          </p>
-          <p>
-            Estos errores forman parte de lo que hoy sé. No nací siendo
-            entrenador, ni tampoco me gustaba el deporte pero una vez entre en
-            una sala no pude dejar de volver a ir.
-          </p>
-        </div>
-      </section>
-
-      {/* SECCIÓN 3: YO TAMBIÉN TENGO ENTRENADOR - IMAGEN 2 */}
-      <section className="bg-slate-50 py-16 sm:py-24">
-        <div className="mx-auto max-w-3xl px-6">
-          <h2 className="font-display text-3xl font-bold text-navy sm:text-4xl">
-            Sí. Yo también tengo entrenador.
-          </h2>
-          <div className="mt-8 space-y-6 text-lg leading-relaxed text-slate-600">
-            <p>
-              Y después de más de 20 años entrenando sigo pensando que merece la
-              pena.
-            </p>
-            <p>
-              Cuando eres tú quien lleva tu propia planificación es muy fácil
-              perder perspectiva, cambiar cosas demasiado pronto o dejarte
-              llevar por cómo te encuentras ese día.
-            </p>
-            <p>
-              Tener un asesor que te acompañe te obliga a rendir cuentas en las
-              revisiones, permite analizar las cosas con más objetividad y hace
-              más difícil que abandones cuando vienen semanas malas. Por eso
-              creo tanto en el seguimiento: porque yo también lo utilizo.
-            </p>
+      {/* YO TAMBIÉN TENGO ENTRENADOR */}
+      <section className="bg-[#F6F5F2]">
+        <div className="mx-auto grid max-w-7xl lg:grid-cols-12">
+          <div className="relative min-h-[440px] lg:col-span-6 lg:min-h-[680px]">
+            <img
+              src="/brand/alberto-gym.jpg"
+              alt="Alberto entrenando"
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover object-[center_30%]"
+            />
           </div>
 
-          <figure className="mt-12">
-            <div className="aspect-[21/9] w-full overflow-hidden rounded-sm bg-slate-200">
-              <img
-                src="/ruta-a-foto-revisando-planificacion.jpg"
-                alt="Revisando mis propios entrenamientos"
-                // Esta imagen está más abajo y no es el LCP. A esta sí le viene genial el lazy y el async
-                loading="lazy" 
-                decoding="async" 
-                className="h-full w-full object-cover"
-              />
+          <div className="flex items-center px-6 py-20 sm:px-12 lg:col-span-6 lg:px-16 lg:py-24">
+            <div className="max-w-xl">
+              <p className="text-sm font-semibold text-orange">
+                Seguimiento
+              </p>
+
+              <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-[-0.035em] text-navy sm:text-5xl">
+                Sí.
+                <br />
+                Yo también tengo entrenador.
+              </h2>
+
+              <p className="mt-7 text-lg leading-8 text-text-secondary">
+                Después de más de veinte años entrenando sigo pensando que
+                merece la pena contar con alguien que vea el proceso desde fuera.
+              </p>
+
+              <p className="mt-5 text-base leading-7 text-text-secondary">
+                Cuando eres tú quien lleva tu propia planificación resulta muy
+                fácil perder perspectiva, cambiar cosas demasiado pronto o
+                dejarte llevar por cómo te encuentras ese día.
+              </p>
+
+              <p className="mt-5 text-base leading-7 text-text-secondary">
+                Tener un entrenador permite analizar las cosas con más
+                objetividad, rendir cuentas y mantener el rumbo cuando llegan
+                semanas peores.
+              </p>
+
+              <p className="mt-7 font-display text-xl font-bold leading-relaxed text-navy">
+                Creo en el seguimiento porque yo también lo utilizo.
+              </p>
             </div>
-            <figcaption className="mt-3 text-center text-sm italic text-slate-500">
-              Revisando mis propios entrenamientos. Tener una mirada externa
-              siempre aporta valor.
-            </figcaption>
-          </figure>
+          </div>
         </div>
       </section>
 
-      {/* SECCIÓN 4 & 5: POR QUÉ FORMARME + FORMACIÓN OFICIAL (Con foto) */}
-      <section className="mx-auto max-w-7xl px-6 py-16 sm:py-24">
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:items-start">
-          {/* FOTO 3: Estudiando/Formación */}
-          <figure className="relative order-2 lg:order-1">
-            <div className="aspect-[3/4] w-full max-w-md mx-auto overflow-hidden rounded-sm bg-slate-100 lg:max-w-none lg:mx-0">
-              <img
-                src="/brand/estudiando.jpg"
-                alt="Alberto estudiando el manual de Entrenamiento Personal"
-                // Aplicamos también lazy y async porque está al final de la web
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-cover object-top"
-              />
-            </div>
-            <figcaption className="mt-3 text-center text-sm italic text-slate-500 lg:text-left">
-              La experiencia en el gimnasio es vital, pero entender el porqué de
-              las cosas es lo que marca la diferencia.
-            </figcaption>
-          </figure>
-
-          {/* TEXTO Y CURSOS */}
-          <div className="order-1 lg:order-2 lg:pt-4">
-            <h2 className="font-display text-3xl font-bold text-navy sm:text-4xl">
-              Entrenar durante años no era suficiente.
-            </h2>
-            <div className="mt-6 space-y-6 text-base leading-relaxed text-slate-600">
-              <p>
-                Una cosa es aprender a entrenarte a ti mismo y otra muy
-                diferente ayudar a otra persona. Por eso llegó un momento en el
-                que decidí formarme de manera específica.
-              </p>
-              <p>
-                Quería entender mejor el porqué de las cosas, la biomecánica de
-                los ejercicios y disponer de herramientas para adaptar un
-                entrenamiento a otra persona, no simplemente recomendar lo que
-                me había funcionado a mí.
-              </p>
-            </div>
-
-            <div className="mt-12 border-t border-slate-100 pt-10">
-              <h3 className="font-display text-2xl font-bold text-navy">
+      {/* FORMACIÓN */}
+      <section className="bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-28 lg:px-8 lg:py-32">
+          <div className="grid gap-16 lg:grid-cols-12 lg:items-start">
+            <div className="lg:col-span-6">
+              <p className="text-sm font-semibold text-orange">
                 Formación
-              </h3>
-              <p className="mt-2 text-sm text-slate-500">
-                La experiencia importa. Saber por qué haces las cosas, también.
               </p>
 
-              <div className="mt-8">
-                <p className="mb-6 text-xs font-semibold uppercase tracking-wide text-navy">
-                  APTA Vital Sport
+              <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-[-0.035em] text-navy sm:text-5xl">
+                Entrenar durante años
+                <br />
+                no era suficiente.
+              </h2>
+
+              <div className="mt-7 max-w-xl space-y-5 text-base leading-7 text-text-secondary">
+                <p>
+                  Una cosa es aprender a entrenarte a ti mismo y otra muy
+                  diferente ayudar a otra persona.
                 </p>
-                <ul className="space-y-6 border-l-2 border-slate-100 pl-6 text-base text-slate-700">
-                  <li>
-                    <span className="block font-medium text-navy">
-                      Curso de Entrenador Personal de Alto Rendimiento y
-                      Técnicas Avanzadas de Musculación
+
+                <p>
+                  Llegó un momento en el que quise comprender mejor la
+                  biomecánica, la programación, la nutrición deportiva y las
+                  herramientas necesarias para adaptar un entrenamiento a
+                  personas distintas.
+                </p>
+
+                <p>
+                  No quería limitarme a recomendar aquello que me había
+                  funcionado a mí.
+                </p>
+              </div>
+
+              <div className="mt-12 border-t border-slate-200">
+                {FORMACION.map((item, index) => (
+                  <div
+                    key={item}
+                    className="grid grid-cols-[36px_1fr] gap-4 border-b border-slate-200 py-5"
+                  >
+                    <span className="pt-1 text-xs font-bold text-orange">
+                      {String(index + 1).padStart(2, "0")}
                     </span>
-                  </li>
-                  <li>
-                    <span className="block font-medium text-navy">
-                      Máster en Nutrición Deportiva de Alto Rendimiento y
-                      Dietética Avanzada
+
+                    <p className="font-medium leading-6 text-navy">
+                      {item}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <figure className="lg:col-span-5 lg:col-start-8">
+              <div className="aspect-[4/5] overflow-hidden bg-slate-100">
+                <img
+                  src="/brand/estudiando.jpg"
+                  alt="Alberto estudiando entrenamiento y nutrición deportiva"
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
+
+              <figcaption className="mt-4 max-w-md text-sm leading-6 text-text-secondary">
+                La experiencia en el gimnasio importa. Entender el porqué de las
+                cosas, también.
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      {/* RESPONSABILIDAD PROFESIONAL */}
+      <section className="bg-navy">
+        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-24 lg:px-8 lg:py-28">
+          <div className="grid gap-12 lg:grid-cols-12">
+            <div className="lg:col-span-5">
+              <p className="text-sm font-semibold text-orange">
+                Responsabilidad profesional
+              </p>
+
+              <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-[-0.035em] text-white sm:text-5xl">
+                Saber ayudar también es saber cuándo derivar.
+              </h2>
+            </div>
+
+            <div className="lg:col-span-6 lg:col-start-7">
+              <div className="space-y-6 text-lg leading-8 text-slate-300">
+                <p>
+                  Mi especialidad principal es el entrenamiento de fuerza, la
+                  composición corporal, la creación de hábitos y el
+                  acompañamiento durante el proceso.
+                </p>
+
+                <p>
+                  Tengo formación en nutrición deportiva, pero{" "}
+                  <strong className="font-semibold text-white">
+                    no soy Dietista-Nutricionista y no realizo nutrición clínica.
+                  </strong>
+                </p>
+
+                <p>
+                  También tengo conocimientos y experiencia con running, pero
+                  cuando alguien busca una preparación avanzada o competitiva
+                  muy específica, prefiero derivarlo a profesionales
+                  especializados.
+                </p>
+              </div>
+
+              <blockquote className="mt-10 border-l-2 border-orange pl-6 font-display text-2xl font-bold leading-snug text-white">
+                Hacer bien este trabajo también significa reconocer cuándo otro
+                profesional puede ayudarte mejor.
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PRINCIPIOS */}
+      <section className="bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-28 lg:px-8 lg:py-32">
+          <div className="grid gap-12 lg:grid-cols-12">
+            <div className="lg:col-span-4">
+              <p className="text-sm font-semibold text-orange">
+                Cómo trabajo
+              </p>
+
+              <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-[-0.035em] text-navy">
+                Mi forma de entender el entrenamiento.
+              </h2>
+            </div>
+
+            <div className="lg:col-span-7 lg:col-start-6">
+              <div className="grid gap-x-10 gap-y-12 sm:grid-cols-2">
+                {PRINCIPIOS.map((principio) => (
+                  <div
+                    key={principio.number}
+                    className="border-t border-navy/20 pt-5"
+                  >
+                    <span className="text-xs font-bold text-orange">
+                      {principio.number}
                     </span>
-                  </li>
-                  <li>
-                    <span className="block font-medium text-navy">
-                      Máster en Suplementación Deportiva
-                    </span>
-                  </li>
-                  <li>
-                    <span className="block font-medium text-navy">
-                      Especialista en Running, Trail Running y Barefoot
-                    </span>
-                  </li>
-                </ul>
+
+                    <h3 className="mt-3 font-display text-xl font-bold text-navy">
+                      {principio.title}
+                    </h3>
+
+                    <p className="mt-3 text-sm leading-6 text-text-secondary">
+                      {principio.text}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* SECCIÓN 6: LÍMITES / TRANSPARENCIA */}
-      <section className="bg-navy py-16 sm:py-24">
-        <div className="mx-auto max-w-3xl px-6 text-white">
-          <h2 className="font-display text-3xl font-bold sm:text-4xl">
-            También es importante saber cuándo derivar.
-          </h2>
-          <div className="mt-8 space-y-6 text-lg leading-relaxed text-slate-300">
-            <p>
-              Mi especialidad principal es el entrenamiento de fuerza, la
-              composición corporal, la creación de hábitos y el acompañamiento
-              diario.
-            </p>
-            <p>
-              Tengo formación en nutrición deportiva, pero{" "}
-              <strong className="font-semibold text-white">
-                no soy Dietista-Nutricionista y no realizo nutrición clínica
-              </strong>
-              .
-            </p>
-            <p>
-              Tengo conocimientos y experiencia con running, pero si alguien
-              busca una preparación avanzada o competitiva específica, cuento
-              con compañeros especializados a los que puedo derivarte.
-            </p>
-            <p className="pt-4 text-xl font-medium text-white italic">
-              "Para mí, hacer bien este trabajo también significa reconocer
-              cuándo otro profesional puede ayudarte mejor."
-            </p>
+      {/* APRENDER PARA NO DEPENDER */}
+      <section className="border-t border-slate-200 bg-[#F6F5F2]">
+        <div className="mx-auto max-w-7xl px-6 py-20 sm:py-24 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-12">
+            <div className="lg:col-span-5">
+              <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-[-0.035em] text-navy sm:text-5xl">
+                No quiero que dependas
+                <br />
+                de mí para siempre.
+              </h2>
+            </div>
+
+            <div className="lg:col-span-6 lg:col-start-7">
+              <p className="text-lg leading-8 text-text-secondary">
+                Quiero ayudarte a mejorar, pero también quiero que durante el
+                proceso aprendas. Que entiendas cómo entrenar y cómo comer. Que
+                sepas por qué hacemos determinados cambios.
+              </p>
+
+              <p className="mt-5 text-lg leading-8 text-text-secondary">
+                Quiero que puedas distinguir lo importante de todo el ruido que
+                existe alrededor del fitness.
+              </p>
+
+              <p className="mt-7 font-display text-xl font-bold leading-relaxed text-navy">
+                Porque un buen proceso no debería darte únicamente resultados.
+                También debería darte criterio.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* SECCIÓN 7: FILOSOFÍA DE TRABAJO */}
-      <section className="mx-auto max-w-5xl px-6 py-16 sm:py-24">
-        <h2 className="text-center font-display text-3xl font-bold text-navy sm:text-4xl">
-          Mi forma de entender el entrenamiento
-        </h2>
+      {/* CTA FINAL */}
+      <section className="bg-navy">
+        <div className="mx-auto grid max-w-7xl lg:grid-cols-12">
+          <div className="relative min-h-[420px] lg:col-span-5 lg:min-h-[560px]">
+            <img
+              src="/brand/alberto-gym.jpg"
+              alt="Alberto García, entrenador personal Lógica Fit"
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover object-[center_25%]"
+            />
 
-        <div className="mt-16 grid gap-12 sm:grid-cols-2">
-          <div className="border-t-2 border-slate-900 pt-6">
-            <p className="text-xl font-medium leading-relaxed text-navy">
-              Tu rutina y tu dieta debe encajar en tu vida, no al revés.
-            </p>
+            <div className="absolute inset-0 bg-gradient-to-t from-navy/40 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-navy/30" />
           </div>
 
-          <div className="border-t-2 border-slate-900 pt-6">
-            <p className="text-xl font-medium leading-relaxed text-navy">
-              No cambio ejercicios para que no te aburras. Cambio lo que hay que
-              cambiar.
-            </p>
-          </div>
+          <div className="flex items-center px-6 py-20 sm:px-10 lg:col-span-7 lg:px-16 lg:py-24">
+            <div className="max-w-xl">
+              <p className="text-sm font-semibold text-orange">
+                Si quieres empezar
+              </p>
 
-          <div className="border-t-2 border-slate-900 pt-6">
-            <p className="text-xl font-medium leading-relaxed text-navy">
-              Prefiero que entiendas el por qué de las cosas a que te dediques a
-              seguir el guión.
-            </p>
-          </div>
+              <h2 className="mt-4 font-display text-4xl font-extrabold leading-[1.04] tracking-[-0.035em] text-white sm:text-5xl">
+                Cuéntame dónde estás.
+                <br />
+                Veremos cómo avanzar.
+              </h2>
 
-          <div className="border-t-2 border-slate-900 pt-6">
-            <p className="text-xl font-medium leading-relaxed text-navy">
-              Y si algo no funciona, se ajusta. Trabajamos tu y yo para mejorar.
-            </p>
+              <p className="mt-6 text-lg leading-8 text-slate-300">
+                Dime qué quieres conseguir, cuánto tiempo puedes entrenar y qué
+                has probado hasta ahora. Te diré sinceramente si puedo ayudarte.
+              </p>
+
+              <a
+                href={WHATSAPP}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-9 inline-flex min-h-12 items-center gap-3 rounded-xl bg-orange px-6 text-sm font-bold text-white transition-colors hover:bg-orange-dark"
+              >
+                Contarme mi caso
+                <ArrowIcon />
+              </a>
+            </div>
           </div>
         </div>
       </section>
-
-      {/* SECCIÓN 8: CIERRE Y CTA */}
-      <section className="mx-auto max-w-3xl px-6 pb-24 pt-10 text-center">
-        <h2 className="font-display text-3xl font-bold text-navy sm:text-4xl">
-          No quiero que dependas de mí para siempre.
-        </h2>
-        <p className="mx-auto mt-6 text-lg leading-relaxed text-slate-600">
-          Quiero ayudarte a mejorar, pero también quiero que durante el proceso
-          aprendas. Que entiendas cómo entrenar y como comer. Que sepas por qué
-          hacemos determinados cambios. Que puedas distinguir lo importante de
-          todo el ruido que existe alrededor de las redes sociales y el fitness.
-        </p>
-        <p className="mx-auto mt-6 text-lg font-medium text-navy">
-          Porque un buen proceso no debería darte únicamente resultados. También
-          debería darte criterio.
-        </p>
-
-        <div className="mt-12 flex justify-center">
-          <a
-            href="https://wa.me/34678951544?text=Hola!%20He%20visto%20los%20planes%20pero%20tengo%20alguna%20duda"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 inline-flex items-center gap-3 rounded-full bg-[#25D366] px-8 py-4 text-base font-bold text-white shadow-lg shadow-green-500/20 transition-all hover:scale-105 hover:bg-[#20b858]"
-          >
-            <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.347-.272.273-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.82 9.82 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
-            </svg>
-            Hablar con Alberto
-          </a>
-        </div>
-      </section>
-    </div>
-  );
+    </main>
+  )
 }
