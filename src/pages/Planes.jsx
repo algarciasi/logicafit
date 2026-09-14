@@ -65,6 +65,11 @@ export default function Planes() {
         title="Una forma sencilla de tomarte en serio"
         accent="tu progreso."
         description="Puedes trabajar directamente conmigo o llevar tu planificación por tu cuenta. Tú decides cuánto acompañamiento necesitas."
+        /* MOBILE: prioriza la cabeza y recorta más por abajo */
+        mobileObjectPosition="object-[60%_0%]"
+        mobileImageHeight="h-[52vh] min-h-[390px]"
+
+        /* DESKTOP */
         objectPosition="sm:object-[68%_25%]"
       >
         <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-400">
