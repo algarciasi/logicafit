@@ -61,7 +61,7 @@ export default function Planes() {
       <PageHero
         image="/brand/alberto-2.jpg"
         imageAlt="Alberto García entrenando"
-        eyebrow="Planes Lógica Fit"
+        eyebrow="MI PLAN"
         title="Una forma sencilla de tomarte en serio"
         accent="tu progreso."
         description="Puedes trabajar directamente conmigo o llevar tu planificación por tu cuenta. Tú decides cuánto acompañamiento necesitas."
