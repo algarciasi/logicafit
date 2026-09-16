@@ -48,7 +48,7 @@ export default function PageHero({
         <div className="mx-auto w-full max-w-7xl">
           <div className="max-w-[680px]">
             {eyebrow && (
-              <p className="text-sm font-semibold text-orange">
+              <p className="text-sm font-semibold text-brand-yellow">
                 {eyebrow}
               </p>
             )}
@@ -59,7 +59,7 @@ export default function PageHero({
               {accent && (
                 <>
                   <br />
-                  <span className="text-orange">
+                  <span className="brand-gradient-text">
                     {accent}
                   </span>
                 </>
