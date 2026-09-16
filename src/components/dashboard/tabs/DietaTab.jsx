@@ -1,100 +1,152 @@
-import { useEffect, useState } from 'react'
-import { listClientDiet } from '../../../lib/diets'
-import { MEALS } from '../../../lib/macros'
-import EmptyState from '../EmptyState'
+import { useEffect, useState } from "react";
+import { listClientDiet } from "../../../lib/diets";
+import { MEALS } from "../../../lib/macros";
+import EmptyState from "../EmptyState";
 
 // Mapeo de días
-const DAYS_MAP = { 1: 'Lun', 2: 'Mar', 3: 'Mié', 4: 'Jue', 5: 'Vie', 6: 'Sáb', 7: 'Dom' }
-const FULL_DAYS_MAP = { 1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sábado', 7: 'Domingo' }
+const DAYS_MAP = {
+  1: "Lun",
+  2: "Mar",
+  3: "Mié",
+  4: "Jue",
+  5: "Vie",
+  6: "Sáb",
+  7: "Dom",
+};
+const FULL_DAYS_MAP = {
+  1: "Lunes",
+  2: "Martes",
+  3: "Miércoles",
+  4: "Jueves",
+  5: "Viernes",
+  6: "Sábado",
+  7: "Domingo",
+};
+
+const BRAND_YELLOW = "#FDE349";
+const BRAND_GOLD = "#DBAA1E";
 
 // Detectar el día actual (1: Lunes, 7: Domingo)
 const getTodayAppDay = () => {
-  const d = new Date().getDay()
-  return d === 0 ? 7 : d
-}
+  const d = new Date().getDay();
+  return d === 0 ? 7 : d;
+};
 
 // Extrae el macro del objeto food
 const getMacroVal = (food, keys) => {
   for (let k of keys) {
-    if (food[k] !== undefined && food[k] !== null) return Number(food[k])
+    if (food[k] !== undefined && food[k] !== null) return Number(food[k]);
   }
-  return 0
-}
+  return 0;
+};
 
 // Lógica de cálculo: Calcula la media de kcal basándose SOLO en lo que toca HOY
 const calcTodayMealAverage = (todayItems, macroKeys) => {
-  if (todayItems.length === 0) return 0
-  
-  const optionsMap = {}
-  let baseTotal = 0
+  if (!todayItems?.length) return 0;
 
-  todayItems.forEach(e => {
-    // Si no tiene opción, es la Opción 1 por defecto
-    const opt = Number(e.opcion || 1)
-    if (!optionsMap[opt]) optionsMap[opt] = 0
-    
-    if (e.foods) {
-      const val = (getMacroVal(e.foods, macroKeys) * (Number(e.cantidad_g) || 0)) / 100
-      optionsMap[opt] += val
+  /*
+    Regla correcta:
+      - Los alimentos SIN opción son comunes y se suman una sola vez.
+      - Cada opción (1, 2, 3...) se suma por separado.
+      - Después se calcula la media entre las opciones existentes.
 
-      // Si es "Todos los días" (sin día) y está en la Opción 1, lo consideramos BASE para todas las opciones
-      if (!e.dia_semana && opt === 1) {
-        baseTotal += val
-      }
+    Ejemplo:
+      opción 1 = 500 kcal
+      opción 2 = 400 kcal
+      opción 3 = 800 kcal
+
+      media = (500 + 400 + 800) / 3 = 566,67 kcal
+  */
+  const optionsMap = {};
+  let commonTotal = 0;
+
+  todayItems.forEach((entry) => {
+    if (!entry.foods) return;
+
+    const value =
+      (getMacroVal(entry.foods, macroKeys) * (Number(entry.cantidad_g) || 0)) /
+      100;
+
+    const hasExplicitOption =
+      entry.opcion !== undefined &&
+      entry.opcion !== null &&
+      entry.opcion !== "";
+
+    if (!hasExplicitOption) {
+      commonTotal += value;
+      return;
     }
-  })
 
-  const optionsKeys = Object.keys(optionsMap)
-  if (optionsKeys.length === 0) return 0
+    const option = Number(entry.opcion);
 
-  let totalSum = 0
-  optionsKeys.forEach(optKey => {
-    let optVal = optionsMap[optKey]
-    // Si es Opción 2, 3, etc... le sumamos la leche/pan que es "Todos los días" de la base
-    if (Number(optKey) !== 1) {
-      optVal += baseTotal
+    if (!Number.isFinite(option)) {
+      commonTotal += value;
+      return;
     }
-    totalSum += optVal
-  })
 
-  // Retorna la media entre las opciones que hay HOY
-  return totalSum / optionsKeys.length
-}
+    if (!optionsMap[option]) optionsMap[option] = 0;
+    optionsMap[option] += value;
+  });
 
+  const optionTotals = Object.values(optionsMap);
+
+  // Si no hay opciones explícitas, toda la comida es una comida normal.
+  if (optionTotals.length === 0) {
+    return commonTotal;
+  }
+
+  const optionsAverage =
+    optionTotals.reduce((sum, optionTotal) => sum + optionTotal, 0) /
+    optionTotals.length;
+
+  return commonTotal + optionsAverage;
+};
+
+const formatNumber = (value, maxDecimals = 2) =>
+  Number(value || 0).toLocaleString("es-ES", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: maxDecimals,
+  });
 
 export default function DietaTab({ client }) {
-  const [entries, setEntries] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  
+  const [entries, setEntries] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [openMeals, setOpenMeals] = useState(() => {
-    const initialState = {}
-    MEALS.forEach(m => initialState[m.id] = true)
-    return initialState
-  })
+    const initialState = {};
+    MEALS.forEach((m) => (initialState[m.id] = true));
+    return initialState;
+  });
 
   // Día de hoy
-  const today = getTodayAppDay()
-  const todayName = FULL_DAYS_MAP[today]
+  const today = getTodayAppDay();
+  const todayName = FULL_DAYS_MAP[today];
 
   useEffect(() => {
     if (!client?.id) {
-      setLoading(false)
-      return
+      setLoading(false);
+      return;
     }
     listClientDiet(client.id).then(({ entries, error }) => {
-      setEntries(entries || [])
-      setError(error)
-      setLoading(false)
-    })
-  }, [client?.id])
+      setEntries(entries || []);
+      setError(error);
+      setLoading(false);
+    });
+  }, [client?.id]);
 
   const toggleMeal = (mealId) => {
-    setOpenMeals(prev => ({ ...prev, [mealId]: !prev[mealId] }))
-  }
+    setOpenMeals((prev) => ({ ...prev, [mealId]: !prev[mealId] }));
+  };
 
   if (!client) {
-    return <EmptyState icon="🔍" title="Ficha no encontrada" body="Escríbeme para revisarlo." />
+    return (
+      <EmptyState
+        icon="🔍"
+        title="Ficha no encontrada"
+        body="Escríbeme para revisarlo."
+      />
+    );
   }
 
   if (loading) {
@@ -103,20 +155,24 @@ export default function DietaTab({ client }) {
         <div className="h-48 w-full rounded-[2rem] bg-white border border-slate-100 shadow-sm"></div>
         <div className="h-24 w-full rounded-[1.5rem] bg-white border border-slate-100 shadow-sm"></div>
       </div>
-    )
+    );
   }
 
   if (error) {
     return (
       <div className="rounded-2xl border border-red-100 bg-red-50 p-4 shadow-sm">
-        <p className="text-sm font-bold text-red-600">Error al cargar tu dieta</p>
+        <p className="text-sm font-bold text-red-600">
+          Error al cargar tu dieta
+        </p>
         <p className="mt-1 text-xs text-red-500">{error.message}</p>
       </div>
-    )
+    );
   }
 
   // --- FILTRO PRINCIPAL: Solo nos quedamos con lo de HOY y lo de "Todos los días" ---
-  const entriesForToday = entries.filter(e => !e.dia_semana || Number(e.dia_semana) === today)
+  const entriesForToday = entries.filter(
+    (e) => !e.dia_semana || Number(e.dia_semana) === today,
+  );
 
   if (entriesForToday.length === 0) {
     return (
@@ -127,41 +183,39 @@ export default function DietaTab({ client }) {
           body={`No tienes alimentos asignados para hoy (${todayName}).`}
         />
       </div>
-    )
+    );
   }
 
   // --- CÁLCULOS GLOBALES PARA HOY ---
-  let totalKcal = 0, totalP = 0, totalC = 0, totalF = 0
+  let totalKcal = 0,
+    totalP = 0,
+    totalC = 0,
+    totalF = 0;
 
   const entriesByMeal = MEALS.map((meal) => {
     // Usamos entriesForToday en vez de entries
-    const items = entriesForToday.filter((e) => e.momento_dia === meal.id)
-    
-    const mealKcal = Math.round(calcTodayMealAverage(items, ['calorias', 'kcal']))
-    const mealP = calcTodayMealAverage(items, ['proteinas', 'p'])
-    const mealC = calcTodayMealAverage(items, ['carbos', 'carbohidratos', 'c'])
-    const mealF = calcTodayMealAverage(items, ['grasas', 'f'])
-    
-    totalKcal += mealKcal
-    totalP += mealP
-    totalC += mealC
-    totalF += mealF
+    const items = entriesForToday.filter((e) => e.momento_dia === meal.id);
 
-    return { meal, items, mealKcal }
-  }).filter(m => m.items.length > 0)
+    const mealKcal = calcTodayMealAverage(items, ["calorias", "kcal"]);
+    const mealP = calcTodayMealAverage(items, ["proteinas", "p"]);
+    const mealC = calcTodayMealAverage(items, ["carbos", "carbohidratos", "c"]);
+    const mealF = calcTodayMealAverage(items, ["grasas", "f"]);
 
-  totalP = Math.round(totalP)
-  totalC = Math.round(totalC)
-  totalF = Math.round(totalF)
+    totalKcal += mealKcal;
+    totalP += mealP;
+    totalC += mealC;
+    totalF += mealF;
 
-  const totalMacros = totalP + totalC + totalF || 1 
-  const pctP = Math.round((totalP / totalMacros) * 100)
-  const pctC = Math.round((totalC / totalMacros) * 100)
-  const pctF = Math.round((totalF / totalMacros) * 100)
+    return { meal, items, mealKcal };
+  }).filter((m) => m.items.length > 0);
+
+  const totalMacros = totalP + totalC + totalF || 1;
+  const pctP = Math.round((totalP / totalMacros) * 100);
+  const pctC = Math.round((totalC / totalMacros) * 100);
+  const pctF = Math.round((totalF / totalMacros) * 100);
 
   return (
     <div className="flex flex-col gap-6 pb-24 animate-fade-in">
-      
       <div>
         <p className="text-sm font-bold tracking-widest text-orange uppercase">
           Tu plan activo
@@ -171,28 +225,60 @@ export default function DietaTab({ client }) {
             Nutrición
           </h2>
           <div className="rounded-xl bg-orange/10 px-3 py-1.5 border border-orange/20 mt-1">
-            <span className="text-[10px] font-extrabold text-orange uppercase tracking-wider">Hoy ({todayName})</span>
+            <span className="text-[10px] font-extrabold text-orange uppercase tracking-wider">
+              Hoy ({todayName})
+            </span>
           </div>
         </div>
       </div>
 
       <div className="overflow-hidden rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100 mb-2">
         <div className="flex flex-col sm:flex-row items-center gap-8">
-          
           <div className="relative flex h-36 w-36 shrink-0 items-center justify-center">
-            <svg className="absolute inset-0 h-full w-full -rotate-90 transform" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="42" fill="none" stroke="#f1f5f9" strokeWidth="8" />
-              <circle 
-                cx="50" cy="50" r="42" 
-                fill="none" stroke="#EA580C" strokeWidth="8" strokeLinecap="round"
+            <svg
+              className="absolute inset-0 h-full w-full -rotate-90 transform"
+              viewBox="0 0 100 100"
+            >
+              <defs>
+                <linearGradient
+                  id="diet-ring-gradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
+                  <stop offset="0%" stopColor={BRAND_YELLOW} />
+                  <stop offset="100%" stopColor={BRAND_GOLD} />
+                </linearGradient>
+              </defs>
+              <circle
+                cx="50"
+                cy="50"
+                r="42"
+                fill="none"
+                stroke="#f1f5f9"
+                strokeWidth="8"
+              />
+              <circle
+                cx="50"
+                cy="50"
+                r="42"
+                fill="none"
+                stroke="url(#diet-ring-gradient)"
+                strokeWidth="8"
+                strokeLinecap="round"
                 strokeDasharray={`${2 * Math.PI * 42}`}
-                strokeDashoffset={0} 
+                strokeDashoffset={0}
                 className="drop-shadow-md transition-all duration-1000 ease-out"
               />
             </svg>
             <div className="flex flex-col items-center justify-center text-center">
-              <span className="font-display text-3xl font-extrabold text-navy leading-none">{totalKcal}</span>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">Kcal de hoy</span>
+              <span className="font-display text-3xl font-extrabold text-navy leading-none">
+                {formatNumber(totalKcal)}
+              </span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 mt-1">
+                Kcal de hoy
+              </span>
             </div>
           </div>
 
@@ -200,30 +286,48 @@ export default function DietaTab({ client }) {
             <div>
               <div className="mb-1.5 flex justify-between text-xs font-bold">
                 <span className="text-navy">Proteínas</span>
-                <span className="text-slate-500">{totalP}g <span className="text-slate-300 font-medium">({pctP}%)</span></span>
+                <span className="text-slate-500">
+                  {formatNumber(totalP)}g{" "}
+                  <span className="text-slate-300 font-medium">({pctP}%)</span>
+                </span>
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                <div className="h-full rounded-full bg-navy transition-all duration-1000 ease-out" style={{ width: `${pctP}%` }}></div>
+                <div
+                  className="h-full rounded-full bg-navy transition-all duration-1000 ease-out"
+                  style={{ width: `${pctP}%` }}
+                ></div>
               </div>
             </div>
 
             <div>
               <div className="mb-1.5 flex justify-between text-xs font-bold">
                 <span className="text-navy">Carbohidratos</span>
-                <span className="text-slate-500">{totalC}g <span className="text-slate-300 font-medium">({pctC}%)</span></span>
+                <span className="text-slate-500">
+                  {formatNumber(totalC)}g{" "}
+                  <span className="text-slate-300 font-medium">({pctC}%)</span>
+                </span>
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                <div className="h-full rounded-full bg-[#3B82F6] transition-all duration-1000 ease-out" style={{ width: `${pctC}%` }}></div>
+                <div
+                  className="h-full rounded-full bg-[#3B82F6] transition-all duration-1000 ease-out"
+                  style={{ width: `${pctC}%` }}
+                ></div>
               </div>
             </div>
 
             <div>
               <div className="mb-1.5 flex justify-between text-xs font-bold">
                 <span className="text-navy">Grasas</span>
-                <span className="text-slate-500">{totalF}g <span className="text-slate-300 font-medium">({pctF}%)</span></span>
+                <span className="text-slate-500">
+                  {formatNumber(totalF)}g{" "}
+                  <span className="text-slate-300 font-medium">({pctF}%)</span>
+                </span>
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                <div className="h-full rounded-full bg-orange transition-all duration-1000 ease-out" style={{ width: `${pctF}%` }}></div>
+                <div
+                  className="h-full rounded-full bg-orange transition-all duration-1000 ease-out"
+                  style={{ width: `${pctF}%` }}
+                ></div>
               </div>
             </div>
           </div>
@@ -232,12 +336,14 @@ export default function DietaTab({ client }) {
 
       <div className="flex flex-col gap-5">
         {entriesByMeal.map(({ meal, items, mealKcal }) => {
-          const isOpen = openMeals[meal.id]
+          const isOpen = openMeals[meal.id];
 
           return (
-            <div key={meal.id} className="overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-slate-100 transition-all">
-              
-              <button 
+            <div
+              key={meal.id}
+              className="overflow-hidden rounded-[1.5rem] bg-white shadow-sm ring-1 ring-slate-100 transition-all"
+            >
+              <button
                 onClick={() => toggleMeal(meal.id)}
                 className="flex w-full items-center justify-between p-5 transition-colors hover:bg-slate-50 active:bg-slate-100"
               >
@@ -250,14 +356,29 @@ export default function DietaTab({ client }) {
                       {meal.label}
                     </h3>
                     <p className="text-[11px] font-semibold text-slate-400 mt-0.5 tracking-wide">
-                      {mealKcal} kcal · {items.length} {items.length === 1 ? 'alimento' : 'alimentos'}
+                      {formatNumber(mealKcal)} kcal · {items.length}{" "}
+                      {items.length === 1 ? "alimento" : "alimentos"}
                     </p>
                   </div>
                 </div>
-                
-                <div className={`flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-full bg-slate-50 text-slate-400 transition-transform duration-300 ${
+                    isOpen ? "rotate-180" : ""
+                  }`}
+                >
+                  <svg
+                    className="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2.5"
+                      d="M19 9l-7 7-7-7"
+                    />
                   </svg>
                 </div>
               </button>
@@ -266,10 +387,16 @@ export default function DietaTab({ client }) {
                 <div className="border-t border-slate-50 px-5 pb-5 pt-3 animate-fade-in">
                   <ul className="flex flex-col gap-4">
                     {items.map((it) => {
-                      const foodKcal = Math.round(((Number(it.foods?.calorias || it.foods?.kcal) || 0) * (Number(it.cantidad_g) || 0)) / 100)
-                      const isOption = !!it.opcion
-                      const dayLabel = it.dia_semana ? DAYS_MAP[it.dia_semana] : 'Todos los días'
-                      const urlCompra = it.foods?.url_compra
+                      const foodKcal = Math.round(
+                        ((Number(it.foods?.calorias || it.foods?.kcal) || 0) *
+                          (Number(it.cantidad_g) || 0)) /
+                          100,
+                      );
+                      const isOption = !!it.opcion;
+                      const dayLabel = it.dia_semana
+                        ? DAYS_MAP[it.dia_semana]
+                        : "Todos los días";
+                      const urlCompra = it.foods?.url_compra;
 
                       const content = (
                         <>
@@ -277,24 +404,29 @@ export default function DietaTab({ client }) {
                             <p className="truncate text-sm font-bold text-navy">
                               {it.foods?.nombre}
                               {urlCompra && (
-                                <span className="ml-1.5 text-[10px] font-extrabold text-orange">↗</span>
+                                <span className="ml-1.5 text-[10px] font-extrabold text-orange">
+                                  ↗
+                                </span>
                               )}
                             </p>
                             <p className="truncate text-[11px] font-bold text-slate-400 mt-0.5">
-                              {it.cantidad_g}g · {dayLabel} 
+                              {it.cantidad_g}g · {dayLabel}
                               {isOption && (
                                 <span className="text-orange">
-                                  {' '}· Opción {it.opcion}
+                                  {" "}
+                                  · Opción {it.opcion}
                                 </span>
                               )}
                             </p>
                           </div>
-                          
+
                           <div className="shrink-0 text-right">
-                            <span className="text-xs font-extrabold text-navy">{foodKcal} kcal</span>
+                            <span className="text-xs font-extrabold text-navy">
+                              {foodKcal} kcal
+                            </span>
                           </div>
                         </>
-                      )
+                      );
 
                       return (
                         <li key={it.id}>
@@ -313,16 +445,15 @@ export default function DietaTab({ client }) {
                             </div>
                           )}
                         </li>
-                      )
+                      );
                     })}
                   </ul>
                 </div>
               )}
             </div>
-          )
+          );
         })}
       </div>
-
     </div>
-  )
+  );
 }
