@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { listClientRoutine } from "../../../lib/routines";
 import { listClientDiet } from "../../../lib/diets";
+import { listProgressHistory } from "../../../lib/notes";
 import { generateRoutinePdf, generateDietPdf } from "../../../lib/clientPdfs";
 import { objetivoLabel } from "../../../lib/clients";
 import EmptyState from "../EmptyState";
@@ -26,6 +27,7 @@ function formatShortDate(dateStr) {
 export default function InicioTab({ client }) {
   const [routineEntries, setRoutineEntries] = useState([]);
   const [dietEntries, setDietEntries] = useState([]);
+  const [progressEntries, setProgressEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(null);
 
@@ -34,10 +36,15 @@ export default function InicioTab({ client }) {
       setLoading(false);
       return;
     }
-    Promise.all([listClientRoutine(client.id), listClientDiet(client.id)]).then(
-      ([{ entries: routine }, { entries: diet }]) => {
-        setRoutineEntries(routine);
-        setDietEntries(diet);
+    Promise.all([
+      listClientRoutine(client.id),
+      listClientDiet(client.id),
+      listProgressHistory(client.id),
+    ]).then(
+      ([{ entries: routine }, { entries: diet }, { entries: progress }]) => {
+        setRoutineEntries(routine || []);
+        setDietEntries(diet || []);
+        setProgressEntries(progress || []);
         setLoading(false);
       },
     );
@@ -53,12 +60,35 @@ export default function InicioTab({ client }) {
     );
   }
 
+  // El peso actual debe salir del registro de progreso más reciente.
+  const latestProgressWeight = [...progressEntries]
+    .filter((entry) => {
+      const weight = Number.parseFloat(entry?.peso);
+      return Number.isFinite(weight) && weight > 0;
+    })
+    .sort((a, b) => {
+      const dateA = new Date(
+        a?.fecha || a?.date || a?.created_at || a?.createdAt || 0,
+      ).getTime();
+
+      const dateB = new Date(
+        b?.fecha || b?.date || b?.created_at || b?.createdAt || 0,
+      ).getTime();
+
+      return dateB - dateA;
+    })[0]?.peso;
+
+  const currentWeight =
+    latestProgressWeight !== undefined && latestProgressWeight !== null
+      ? Number.parseFloat(latestProgressWeight)
+      : client.peso;
+
   const hasPlanInfo =
     client.tipo_plan ||
     client.plan_vigente_hasta ||
     client.proxima_revision ||
     client.objetivo_entrenamiento ||
-    client.peso ||
+    currentWeight ||
     client.altura ||
     client.edad;
   const hasAnything =
@@ -80,7 +110,7 @@ export default function InicioTab({ client }) {
   const personalStats = [
     client.edad && { label: "Edad", value: `${client.edad} años` },
     client.altura && { label: "Altura", value: `${client.altura} cm` },
-    client.peso && { label: "Peso actual", value: `${client.peso} kg` },
+    currentWeight && { label: "Peso actual", value: `${currentWeight} kg` },
     client.created_at && {
       label: "Miembro desde",
       value: formatShortDate(client.created_at),
