@@ -1,67 +1,75 @@
-import { useEffect, useState } from 'react'
-import { listMuscleGroups, listExercisesByGroup } from '../../lib/exercises'
-import { DIAS_SEMANA, addRoutineEntry, deleteRoutineEntry } from '../../lib/routines'
+import { useEffect, useState } from "react";
+import { listMuscleGroups, listExercisesByGroup } from "../../lib/exercises";
+import {
+  DIAS_SEMANA,
+  addRoutineEntry,
+  deleteRoutineEntry,
+} from "../../lib/routines";
 
 export default function AdminRoutineEditor({ clientId, entries, onChange }) {
-  const [groups, setGroups] = useState([])
-  const [selectedGroup, setSelectedGroup] = useState('')
-  const [exercisesInGroup, setExercisesInGroup] = useState([])
-  const [selectedExerciseId, setSelectedExerciseId] = useState('')
+  const [groups, setGroups] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState("");
+  const [exercisesInGroup, setExercisesInGroup] = useState([]);
+  const [selectedExerciseId, setSelectedExerciseId] = useState("");
 
-  const [todosLosDias, setTodosLosDias] = useState(false)
-  const [selectedDays, setSelectedDays] = useState([1]) 
+  const [todosLosDias, setTodosLosDias] = useState(false);
+  const [selectedDays, setSelectedDays] = useState([1]);
 
-  const [seriesObjetivo, setSeriesObjetivo] = useState(3)
-  const [repsObjetivo, setRepsObjetivo] = useState(10)
-  const [notas, setNotas] = useState('')
-  
+  const [seriesObjetivo, setSeriesObjetivo] = useState(3);
+  const [repsObjetivo, setRepsObjetivo] = useState(10);
+  const [notas, setNotas] = useState("");
+
   // NUEVOS ESTADOS PARA STAGING Y DROPDOWNS CUSTOM
-  const [stagedExercises, setStagedExercises] = useState([])
-  const [saving, setSaving] = useState(false)
-  const [groupOpen, setGroupOpen] = useState(false)
-  const [exerciseOpen, setExerciseOpen] = useState(false)
+  const [stagedExercises, setStagedExercises] = useState([]);
+  const [saving, setSaving] = useState(false);
+  const [groupOpen, setGroupOpen] = useState(false);
+  const [exerciseOpen, setExerciseOpen] = useState(false);
 
   useEffect(() => {
     listMuscleGroups().then(({ groups }) => {
-      setGroups(groups)
-      if (groups.length > 0) setSelectedGroup(groups[0])
-    })
-  }, [])
+      setGroups(groups);
+      if (groups.length > 0) setSelectedGroup(groups[0]);
+    });
+  }, []);
 
   useEffect(() => {
-    if (!selectedGroup) return
+    if (!selectedGroup) return;
     listExercisesByGroup(selectedGroup).then(({ exercises }) => {
-      setExercisesInGroup(exercises)
+      setExercisesInGroup(exercises);
       if (exercises.length > 0) {
-        setSelectedExerciseId(exercises[0].id)
+        setSelectedExerciseId(exercises[0].id);
       } else {
-        setSelectedExerciseId('')
+        setSelectedExerciseId("");
       }
-    })
-  }, [selectedGroup])
+    });
+  }, [selectedGroup]);
 
   const entriesByDay = DIAS_SEMANA.map((dia) => ({
     dia,
     items: entries
       .filter((e) => e.dia_semana === dia.value)
       .sort((a, b) => (a.orden ?? 0) - (b.orden ?? 0)),
-  }))
+  }));
 
   const toggleDay = (value) => {
     setSelectedDays((prev) =>
-      prev.includes(value) ? prev.filter((d) => d !== value) : [...prev, value]
-    )
-  }
+      prev.includes(value) ? prev.filter((d) => d !== value) : [...prev, value],
+    );
+  };
 
   // 🚀 NUEVO: Pre-añadir a la lista temporal
   const handleStageExercise = () => {
-    if (!selectedExerciseId) return
-    
-    const exerciseData = exercisesInGroup.find(e => e.id === Number(selectedExerciseId))
-    if (!exerciseData) return
+    if (!selectedExerciseId) return;
 
-    const daysToAdd = todosLosDias ? DIAS_SEMANA.map(d => d.value) : selectedDays
-    const newItems = []
+    const exerciseData = exercisesInGroup.find(
+      (e) => e.id === Number(selectedExerciseId),
+    );
+    if (!exerciseData) return;
+
+    const daysToAdd = todosLosDias
+      ? DIAS_SEMANA.map((d) => d.value)
+      : selectedDays;
+    const newItems = [];
 
     for (const dia of daysToAdd) {
       newItems.push({
@@ -69,63 +77,116 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
         dia,
         series: Number(seriesObjetivo),
         reps: Number(repsObjetivo),
-        notas: notas
-      })
+        notas: notas,
+      });
     }
 
-    setStagedExercises([...stagedExercises, ...newItems])
-    
+    setStagedExercises([...stagedExercises, ...newItems]);
+
     // Limpiamos los campos opcionales para el siguiente
-    setNotas('')
-  }
+    setNotas("");
+  };
 
   const handleRemoveStaged = (indexToRemove) => {
-    setStagedExercises(stagedExercises.filter((_, idx) => idx !== indexToRemove))
-  }
+    setStagedExercises(
+      stagedExercises.filter((_, idx) => idx !== indexToRemove),
+    );
+  };
 
-  // 🚀 NUEVO: Guardar todo de golpe en base de datos
+  // Guardar todos los ejercicios respetando exactamente el orden
+  // en el que los has pre-añadido.
   const handleSaveAll = async () => {
-    if (stagedExercises.length === 0) return
-    setSaving(true)
+    if (stagedExercises.length === 0) return;
+
+    setSaving(true);
+
+    const failedItems = [];
+
+    /*
+      Guardamos el último número de orden usado para cada día.
+
+      Ejemplo:
+        {
+          1: 4, // Lunes ya tiene 4 ejercicios
+          7: 2, // Domingo ya tiene 2 ejercicios
+        }
+
+      Cada nuevo ejercicio de ese día recibe el siguiente número.
+    */
+    const lastOrderByDay = {};
 
     for (const item of stagedExercises) {
-      // Calculamos el orden teniendo en cuenta los ya guardados en la BD 
-      // MÁS los que hemos guardado en este mismo bucle para ese día
-      const alreadyInDB = entries.filter((e) => e.dia_semana === item.dia).length
-      
+      const day = Number(item.dia);
+
+      // Solo calculamos el último orden existente una vez por cada día.
+      if (lastOrderByDay[day] === undefined) {
+        const entriesForDay = entries.filter(
+          (entry) => Number(entry.dia_semana) === day,
+        );
+
+        const maxExistingOrder = entriesForDay.reduce(
+          (max, entry) => Math.max(max, Number(entry.orden) || 0),
+          0,
+        );
+
+        lastOrderByDay[day] = maxExistingOrder;
+      }
+
+      // El siguiente ejercicio queda inmediatamente después del anterior.
+      const nextOrder = lastOrderByDay[day] + 1;
+
       const { error } = await addRoutineEntry({
         clientId,
-        diaSemana: item.dia,
+        diaSemana: day,
         ejercicioId: item.exercise.id,
-        // Mandamos el orden como 999 temporalmente si no quieres complicar el cálculo manual, 
-        // tu base de datos normalmente lo auto-ordena si tienes un trigger, o si no:
-        orden: alreadyInDB + 999, 
+        orden: nextOrder,
         seriesObjetivo: item.series,
         repsObjetivo: item.reps,
         notasEntrenador: item.notas,
-      })
+      });
 
       if (error) {
-        alert('Error al guardar el ejercicio ' + item.exercise.nombre + ': ' + error.message)
+        console.error(
+          `Error guardando ${item.exercise.nombre} en el día ${day}:`,
+          error,
+        );
+
+        failedItems.push(item);
+        continue;
       }
+
+      // Solo avanzamos el orden si la inserción ha ido bien.
+      lastOrderByDay[day] = nextOrder;
     }
 
-    setStagedExercises([])
-    setSaving(false)
-    onChange()
-  }
+    // Si alguno falla, permanece en la lista temporal para poder reintentarlo.
+    setStagedExercises(failedItems);
+    setSaving(false);
+
+    await onChange?.();
+
+    if (failedItems.length > 0) {
+      alert(
+        `${failedItems.length} ejercicio(s) no pudieron guardarse. ` +
+          "Se mantienen en la lista para que puedas reintentarlo.",
+      );
+    }
+  };
 
   const handleDelete = async (id) => {
-    const { error } = await deleteRoutineEntry(id)
+    const { error } = await deleteRoutineEntry(id);
     if (error) {
-      alert('Error al borrar: ' + error.message)
-      return
+      alert("Error al borrar: " + error.message);
+      return;
     }
-    onChange()
-  }
+    onChange();
+  };
 
-  const canStage = selectedExerciseId && (todosLosDias || selectedDays.length > 0)
-  const selectedExerciseData = exercisesInGroup.find(e => e.id === Number(selectedExerciseId))
+  const canStage =
+    selectedExerciseId && (todosLosDias || selectedDays.length > 0);
+  const selectedExerciseData = exercisesInGroup.find(
+    (e) => e.id === Number(selectedExerciseId),
+  );
 
   return (
     <div>
@@ -139,13 +200,24 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
           </div>
           <ul className="mb-4 space-y-2">
             {stagedExercises.map((it, idx) => {
-              const diaNombre = DIAS_SEMANA.find(d => d.value === it.dia)?.label.slice(0,3) || '?'
+              const diaNombre =
+                DIAS_SEMANA.find((d) => d.value === it.dia)?.label.slice(
+                  0,
+                  3,
+                ) || "?";
               return (
-                <li key={idx} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-xs border border-slate-100">
+                <li
+                  key={idx}
+                  className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2 text-xs border border-slate-100"
+                >
                   <span className="text-navy font-bold truncate pr-2 flex items-center gap-2">
-                    <span className="bg-navy text-white px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wider">{diaNombre}</span>
+                    <span className="bg-navy text-white px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wider">
+                      {diaNombre}
+                    </span>
                     {it.exercise.nombre}
-                    <span className="text-orange font-extrabold ml-1">{it.series}×{it.reps}</span>
+                    <span className="text-orange font-extrabold ml-1">
+                      {it.series}×{it.reps}
+                    </span>
                   </span>
                   <button
                     type="button"
@@ -155,7 +227,7 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
                     ✕
                   </button>
                 </li>
-              )
+              );
             })}
           </ul>
           <button
@@ -168,8 +240,18 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
               "Guardando ejercicios..."
             ) : (
               <>
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.5"
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 Confirmar y guardar todos
               </>
@@ -180,34 +262,58 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
 
       {/* FORMULARIO PREMIUM */}
       <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:p-5 relative z-10">
-        
         <div className="grid gap-4 sm:grid-cols-2">
-          
           {/* CUSTOM DROPDOWN: Grupo Muscular */}
           <div>
-            <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Grupo muscular</label>
+            <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+              Grupo muscular
+            </label>
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setGroupOpen(!groupOpen)}
                 className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-navy outline-none focus:border-orange focus:ring-1 hover:border-slate-300 transition-colors"
               >
-                <span className="truncate">{selectedGroup || "Selecciona..."}</span>
-                <svg className={`h-4 w-4 text-slate-400 transition-transform ${groupOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                <span className="truncate">
+                  {selectedGroup || "Selecciona..."}
+                </span>
+                <svg
+                  className={`h-4 w-4 text-slate-400 transition-transform ${
+                    groupOpen ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.5"
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
-              
+
               {groupOpen && (
                 <>
-                  <div className="fixed inset-0 z-40" onClick={() => setGroupOpen(false)}></div>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setGroupOpen(false)}
+                  ></div>
                   <div className="absolute left-0 top-full z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-slate-100 bg-white p-1.5 shadow-xl animate-fade-in-up">
                     {groups.map((g) => (
                       <button
                         key={g}
                         type="button"
-                        onClick={() => { setSelectedGroup(g); setGroupOpen(false); }}
-                        className={`block w-full rounded-lg px-3 py-2 text-left text-xs font-extrabold transition-colors ${selectedGroup === g ? 'bg-orange/10 text-orange' : 'text-navy hover:bg-slate-50'}`}
+                        onClick={() => {
+                          setSelectedGroup(g);
+                          setGroupOpen(false);
+                        }}
+                        className={`block w-full rounded-lg px-3 py-2 text-left text-xs font-extrabold transition-colors ${
+                          selectedGroup === g
+                            ? "bg-orange/10 text-orange"
+                            : "text-navy hover:bg-slate-50"
+                        }`}
                       >
                         {g}
                       </button>
@@ -220,7 +326,9 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
 
           {/* CUSTOM DROPDOWN: Ejercicio */}
           <div>
-            <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Ejercicio</label>
+            <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+              Ejercicio
+            </label>
             <div className="relative">
               <button
                 type="button"
@@ -228,22 +336,46 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
                 disabled={exercisesInGroup.length === 0}
                 className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-navy outline-none focus:border-orange focus:ring-1 hover:border-slate-300 transition-colors disabled:opacity-50 disabled:bg-slate-50"
               >
-                <span className="truncate">{selectedExerciseData?.nombre || "Selecciona ejercicio..."}</span>
-                <svg className={`h-4 w-4 text-slate-400 transition-transform ${exerciseOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                <span className="truncate">
+                  {selectedExerciseData?.nombre || "Selecciona ejercicio..."}
+                </span>
+                <svg
+                  className={`h-4 w-4 text-slate-400 transition-transform ${
+                    exerciseOpen ? "rotate-180" : ""
+                  }`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2.5"
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
-              
+
               {exerciseOpen && (
                 <>
-                  <div className="fixed inset-0 z-40" onClick={() => setExerciseOpen(false)}></div>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setExerciseOpen(false)}
+                  ></div>
                   <div className="absolute left-0 top-full z-50 mt-1 max-h-60 w-full overflow-y-auto rounded-xl border border-slate-100 bg-white p-1.5 shadow-xl animate-fade-in-up">
                     {exercisesInGroup.map((ex) => (
                       <button
                         key={ex.id}
                         type="button"
-                        onClick={() => { setSelectedExerciseId(ex.id); setExerciseOpen(false); }}
-                        className={`block w-full rounded-lg px-3 py-2.5 text-left text-xs font-extrabold transition-colors ${selectedExerciseId === ex.id ? 'bg-orange/10 text-orange' : 'text-navy hover:bg-slate-50'}`}
+                        onClick={() => {
+                          setSelectedExerciseId(ex.id);
+                          setExerciseOpen(false);
+                        }}
+                        className={`block w-full rounded-lg px-3 py-2.5 text-left text-xs font-extrabold transition-colors ${
+                          selectedExerciseId === ex.id
+                            ? "bg-orange/10 text-orange"
+                            : "text-navy hover:bg-slate-50"
+                        }`}
                       >
                         {ex.nombre}
                       </button>
@@ -259,7 +391,9 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
         <div className="mt-4 grid gap-4 sm:grid-cols-2 relative z-0">
           <div className="flex gap-3">
             <div className="flex-1 relative">
-              <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Series</label>
+              <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+                Series
+              </label>
               <input
                 type="number"
                 min="1"
@@ -269,7 +403,9 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
               />
             </div>
             <div className="flex-1 relative">
-              <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Reps</label>
+              <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+                Reps
+              </label>
               <input
                 type="number"
                 min="1"
@@ -281,7 +417,9 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
           </div>
 
           <div className="flex-1">
-            <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-widest text-slate-400">Nota (opcional)</label>
+            <label className="mb-1.5 block text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+              Nota (opcional)
+            </label>
             <input
               type="text"
               placeholder="ej. 'controla la bajada'"
@@ -300,8 +438,8 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
                 type="checkbox"
                 checked={todosLosDias}
                 onChange={(e) => {
-                  setTodosLosDias(e.target.checked)
-                  if (e.target.checked) setSelectedDays([])
+                  setTodosLosDias(e.target.checked);
+                  if (e.target.checked) setSelectedDays([]);
                 }}
                 className="h-4 w-4 rounded border-slate-300 text-orange focus:ring-orange"
               />
@@ -315,8 +453,8 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
                     key={d.value}
                     className={`flex cursor-pointer items-center justify-center rounded-lg px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider transition-colors ${
                       selectedDays.includes(d.value)
-                        ? 'bg-navy text-white'
-                        : 'bg-white text-slate-400 border border-slate-200 hover:border-navy hover:text-navy'
+                        ? "bg-navy text-white"
+                        : "bg-white text-slate-400 border border-slate-200 hover:border-navy hover:text-navy"
                     }`}
                   >
                     <input
@@ -346,12 +484,17 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
       {/* LISTADO DE RUTINA POR DÍAS (YA GUARDADOS) */}
       <div className="mt-6 space-y-4 relative z-0">
         {entriesByDay.map(({ dia, items }) => {
-          if (items.length === 0) return null; 
-          
+          if (items.length === 0) return null;
+
           return (
-            <div key={dia.value} className="rounded-[1.5rem] border border-slate-100 bg-white p-5 shadow-sm">
-              <p className="font-display text-lg font-bold text-navy mb-3">{dia.label}</p>
-              
+            <div
+              key={dia.value}
+              className="rounded-[1.5rem] border border-slate-100 bg-white p-5 shadow-sm"
+            >
+              <p className="font-display text-lg font-bold text-navy mb-3">
+                {dia.label}
+              </p>
+
               <ul className="space-y-2">
                 {items.map((it) => (
                   <li
@@ -364,7 +507,7 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
                       </span>
                       <span className="flex items-center gap-2 text-xs font-bold text-slate-400">
                         <span className="inline-block rounded-md bg-white px-2 py-0.5 border border-slate-200 text-orange shadow-sm">
-                          {it.series_objetivo} × {it.reps_objetivo ?? '?'}
+                          {it.series_objetivo} × {it.reps_objetivo ?? "?"}
                         </span>
                         {it.notas_entrenador && (
                           <span className="hidden sm:inline italic text-slate-400 font-medium">
@@ -373,24 +516,34 @@ export default function AdminRoutineEditor({ clientId, entries, onChange }) {
                         )}
                       </span>
                     </div>
-                    
+
                     <button
                       type="button"
                       onClick={() => handleDelete(it.id)}
                       title="Eliminar ejercicio"
                       className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-slate-300 shadow-sm border border-slate-100 transition-colors hover:bg-red-50 hover:text-red-500 hover:border-red-100"
                     >
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      <svg
+                        className="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2.5"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
                       </svg>
                     </button>
                   </li>
                 ))}
               </ul>
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }
