@@ -1,23 +1,133 @@
 @import "tailwindcss";
 
 @theme {
-  /* Marca — Lógica Fit: "Ciencia y Confianza" */
+
+  /* =========================================================
+     MARCA — LÓGICA FIT
+     Navy + amarillo/dorado del logotipo
+  ========================================================= */
+
   --color-navy: #1e293b;
   --color-navy-light: #334155;
-  --color-orange: #f97316;
-  --color-orange-dark: #ea580c;
-  --color-orange-light: #fed7aa;
+
+  /* Nueva paleta principal */
+  --color-brand-yellow: #FDE349;
+  --color-brand-gold: #DBAA1E;
+  --color-brand-gold-dark: #B38612;
+  --color-brand-yellow-light: #FFF5AD;
+
+  /*
+    Compatibilidad con el código actual.
+
+    Así NO tienes que cambiar de golpe:
+    text-orange
+    bg-orange
+    border-orange
+    hover:bg-orange-dark
+  */
+  --color-orange: #DBAA1E;
+  --color-orange-dark: #B38612;
+  --color-orange-light: #FFF5AD;
+
+  /* Superficies */
   --color-surface: #ffffff;
   --color-surface-soft: #f8f9fa;
+
+  /* Texto */
   --color-text-secondary: #64748b;
+
+  /* Integraciones */
   --color-whatsapp: #25d366;
 
+  /* Tipografía */
   --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
+
+/* =========================================================
+   UTILIDADES
+========================================================= */
+
 @layer utilities {
-  /* Animación base flotante y de opacidad */
+
+  /* ---------------------------------------------------------
+     DEGRADADO DE MARCA
+  --------------------------------------------------------- */
+
+  .brand-gradient {
+    background-image: linear-gradient(
+      90deg,
+      #FDE349 0%,
+      #DBAA1E 100%
+    );
+  }
+
+  .brand-gradient-text {
+    display: inline-block;
+
+    background-image: linear-gradient(
+      90deg,
+      #FDE349 0%,
+      #DBAA1E 100%
+    );
+
+    background-clip: text;
+    -webkit-background-clip: text;
+
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+
+  /* ---------------------------------------------------------
+     BOTÓN PRINCIPAL DE MARCA
+  --------------------------------------------------------- */
+
+  .brand-button {
+    background-image: linear-gradient(
+      90deg,
+      #FDE349 0%,
+      #DBAA1E 100%
+    );
+
+    color: var(--color-navy);
+
+    box-shadow:
+      0 8px 24px rgba(219, 170, 30, 0.15);
+
+    transition:
+      transform 250ms ease,
+      filter 250ms ease,
+      box-shadow 250ms ease;
+  }
+
+  .brand-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+
+    box-shadow:
+      0 12px 30px rgba(219, 170, 30, 0.22);
+  }
+
+  .brand-button:active {
+    transform: translateY(0);
+  }
+
+
+  /* ---------------------------------------------------------
+     BORDE DE MARCA
+  --------------------------------------------------------- */
+
+  .brand-border {
+    border-color: var(--color-brand-gold);
+  }
+
+
+  /* ---------------------------------------------------------
+     ANIMACIONES
+  --------------------------------------------------------- */
+
   .animate-fade-in-up {
     animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     opacity: 0;
@@ -26,46 +136,91 @@
   .animate-marquee {
     animation: marquee 45s linear infinite;
   }
+
   .animate-marquee:hover {
     animation-play-state: paused;
   }
-  
-  /* Retrasos para que los elementos entren en cascada (uno tras otro) */
-  .delay-100 { animation-delay: 100ms; }
-  .delay-200 { animation-delay: 200ms; }
-  .delay-300 { animation-delay: 300ms; }
-  .delay-400 { animation-delay: 400ms; }
-  .delay-500 { animation-delay: 500ms; }
+
+
+  /* ---------------------------------------------------------
+     DELAYS
+  --------------------------------------------------------- */
+
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .delay-500 {
+    animation-delay: 500ms;
+  }
 }
 
+
+/* =========================================================
+   KEYFRAMES
+========================================================= */
+
 @keyframes fadeInUp {
+
   from {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
+
 @keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
+
+/* =========================================================
+   BASE
+========================================================= */
+
 @layer base {
+
   html {
     scroll-behavior: smooth;
   }
+
   body {
     @apply bg-surface text-navy font-body antialiased;
   }
-  h1, h2, h3, h4 {
+
+  h1,
+  h2,
+  h3,
+  h4 {
     @apply font-display;
   }
+
   :focus-visible {
-    outline: 2px solid var(--color-orange);
-    outline-offset: 2px;
+    outline: 2px solid var(--color-brand-gold);
+    outline-offset: 3px;
   }
 }
