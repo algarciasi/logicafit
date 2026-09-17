@@ -7,6 +7,8 @@ import { listClientRoutine } from "../../lib/routines";
 import { listRoutineHistory, listDietHistory } from "../../lib/history";
 import WeightChart from "../../components/dashboard/WeightChart";
 import MealFoodPicker from "../../components/admin/MealFoodPicker";
+import DietInstructionEditor from "../../components/admin/DietInstructionEditor";
+import DietEntryEditModal from "../../components/admin/DietEntryEditModal";
 import AdminRoutineEditor from "../../components/admin/AdminRoutineEditor";
 import ClientPlanEditor from "../../components/admin/ClientPlanEditor";
 import RoutineHistoryPanel from "../../components/admin/RoutineHistoryPanel";
@@ -33,6 +35,7 @@ export default function AdminClientDetail() {
   const [saving, setSaving] = useState(false);
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [generatingRoutinePdf, setGeneratingRoutinePdf] = useState(false);
+  const [editingDietEntry, setEditingDietEntry] = useState(null);
 
   const loadAll = async () => {
     setLoading(true);
@@ -214,6 +217,10 @@ export default function AdminClientDetail() {
             </button>
           </div>
 
+          <div className="mt-4">
+            <DietInstructionEditor clientId={id} />
+          </div>
+
           <div className="mt-4 space-y-4">
             {entriesByMeal.map(({ meal, items }) => (
               <div
@@ -223,6 +230,13 @@ export default function AdminClientDetail() {
                 <p className="font-display text-sm font-bold text-navy">
                   {meal.icon} {meal.label}
                 </p>
+
+                <DietInstructionEditor
+                  clientId={id}
+                  mealId={meal.id}
+                  mealLabel={meal.label}
+                  compact
+                />
                 {items.length === 0 ? (
                   <p className="mt-2 text-xs text-text-secondary">
                     Sin alimentos asignados.
@@ -259,14 +273,39 @@ export default function AdminClientDetail() {
                             )}
                           </div>
 
-                          <button
-                            type="button"
-                            onClick={() => handleDelete(it.id)}
-                            className="shrink-0 px-1 text-text-secondary transition hover:text-red-500"
-                            aria-label={`Eliminar ${it.foods?.nombre || 'alimento'}`}
-                          >
-                            ✕
-                          </button>
+                          <div className="flex shrink-0 items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => setEditingDietEntry(it)}
+                              className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-slate-400 ring-1 ring-slate-200 transition hover:text-navy"
+                              aria-label={`Editar ${it.foods?.nombre || 'alimento'}`}
+                              title="Editar alimento"
+                            >
+                              <svg
+                                className="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                />
+                              </svg>
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleDelete(it.id)}
+                              className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-slate-400 ring-1 ring-slate-200 transition hover:bg-red-50 hover:text-red-500"
+                              aria-label={`Eliminar ${it.foods?.nombre || 'alimento'}`}
+                              title="Eliminar alimento"
+                            >
+                              ✕
+                            </button>
+                          </div>
                         </div>
                       </li>
                     ))}
@@ -326,6 +365,13 @@ export default function AdminClientDetail() {
           />
         </div>
       </div>
+
+      <DietEntryEditModal
+        entry={editingDietEntry}
+        open={Boolean(editingDietEntry)}
+        onClose={() => setEditingDietEntry(null)}
+        onSaved={loadAll}
+      />
     </div>
   );
 }

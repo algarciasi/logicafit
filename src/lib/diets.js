@@ -1,7 +1,7 @@
 import { supabase } from './supabaseClient'
 
 const DIET_SELECT =
-  'id, momento_dia, dia_semana, opcion, cantidad_g, unidad, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas, url_compra, supermercado)'
+  'id, momento_dia, dia_semana, opcion, cantidad_g, unidad, notas, food_id, foods(id, nombre, calorias, proteinas, carbos, grasas, url_compra, supermercado)'
 
 export async function listClientDiet(clientId) {
   const { data, error } = await supabase
@@ -37,6 +37,36 @@ export async function addDietEntry({
       unidad: unidad || 'g',
       notas: notas?.trim() || null,
     })
+    .select(DIET_SELECT)
+    .single()
+
+  return { entry: data, error }
+}
+
+export async function updateDietEntry(
+  id,
+  {
+    foodId,
+    momentoDia,
+    diaSemana,
+    opcion,
+    cantidadG,
+    unidad,
+    notas,
+  },
+) {
+  const { data, error } = await supabase
+    .from('diets')
+    .update({
+      food_id: foodId,
+      momento_dia: momentoDia,
+      dia_semana: diaSemana ?? null,
+      opcion: opcion ?? 1,
+      cantidad_g: cantidadG,
+      unidad: unidad || 'g',
+      notas: notas?.trim() || null,
+    })
+    .eq('id', id)
     .select(DIET_SELECT)
     .single()
 
