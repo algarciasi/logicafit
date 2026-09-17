@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { listClientDiet } from "../../../lib/diets";
+import { listClientDietInstructions } from "../../../lib/dietInstructions";
 import { MEALS } from "../../../lib/macros";
 import EmptyState from "../EmptyState";
 import RecipesModal from "../RecipesModal";
@@ -137,6 +138,8 @@ export default function DietaTab({ client }) {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [instructions, setInstructions] = useState([]);
+  const [instructionsError, setInstructionsError] = useState(null);
   const [recipesOpen, setRecipesOpen] = useState(false);
 
   /*
@@ -173,11 +176,21 @@ export default function DietaTab({ client }) {
 
     setLoading(true);
 
-    listClientDiet(client.id).then(({ entries, error }) => {
-      setEntries(entries || []);
-      setError(error);
-      setLoading(false);
-    });
+    Promise.all([
+      listClientDiet(client.id),
+      listClientDietInstructions(client.id),
+    ]).then(
+      ([
+        { entries, error: dietError },
+        { instructions: loadedInstructions, error: loadedInstructionsError },
+      ]) => {
+        setEntries(entries || []);
+        setInstructions(loadedInstructions || []);
+        setError(dietError || null);
+        setInstructionsError(loadedInstructionsError || null);
+        setLoading(false);
+      },
+    );
   }, [client?.id]);
 
   const toggleMeal = (mealId) => {
@@ -283,6 +296,46 @@ export default function DietaTab({ client }) {
   const pctC = Math.round((totalC / totalMacros) * 100);
   const pctF = Math.round((totalF / totalMacros) * 100);
 
+  /*
+    Normalizamos momento_dia porque una indicación general puede llegar
+    de Supabase como null, "", "general", "dia" o "día" si existen filas
+    creadas durante versiones anteriores del editor.
+  */
+  const normalizeInstructionMeal = (value) => {
+    if (value === null || value === undefined) return null;
+
+    const normalized = String(value).trim().toLowerCase();
+
+    if (
+      normalized === "" ||
+      normalized === "general" ||
+      normalized === "dia" ||
+      normalized === "día"
+    ) {
+      return null;
+    }
+
+    return normalized;
+  };
+
+  const instructionAppliesToday = (instruction) => {
+    if (
+      instruction.dia_semana === null ||
+      instruction.dia_semana === undefined ||
+      instruction.dia_semana === ""
+    ) {
+      return true;
+    }
+
+    return Number(instruction.dia_semana) === today;
+  };
+
+  const generalDayInstructions = instructions.filter(
+    (instruction) =>
+      normalizeInstructionMeal(instruction.momento_dia) === null &&
+      instructionAppliesToday(instruction),
+  );
+
   return (
     <>
       <div className="flex flex-col gap-6 pb-24 animate-fade-in">
@@ -311,6 +364,17 @@ export default function DietaTab({ client }) {
             siguen calculándose sobre la media completa de tu planificación.
           </p>
         </div>
+
+        {instructionsError && (
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
+            <p className="text-xs font-bold text-amber-700">
+              No se pudieron cargar las indicaciones del plan.
+            </p>
+            <p className="mt-1 text-[11px] text-amber-600">
+              {instructionsError.message}
+            </p>
+          </div>
+        )}
 
         {/* =====================================================
             RECETAS
@@ -356,6 +420,55 @@ export default function DietaTab({ client }) {
             </svg>
           </div>
         </button>
+
+        {generalDayInstructions.length > 0 && (
+          <section className="rounded-[1.5rem] bg-navy px-5 py-4 text-white shadow-[0_10px_30px_rgba(30,41,59,0.14)] ring-1 ring-white/5 sm:px-6 sm:py-5">
+            <div className="flex items-start gap-3.5">
+              <div className="brand-gradient flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-navy shadow-sm">
+                <svg
+                  className="h-4.5 w-4.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5A4.5 4.5 0 003 9.5v8A4.5 4.5 0 017.5 13c1.746 0 3.332.477 4.5 1.253m0-8C13.168 5.477 14.754 5 16.5 5A4.5 4.5 0 0121 9.5v8a4.5 4.5 0 00-4.5-4.5c-1.746 0-3.332.477-4.5 1.253"
+                  />
+                </svg>
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.15em] text-white/55">
+                    Indicaciones del día
+                  </p>
+
+                  <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-wider text-white/60">
+                    Hoy
+                  </span>
+                </div>
+
+                <div className="mt-2 space-y-2.5">
+                  {generalDayInstructions.map((instruction, index) => (
+                    <div
+                      key={instruction.id}
+                      className={
+                        index === 0 ? "" : "border-t border-white/10 pt-2.5"
+                      }
+                    >
+                      <p className="whitespace-pre-line text-[13px] font-semibold leading-5 text-slate-100 sm:text-sm sm:leading-6">
+                        {instruction.indicaciones}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
 
         {entriesForToday.length === 0 ? (
           <EmptyState
@@ -514,6 +627,30 @@ export default function DietaTab({ client }) {
 
                 const hasSeveralOptions = availableOptions.length > 1;
 
+                const mealInstructions = instructions.filter((instruction) => {
+                  const instructionMeal = normalizeInstructionMeal(
+                    instruction.momento_dia,
+                  );
+
+                  const sameMeal =
+                    instructionMeal === String(meal.id).trim().toLowerCase();
+
+                  const sameDay = instructionAppliesToday(instruction);
+
+                  const appliesToWholeMeal =
+                    instruction.opcion === null ||
+                    instruction.opcion === undefined ||
+                    instruction.opcion === "";
+
+                  const sameOption =
+                    selectedOption !== null &&
+                    Number(instruction.opcion) === Number(selectedOption);
+
+                  return (
+                    sameMeal && sameDay && (appliesToWholeMeal || sameOption)
+                  );
+                });
+
                 return (
                   <section
                     key={meal.id}
@@ -619,6 +756,32 @@ export default function DietaTab({ client }) {
                                     </button>
                                   );
                                 })}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {mealInstructions.length > 0 && (
+                          <div className="px-5 pt-4">
+                            <div className="rounded-2xl border border-orange/15 bg-orange/5 px-4 py-3.5">
+                              <p className="text-[9px] font-extrabold uppercase tracking-[0.15em] text-orange">
+                                Indicaciones
+                              </p>
+
+                              <div className="mt-2 space-y-2">
+                                {mealInstructions.map((instruction) => (
+                                  <div key={instruction.id}>
+                                    {instruction.opcion && (
+                                      <p className="mb-0.5 text-[9px] font-bold uppercase tracking-wider text-slate-400">
+                                        Opción {instruction.opcion}
+                                      </p>
+                                    )}
+
+                                    <p className="whitespace-pre-line text-xs font-medium leading-5 text-slate-600">
+                                      {instruction.indicaciones}
+                                    </p>
+                                  </div>
+                                ))}
                               </div>
                             </div>
                           </div>
