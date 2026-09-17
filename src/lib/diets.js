@@ -1,17 +1,30 @@
 import { supabase } from './supabaseClient'
 
+const DIET_SELECT =
+  'id, momento_dia, dia_semana, opcion, cantidad_g, unidad, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas, url_compra, supermercado)'
+
 export async function listClientDiet(clientId) {
   const { data, error } = await supabase
     .from('diets')
-    // Añadimos 'unidad' al select
-    .select('id, momento_dia, dia_semana, opcion, cantidad_g, unidad, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas, url_compra, supermercado)')
+    .select(DIET_SELECT)
     .eq('client_id', clientId)
     .order('momento_dia', { ascending: true })
+    .order('opcion', { ascending: true })
+    .order('id', { ascending: true })
+
   return { entries: data || [], error }
 }
 
-// Recibimos 'unidad' en los parámetros
-export async function addDietEntry({ clientId, foodId, momentoDia, diaSemana, opcion, cantidadG, unidad, notas }) {
+export async function addDietEntry({
+  clientId,
+  foodId,
+  momentoDia,
+  diaSemana,
+  opcion,
+  cantidadG,
+  unidad,
+  notas,
+}) {
   const { data, error } = await supabase
     .from('diets')
     .insert({
@@ -21,19 +34,24 @@ export async function addDietEntry({ clientId, foodId, momentoDia, diaSemana, op
       dia_semana: diaSemana ?? null,
       opcion: opcion ?? 1,
       cantidad_g: cantidadG,
-      unidad: unidad || 'g', // Lo guardamos en la base de datos
-      notas: notas || null,
+      unidad: unidad || 'g',
+      notas: notas?.trim() || null,
     })
-    // Añadimos 'unidad' al select
-    .select('id, momento_dia, dia_semana, opcion, cantidad_g, unidad, notas, food_id, foods(nombre, calorias, proteinas, carbos, grasas, url_compra, supermercado)')
+    .select(DIET_SELECT)
     .single()
+
   return { entry: data, error }
 }
 
 export async function deleteDietEntry(id) {
-  const { data, error } = await supabase.from('diets').delete().eq('id', id).select()
+  const { data, error } = await supabase
+    .from('diets')
+    .delete()
+    .eq('id', id)
+    .select()
 
   if (error) return { error }
+
   if (!data || data.length === 0) {
     return {
       error: {
@@ -41,5 +59,6 @@ export async function deleteDietEntry(id) {
       },
     }
   }
+
   return { error: null }
 }

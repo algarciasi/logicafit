@@ -66,7 +66,7 @@ export default function AdminClientDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const handleAddMealFood = async (mealId, food, grams, diaSemana, opcion, unidad = 'g') => {
+  const handleAddMealFood = async (mealId, food, grams, diaSemana, opcion, unidad = 'g', notas = '') => {
     const { error } = await addDietEntry({
       clientId: id,
       foodId: food.id,
@@ -74,7 +74,8 @@ export default function AdminClientDetail() {
       diaSemana,
       opcion,
       cantidadG: grams,
-      unidad, 
+      unidad,
+      notas,
     });
     if (error) {
       alert("Error al guardar: " + error.message);
@@ -231,25 +232,42 @@ export default function AdminClientDetail() {
                     {items.map((it) => (
                       <li
                         key={it.id}
-                        className="flex items-center justify-between rounded-lg bg-surface-soft px-3 py-1.5 text-xs"
+                        className="rounded-lg bg-surface-soft px-3 py-2 text-xs"
                       >
-                        <span className="text-navy-light">
-                          {it.foods?.nombre} — {it.cantidad_g}{it.unidad || 'g'}
-                          <span className="ml-1.5 text-[10px] text-text-secondary">
-                            (
-                            {it.dia_semana
-                              ? diaLabel(it.dia_semana)
-                              : "todos los días"}
-                            {it.opcion ? ` · Opción ${it.opcion}` : ""})
-                          </span>
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(it.id)}
-                          className="text-text-secondary hover:text-red-500"
-                        >
-                          ✕
-                        </button>
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0 flex-1">
+                            <p className="font-semibold text-navy-light">
+                              {it.foods?.nombre} — {it.cantidad_g}{it.unidad || 'g'}
+                            </p>
+
+                            <p className="mt-0.5 text-[10px] text-text-secondary">
+                              {it.dia_semana
+                                ? diaLabel(it.dia_semana)
+                                : "Todos los días"}
+                              {it.opcion ? ` · Opción ${it.opcion}` : ""}
+                            </p>
+
+                            {it.notas && (
+                              <div className="mt-2 border-l-2 border-orange/40 pl-2.5">
+                                <p className="text-[9px] font-extrabold uppercase tracking-[0.12em] text-slate-400">
+                                  Indicaciones
+                                </p>
+                                <p className="mt-0.5 whitespace-pre-line text-[11px] font-medium leading-4 text-slate-600">
+                                  {it.notas}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(it.id)}
+                            className="shrink-0 px-1 text-text-secondary transition hover:text-red-500"
+                            aria-label={`Eliminar ${it.foods?.nombre || 'alimento'}`}
+                          >
+                            ✕
+                          </button>
+                        </div>
                       </li>
                     ))}
                   </ul>
