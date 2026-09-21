@@ -526,12 +526,13 @@ export default function DietaTab({ client }) {
                     />
                   </svg>
 
-                  <div className="flex flex-col items-center justify-center text-center">
-                    <span className="font-display text-3xl font-extrabold leading-none text-navy">
-                      {formatNumber(totalKcal)}
+                  <div className="flex flex-col items-center justify-center text-center px-4">
+                    {/* Reducimos un pelín la fuente a text-2xl y quitamos los decimales pasando un '0' a formatNumber */}
+                    <span className="font-display text-2xl font-extrabold leading-none tracking-tight text-navy">
+                      {formatNumber(totalKcal, 0)}
                     </span>
 
-                    <span className="mt-1 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                    <span className="mt-1 text-[9px] font-bold uppercase tracking-widest text-slate-400">
                       Kcal de hoy
                     </span>
                   </div>

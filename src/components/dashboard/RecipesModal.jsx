@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { listActiveRecipes } from "../../lib/recipes";
 
 const splitLines = (value) =>
@@ -8,15 +9,23 @@ const splitLines = (value) =>
     .filter(Boolean);
 
 export default function RecipesModal({ open, onClose }) {
+  const [mounted, setMounted] = useState(false);
   const [recipes, setRecipes] = useState([]);
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  const [activeCategory, setActiveCategory] = useState("Todas");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
 
     setSelectedRecipe(null);
+    setActiveCategory("Todas");
     setLoading(true);
     setError(null);
 
@@ -51,18 +60,28 @@ export default function RecipesModal({ open, onClose }) {
     };
   }, [open, onClose, selectedRecipe]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
   const recipeImage = selectedRecipe?.imagen_url;
 
-  return (
+  const categories = [
+    "Todas",
+    ...new Set(recipes.map((r) => r.categoria).filter(Boolean)),
+  ];
+
+  const filteredRecipes =
+    activeCategory === "Todas"
+      ? recipes
+      : recipes.filter((r) => r.categoria === activeCategory);
+
+  const modalContent = (
     <div
-      className="fixed inset-0 z-[120] flex items-end justify-center bg-navy/75 p-0 backdrop-blur-sm sm:items-center sm:p-6"
+      className="fixed inset-0 z-[9999] flex items-end justify-center bg-navy/75 p-0 backdrop-blur-sm sm:items-center sm:p-6"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="flex max-h-[94vh] w-full max-w-4xl flex-col overflow-hidden rounded-t-[2rem] bg-surface shadow-2xl sm:max-h-[90vh] sm:rounded-[2rem]">
+      <div className="flex max-h-[94vh] w-full max-w-md flex-col overflow-hidden rounded-t-[2rem] bg-surface shadow-2xl sm:max-h-[90vh] sm:rounded-[2rem]">
         {/* Cabecera */}
         <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-5 py-4 sm:px-6">
           <div className="min-w-0">
@@ -107,10 +126,10 @@ export default function RecipesModal({ open, onClose }) {
           </button>
         </div>
 
-        <div className="overflow-y-auto">
+        <div className="overflow-y-auto bg-white">
           {loading && (
-            <div className="grid gap-4 p-5 sm:grid-cols-2 sm:p-6">
-              {[1, 2, 3, 4].map((item) => (
+            <div className="grid gap-5 p-5 sm:p-6">
+              {[1, 2, 3].map((item) => (
                 <div
                   key={item}
                   className="h-44 animate-pulse rounded-2xl bg-slate-100"
@@ -120,7 +139,7 @@ export default function RecipesModal({ open, onClose }) {
           )}
 
           {!loading && error && (
-            <div className="p-6">
+            <div className="p-5 sm:p-6">
               <div className="rounded-2xl border border-red-100 bg-red-50 p-4">
                 <p className="font-bold text-red-600">
                   No se pudieron cargar las recetas
@@ -141,106 +160,83 @@ export default function RecipesModal({ open, onClose }) {
               </h3>
 
               <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-slate-500">
-                Aquí irán apareciendo las recetas que vaya añadiendo a Lógica
-                Fit.
+                Aquí irán apareciendo las recetas que vaya añadiendo a Lógica Fit.
               </p>
             </div>
           )}
 
-          {!loading && !error && !selectedRecipe && recipes.length > 0 && (
-            <div className="grid gap-4 p-5 sm:grid-cols-2 sm:p-6">
-              {recipes.map((recipe) => (
-                <button
-                  key={recipe.id}
-                  type="button"
-                  onClick={() => setSelectedRecipe(recipe)}
-                  className="group overflow-hidden rounded-2xl border border-slate-100 bg-white text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  {recipe.imagen_url ? (
-                    <div className="aspect-[16/9] overflow-hidden bg-slate-100">
-                      <img
-                        src={recipe.imagen_url}
-                        alt={recipe.titulo}
-                        className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                        loading="lazy"
-                      />
-                    </div>
-                  ) : (
-                    <div className="brand-gradient flex aspect-[16/7] items-center justify-center">
-                      <span className="text-4xl">🍽️</span>
-                    </div>
-                  )}
-
-                  <div className="p-4">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0">
-                        {recipe.categoria && (
-                          <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-orange">
-                            {recipe.categoria}
-                          </p>
-                        )}
-
-                        <h3 className="mt-1 font-display text-lg font-extrabold leading-snug text-navy">
-                          {recipe.titulo}
-                        </h3>
-                      </div>
-
-                      {recipe.tiempo_min && (
-                        <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold text-slate-500">
-                          {recipe.tiempo_min} min
-                        </span>
-                      )}
-                    </div>
-
-                    {recipe.detalle && (
-                      <p className="mt-2 line-clamp-2 text-sm leading-5 text-slate-500">
-                        {recipe.detalle}
-                      </p>
-                    )}
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {recipe.kcal !== null && recipe.kcal !== undefined && (
-                        <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-[10px] font-extrabold text-navy">
-                          {recipe.kcal} kcal
-                        </span>
-                      )}
-
-                      {recipe.proteinas !== null &&
-                        recipe.proteinas !== undefined && (
-                          <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-[10px] font-extrabold text-navy">
-                            P {recipe.proteinas}g
-                          </span>
-                        )}
-
-                      {recipe.carbos !== null &&
-                        recipe.carbos !== undefined && (
-                          <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-[10px] font-extrabold text-navy">
-                            C {recipe.carbos}g
-                          </span>
-                        )}
-
-                      {recipe.grasas !== null &&
-                        recipe.grasas !== undefined && (
-                          <span className="rounded-lg bg-slate-100 px-2.5 py-1 text-[10px] font-extrabold text-navy">
-                            G {recipe.grasas}g
-                          </span>
-                        )}
-                    </div>
-
-                    <div className="mt-4 inline-flex items-center gap-1 text-xs font-extrabold text-orange">
-                      Ver receta
-                      <span aria-hidden="true">→</span>
-                    </div>
-                  </div>
-                </button>
-              ))}
+          {/* BARRA DE CATEGORÍAS */}
+          {!loading && !error && !selectedRecipe && recipes.length > 0 && categories.length > 1 && (
+            <div className="sticky top-0 z-10 border-b border-slate-100 bg-white/95 px-5 py-3 backdrop-blur-md sm:px-6">
+              <style>{`.no-scrollbar::-webkit-scrollbar { display: none; }`}</style>
+              
+              <div className="no-scrollbar flex gap-2 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setActiveCategory(cat)}
+                    className={`shrink-0 rounded-full px-3.5 py-1.5 text-[10px] font-extrabold uppercase tracking-wider transition-all ${
+                      activeCategory === cat
+                        ? "brand-gradient text-navy shadow-sm ring-1 ring-[#DBAA1E]/30" // <-- ¡Aquí está tu degradado dorado!
+                        : "bg-slate-50 text-slate-500 ring-1 ring-inset ring-slate-200 hover:bg-slate-100 hover:text-navy"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
+          {/* VISTA CUADRÍCULA */}
+          {!loading && !error && !selectedRecipe && recipes.length > 0 && (
+            <div className="grid grid-cols-1 gap-5 p-5 sm:p-6">
+              {filteredRecipes.length > 0 ? (
+                filteredRecipes.map((recipe) => (
+                  <button
+                    key={recipe.id}
+                    type="button"
+                    onClick={() => setSelectedRecipe(recipe)}
+                    className="group flex flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  >
+                    {recipe.imagen_url ? (
+                      <div className="aspect-[16/9] w-full shrink-0 overflow-hidden bg-slate-100">
+                        <img
+                          src={recipe.imagen_url}
+                          alt={recipe.titulo}
+                          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                          loading="lazy"
+                        />
+                      </div>
+                    ) : (
+                      <div className="brand-gradient flex aspect-[16/9] w-full shrink-0 items-center justify-center">
+                        <span className="text-4xl">🍽️</span>
+                      </div>
+                    )}
+
+                    <div className="p-4 sm:p-5">
+                      <h3 className="font-display text-lg font-extrabold leading-snug text-navy">
+                        {recipe.titulo}
+                      </h3>
+                    </div>
+                  </button>
+                ))
+              ) : (
+                <div className="py-12 text-center">
+                  <p className="text-sm font-medium text-slate-500">
+                    No hay recetas en esta categoría todavía.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* VISTA DETALLE DE LA RECETA */}
           {!loading && !error && selectedRecipe && (
-            <div>
+            <div className="mx-auto max-w-md pb-6">
               {recipeImage && (
-                <div className="aspect-[16/8] w-full overflow-hidden bg-slate-100">
+                <div className="aspect-[16/9] w-full overflow-hidden bg-slate-100">
                   <img
                     src={recipeImage}
                     alt={selectedRecipe.titulo}
@@ -249,7 +245,7 @@ export default function RecipesModal({ open, onClose }) {
                 </div>
               )}
 
-              <div className="p-5 sm:p-7">
+              <div className="p-5 sm:p-6">
                 {selectedRecipe.detalle && (
                   <div className="rounded-2xl bg-slate-50 p-4 ring-1 ring-slate-100 sm:p-5">
                     <p className="whitespace-pre-line text-base font-medium leading-7 text-slate-600">
@@ -258,65 +254,41 @@ export default function RecipesModal({ open, onClose }) {
                   </div>
                 )}
 
-                <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-5">
-                  {selectedRecipe.kcal !== null &&
-                    selectedRecipe.kcal !== undefined && (
-                      <Metric label="Kcal" value={selectedRecipe.kcal} />
-                    )}
-
-                  {selectedRecipe.proteinas !== null &&
-                    selectedRecipe.proteinas !== undefined && (
-                      <Metric
-                        label="Proteína"
-                        value={`${selectedRecipe.proteinas}g`}
-                      />
-                    )}
-
-                  {selectedRecipe.carbos !== null &&
-                    selectedRecipe.carbos !== undefined && (
-                      <Metric
-                        label="Carbos"
-                        value={`${selectedRecipe.carbos}g`}
-                      />
-                    )}
-
-                  {selectedRecipe.grasas !== null &&
-                    selectedRecipe.grasas !== undefined && (
-                      <Metric
-                        label="Grasas"
-                        value={`${selectedRecipe.grasas}g`}
-                      />
-                    )}
-
+                <div className="mt-6 grid grid-cols-3 gap-2">
+                  {selectedRecipe.kcal !== null && selectedRecipe.kcal !== undefined && (
+                    <Metric label="Kcal" value={selectedRecipe.kcal} />
+                  )}
+                  {selectedRecipe.proteinas !== null && selectedRecipe.proteinas !== undefined && (
+                    <Metric label="Proteína" value={`${selectedRecipe.proteinas}g`} />
+                  )}
+                  {selectedRecipe.carbos !== null && selectedRecipe.carbos !== undefined && (
+                    <Metric label="Carbos" value={`${selectedRecipe.carbos}g`} />
+                  )}
+                  {selectedRecipe.grasas !== null && selectedRecipe.grasas !== undefined && (
+                    <Metric label="Grasas" value={`${selectedRecipe.grasas}g`} />
+                  )}
                   {selectedRecipe.porciones && (
-                    <Metric
-                      label="Porciones"
-                      value={selectedRecipe.porciones}
-                    />
+                    <Metric label="Porciones" value={selectedRecipe.porciones} />
                   )}
                 </div>
 
-                {(selectedRecipe.ingredientes ||
-                  selectedRecipe.preparacion) && (
-                  <div className="mt-8 grid gap-8 md:grid-cols-2">
+                {(selectedRecipe.ingredientes || selectedRecipe.preparacion) && (
+                  <div className="mt-8 grid gap-8">
                     {selectedRecipe.ingredientes && (
                       <section>
                         <h3 className="font-display text-xl font-extrabold text-navy">
                           Ingredientes
                         </h3>
-
                         <ul className="mt-4 space-y-3">
-                          {splitLines(selectedRecipe.ingredientes).map(
-                            (ingredient, index) => (
-                              <li
-                                key={`${ingredient}-${index}`}
-                                className="flex gap-3 text-sm leading-5 text-slate-600"
-                              >
-                                <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-orange" />
-                                <span>{ingredient}</span>
-                              </li>
-                            ),
-                          )}
+                          {splitLines(selectedRecipe.ingredientes).map((ingredient, index) => (
+                            <li
+                              key={`${ingredient}-${index}`}
+                              className="flex gap-3 text-sm leading-5 text-slate-600"
+                            >
+                              <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-orange" />
+                              <span>{ingredient}</span>
+                            </li>
+                          ))}
                         </ul>
                       </section>
                     )}
@@ -326,21 +298,18 @@ export default function RecipesModal({ open, onClose }) {
                         <h3 className="font-display text-xl font-extrabold text-navy">
                           Preparación
                         </h3>
-
                         <ol className="mt-4 space-y-4">
-                          {splitLines(selectedRecipe.preparacion).map(
-                            (step, index) => (
-                              <li
-                                key={`${step}-${index}`}
-                                className="flex gap-3 text-sm leading-6 text-slate-600"
-                              >
-                                <span className="brand-gradient flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-extrabold text-navy">
-                                  {index + 1}
-                                </span>
-                                <span className="pt-0.5">{step}</span>
-                              </li>
-                            ),
-                          )}
+                          {splitLines(selectedRecipe.preparacion).map((step, index) => (
+                            <li
+                              key={`${step}-${index}`}
+                              className="flex gap-3 text-sm leading-6 text-slate-600"
+                            >
+                              <span className="brand-gradient flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[11px] font-extrabold text-navy">
+                                {index + 1}
+                              </span>
+                              <span className="pt-0.5">{step}</span>
+                            </li>
+                          ))}
                         </ol>
                       </section>
                     )}
@@ -353,16 +322,17 @@ export default function RecipesModal({ open, onClose }) {
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
 
 function Metric({ label, value }) {
   return (
-    <div className="rounded-xl bg-slate-50 px-3 py-2.5 ring-1 ring-slate-100">
+    <div className="flex flex-col justify-center rounded-xl bg-slate-50 px-3 py-3 ring-1 ring-slate-100 items-center text-center">
       <p className="text-[9px] font-bold uppercase tracking-wider text-slate-400">
         {label}
       </p>
-
-      <p className="mt-0.5 font-display text-sm font-extrabold text-navy">
+      <p className="mt-1 font-display text-base font-extrabold text-navy">
         {value}
       </p>
     </div>

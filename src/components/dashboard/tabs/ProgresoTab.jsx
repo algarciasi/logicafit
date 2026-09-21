@@ -117,7 +117,7 @@ export default function ProgresoTab({ client }) {
             dataEntries={progressEntries}
             metrics={[{ id: 'peso', label: 'Peso' }]}
             unit="kg"
-            color="#EA580C"
+            color="#DBAA1E"
             icon={IconWeight}
           />
 
@@ -133,7 +133,7 @@ export default function ProgresoTab({ client }) {
               { id: 'gemelo', label: 'Gemelo' },
             ]}
             unit="cm"
-            color="#3B82F6"
+            color="#DBAA1E"
             icon={IconTape}
           />
 
@@ -143,7 +143,7 @@ export default function ProgresoTab({ client }) {
             dataEntries={routineEntries}
             metrics={fallbackExerciseOptions}
             unit="kg"
-            color="#10B981"
+            color="#DBAA1E"
             icon={IconDumbbell}
           />
 
