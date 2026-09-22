@@ -97,7 +97,7 @@ export default function AppShowcase() {
 
             {/* Móvil izquierdo */}
             <PhoneMockup
-              src="/brand/app-entreno.png"
+              src="/brand/app-dieta.png"
               alt="Rutina de entrenamiento en la app Lógica Fit"
               className="absolute left-[5%] top-20 z-10 w-[190px] -rotate-[6deg] opacity-80 sm:w-[230px]"
             />

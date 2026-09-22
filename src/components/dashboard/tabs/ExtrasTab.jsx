@@ -6,6 +6,7 @@ import EmptyState from '../EmptyState'
 const SUPERMARKET_STYLES = {
   'Mercadona': { bg: 'bg-[#00824B]', text: 'text-[#00824B]', badge: 'bg-[#00824B]/5', logo: '/brand/mercadona.png' },
   'Lidl': { bg: 'bg-[#0050AA]', text: 'text-[#0050AA]', badge: 'bg-[#0050AA]/5', logo: '/brand/lidl.png' },
+  'Dia': { bg: 'bg-[#aa0000]', text: 'text-[#aa0000]', badge: 'bg-[#aa0000]/5', logo: '/brand/dia.png' },
   'Consum': { bg: 'bg-[#EA7A28]', text: 'text-[#EA7A28]', badge: 'bg-[#EA7A28]/5', logo: '/brand/consum.png' },
   'Carrefour': { bg: 'bg-[#00387B]', text: 'text-[#00387B]', badge: 'bg-[#00387B]/5', logo: '/brand/carrefour.png' },
   'Suplementación': { bg: 'bg-navy', text: 'text-navy', badge: 'bg-slate-50', logo: '/brand/suplementacion.png' },

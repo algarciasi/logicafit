@@ -6,6 +6,7 @@ import { DIAS_SEMANA, diaLabel } from "../../lib/routines";
 let cachedFoods = null;
 
 export default function MealFoodPicker({ mealId, onAdd }) {
+  // Si hay caché, empezamos con ella para no mostrar la pantalla de carga
   const [foods, setFoods] = useState(cachedFoods || []);
   const [loading, setLoading] = useState(!cachedFoods);
 
@@ -29,8 +30,8 @@ export default function MealFoodPicker({ mealId, onAdd }) {
   const [opcionOpen, setOpcionOpen] = useState(false);
 
   useEffect(() => {
-    if (cachedFoods) return;
-
+    // ELIMINADO: if (cachedFoods) return;
+    // Ahora SIEMPRE pedimos los datos en segundo plano para actualizar la lista y la caché.
     listAllFoods().then(({ foods }) => {
       cachedFoods = foods;
       setFoods(foods || []);
@@ -89,7 +90,6 @@ export default function MealFoodPicker({ mealId, onAdd }) {
 
     setStagedItems((current) => [...current, ...newItems]);
 
-    // Limpiamos los campos propios del alimento para preparar el siguiente.
     setSelectedId("");
     setSearchText("");
     setCantidad(100);
@@ -109,9 +109,6 @@ export default function MealFoodPicker({ mealId, onAdd }) {
 
     try {
       for (const item of stagedItems) {
-        // IMPORTANTE:
-        // Se añade "item.notas" como séptimo parámetro.
-        // El componente padre debe recibirlo y pasarlo a addDietEntry({ notas }).
         // eslint-disable-next-line no-await-in-loop
         await onAdd(
           mealId,
@@ -145,7 +142,6 @@ export default function MealFoodPicker({ mealId, onAdd }) {
 
   return (
     <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-
       {/* LISTA TEMPORAL */}
       {stagedItems.length > 0 && (
         <div className="mb-5 rounded-xl bg-white p-3 shadow-sm ring-1 ring-slate-200/60 animate-fade-in-up">
